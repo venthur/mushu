@@ -2,10 +2,7 @@
 
 
 import itertools
-import math
-import sys
 import time
-import threading
 
 import gobject
 import matplotlib
@@ -20,6 +17,7 @@ CHANNELS = 17
 SCALE = 3000 #10
 
 fig = plt.figure()
+
 
 def main():
     amp = gtec.GTecAmp()
@@ -53,7 +51,7 @@ def main():
         for line in ax.lines:
             #line.set_data(x_values, y_values[j] + j*210)
             line.set_xdata([i for i in range(len(data2))])
-            line.set_ydata(data2[:,j]/8.15 + j*SCALE)
+            line.set_ydata(data2[:, j]/8.15 + j*SCALE)
             ax.draw_artist(line)
             j -= 1
         #ax.relim()
