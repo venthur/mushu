@@ -17,20 +17,21 @@ import gtec
 
 PAST_POINTS = 256
 CHANNELS = 17
-SCALE = 3000 #10 
+SCALE = 3000 #10
 
 fig = plt.figure()
 
 def main():
     amp = gtec.GTecAmp()
     amp.start()
+    amp.stop_recording()
     amp.set_mode('calibrate')
-    #amp.set_mode('data')
+    amp.start_recording()
+
     ax = plt.subplot(111)
     for i in range(CHANNELS):
         ax.plot(0)
     fig.canvas.draw()
-    x_values = np.array([])
     data_buffer = []
     data = []
     for i in itertools.count():
@@ -65,9 +66,4 @@ def main():
 if __name__ == '__main__':
     gobject.idle_add(main)
     plt.show()
-
-#    fig = plt.figure()
-#    thread = threading.Thread(target=main, args=(fig,))
-#    thread.start()
-#    plt.show()
 
