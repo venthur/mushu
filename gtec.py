@@ -80,7 +80,7 @@ class GTecAmp(amplifier.Amplifier):
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
-    def calculate_impedance(u_measured, u_applied):
+    def calculate_impedance(self, u_measured, u_applied):
         return (u_measured * 1e6) / (u_applied - u_measured) - 1e4
 
 
