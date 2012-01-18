@@ -15,14 +15,6 @@ ID_PRODUCT_GUSB_AMP = 0x0001
 
 CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
 
-AMP_START_REQUEST = 0xf7
-AMP_STOP_REQUEST = 0xb8
-
-AMP_SET_MODE_COMMON_REQUEST = 0xc2
-AMP_SET_MODE_CALIBRATE_REQUEST = 0xc1
-AMP_SET_MODE_CALIBRATE_COMMON_VALUE = 0x2
-AMP_SET_MODE_IMPEDANCE_COMMON_VALUE = 0x3
-AMP_SET_MODE_IMPEDANCE_REQUEST = 0xc9
 
 
 class GTecAmp(amplifier.Amplifier):
@@ -50,12 +42,14 @@ class GTecAmp(amplifier.Amplifier):
         first_setting = first_interface.alternateSetting
         self.devh.claimInterface(first_interface)
         self.devh.setAltInterface(first_interface)
-        # start the amp, maybe the above should go into init.
-        self.devh.controlMsg(CX_OUT, AMP_START_REQUEST, [])
 
-    def stop(self):
+    def start_recording(self):
+        self.devh.controlMsg(CX_OUT, 0xb5, value=0x0800, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xf7, value=0x0000, buffer=0)
+
+    def stop_recording(self):
         """Shut down the amplifier."""
-        self.devh.controlMsg(CX_OUT, AMP_STOP_REQUEST, [])
+        self.devh.controlMsg(CX_OUT, 0xb8, [])
 
     def get_data(self):
         """Get data."""
@@ -75,30 +69,14 @@ class GTecAmp(amplifier.Amplifier):
     def set_mode(self, mode):
         """Set mode, 'impedance', 'data'."""
         if mode == 'impedance':
-            self.devh.controlMsg(CX_OUT,
-                                 AMP_SET_MODE_COMMON_REQUEST,
-                                 value=AMP_SET_MODE_IMPEDANCE_COMMON_VALUE,
-                                 buffer=0)
-            self.devh.controlMsg(CX_OUT,
-                                 AMP_SET_MODE_IMPEDANCE_REQUEST,
-                                 value=0,
-                                 buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc9, value=0x0000, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc2, value=0x0300, buffer=0)
         elif mode == 'calibrate':
-            self.devh.controlMsg(CX_OUT,
-                                 AMP_SET_MODE_COMMON_REQUEST,
-                                 value=AMP_SET_MODE_CALIBRATE_COMMON_VALUE,
-                                 buffer=0)
-            self.devh.controlMsg(CX_OUT,
-                                 AMP_SET_MODE_CALIBRATE_REQUEST,
-                                 value=0,
-                                 buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xb5, value=0x08, buffer=0)
-            self.devh.controlMsg(CX_OUT, AMP_START_REQUEST, [])
+            self.devh.controlMsg(CX_OUT, 0xc1, value=0x0000, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc2, value=0x0200, buffer=0)
         elif mode == 'data':
-            self.devh.controlMsg(CX_OUT, 0xc0, value=0x00, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc0, value=0x0000, buffer=0)
             self.devh.controlMsg(CX_OUT, 0xc2, value=0x0100, buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xb5, value=0x0800, buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xf7, value=0x00, buffer=0)
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
