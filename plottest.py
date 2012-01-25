@@ -12,6 +12,7 @@ import numpy as np
 
 import gtec
 
+
 PAST_POINTS = 256
 CHANNELS = 17
 SCALE = 3000 #10
@@ -23,7 +24,7 @@ def main():
     amp = gtec.GTecAmp()
     amp.start()
     amp.stop_recording()
-    amp.set_mode('calibrate')
+    amp.set_mode('data')
     amp.start_recording()
 
     ax = plt.subplot(111)
