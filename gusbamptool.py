@@ -55,6 +55,25 @@ class Handler:
                 amp.set_mode('calibrate')
 
 
+    def onComboBox2Changed(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter != None:
+            model = combo.get_model()
+            row_id, name = model[tree_iter][:2]
+            if row_id == 'Sine':
+                amp.set_calibration_mode('sine')
+            elif row_id == 'Sawtooth':
+                amp.set_calibration_mode('sawtooth')
+            elif row_id == 'White Noise':
+                amp.set_calibration_mode('whitenoise')
+            elif row_id == 'Square':
+                amp.set_calibration_mode('square')
+            elif row_id == 'DLR':
+                amp.set_calibration_mode('dlr')
+            else:
+                print 'Unknown row_id: %s' % row_id
+
+
 
 def data_fetcher(amp, q):
     while not FETCHER_THREAD_STOPPING:
@@ -109,6 +128,7 @@ def visualizer(q):
             data = np.reshape(data, (-1, CHANNELS))
             data = data[-PAST_POINTS:]
             SCALE = np.max(data) / 8.15
+            SCALE *= 2
             j = CHANNELS - 1
             for line in ax.lines:
                 line.set_xdata([i for i in range(len(data))])

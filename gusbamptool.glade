@@ -112,7 +112,23 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkComboBoxText" id="comboboxtext2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item translatable="yes">Sine</item>
+                  <item translatable="yes">Sawtooth</item>
+                  <item translatable="yes">White Noise</item>
+                  <item translatable="yes">Square</item>
+                  <item translatable="yes">DLR</item>
+                </items>
+                <signal name="changed" handler="onComboBox2Changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
             </child>
           </object>
           <packing>
