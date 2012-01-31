@@ -85,7 +85,7 @@ class GTecAmp(amplifier.Amplifier):
         # buffer: [0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07]
         #          ====  ==========
         # (1) mode:
-        # (2) amplitude: little endian ( 0x07d0 = 1000
+        # (2) amplitude: little endian (0x07d0 = 2000)
         if mode == 'sine':
             self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         elif mode == 'sawtooth':
@@ -94,6 +94,8 @@ class GTecAmp(amplifier.Amplifier):
             self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x05, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         elif mode == 'square':
             self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x01, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+        else:
+            raise AmpError('Unknown mode: %s' % mode)
 
     def calculate_impedance(self, u_measured, u_applied):
         return (u_measured * 1e6) / (u_applied - u_measured) - 1e4
