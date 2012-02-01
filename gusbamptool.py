@@ -74,6 +74,14 @@ class Handler:
                 print 'Unknown row_id: %s' % row_id
 
 
+    def onSamplingFrequencyComboBoxChanged(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter != None:
+            model = combo.get_model()
+            row_id, name = model[tree_iter][:2]
+            fs = int(row_id)
+            amp.set_sampling_ferquency(fs)
+
 
 def data_fetcher(amp, q):
     while not FETCHER_THREAD_STOPPING:
