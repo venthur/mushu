@@ -6,7 +6,7 @@ import time
 from exceptions import Exception
 
 import usb
-
+from scipy.signal import iirfilter
 import amplifier
 
 
@@ -79,6 +79,72 @@ class GTecAmp(amplifier.Amplifier):
             self.devh.controlMsg(CX_OUT, 0xc2, value=0x0100, buffer=0)
         else:
             raise AmpError('Unknown mode: %s' % mode)
+
+
+    def set_sampling_ferquency(self, fs, channels, bpfilter, notchfilter):
+        """ Set the sampling frequency and filters for individual channels.
+
+        Parameters:
+        fs -- sampling frequency
+        channels -- list of booleans: channels[0] == True: enable filter for channel 0
+        bpfilter -- tuple: parameters for the band pass filter (hp, lp, fs, order) or None
+        notchfilter -- tuple: parameters for the band stop filter (hp, lp, fs, order) or None
+
+        """
+        # we have: hp, lp, fs, order, typ
+        # signal.iirfilter(order/2, [hp/(fs/2), lp/(fs/2)], ftype='butter', btype='band')
+        # we get 18 coeffs and put them in as '<d' in the buffer
+        # struct.pack('<'+'d'*18, *coeffs)
+
+        # special filter: means no filter
+        null_filter = "\x00\x00\x00\x00\x00\x00\x3f\xf0"
+
+        if bpfilter:
+            bp_hp, bp_lp, bp_fs, bp_order = bpfilter
+            bp_b, bp_a = iirfilter(bp_order/2, [bp_hp/(bp_fs/2), bp_lp/(bp_fs/2)], ftype='butter', btype='band')
+            bp_filter = list(bp_b).extend(list(bp_a))
+            bp_filter = struct.pack("<"+"d"*18, *bp_filter)
+        else:
+            bp_filter = null_filter
+
+        if notchfilter:
+            bs_hp, bs_lp, bs_fs, bs_order = notchfilter
+            bs_b, bs_a = iirfilter(bs_order/2, [bs_hp/(bs_fs/2), bs_lp/(bs_fs/2)], ftype='butter', btype='bandstop')
+            bs_filter = list(bs_b).extend(list(bs_a))
+            bs_filter = struct.pack("<"+"d"*18, *bs_filter)
+        else:
+            bs_filter = null_filter
+
+        # set the band pass filters for all channels
+        idx = 0
+        for i in channels:
+            if i:
+                self.devh.controlMsg(CX_OUT, 0xc6, value=idx, buffer=bp_filter)
+            else:
+                self.devh.controlMsg(CX_OUT, 0xc6, value=idx, buffer=null_filter)
+            idx += 1
+
+        # set the band stop filters for all channels
+        idx = 0
+        for i in channels:
+            if i:
+                self.devh.controlMsg(CX_OUT, 0xc7, value=idx, buffer=bs_filter)
+            else:
+                self.devh.controlMsg(CX_OUT, 0xc7, value=idx, buffer=null_filter)
+            idx += 1
+
+        # set the sampling frequency
+        self.devh.controlMsg(CX_OUT, 0xb6, value=self._byteswap(fs), buffer=0)
+
+
+    def _byteswap(self, i):
+        """Swap the bytes."""
+        first = i >> 8
+        second = i & 0xff
+        # swap
+        i = second << 8
+        i += first
+        return first
 
 
     def set_calibration_mode(self, mode):
