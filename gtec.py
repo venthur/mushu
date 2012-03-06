@@ -102,7 +102,8 @@ class GTecAmp(amplifier.Amplifier):
         if bpfilter:
             bp_hp, bp_lp, bp_fs, bp_order = bpfilter
             bp_b, bp_a = iirfilter(bp_order/2, [bp_hp/(bp_fs/2), bp_lp/(bp_fs/2)], ftype='butter', btype='band')
-            bp_filter = list(bp_b).extend(list(bp_a))
+            bp_filter = list(bp_b)
+            bp_filter.extend(list(bp_a))
             bp_filter = struct.pack("<"+"d"*18, *bp_filter)
         else:
             bp_filter = null_filter
@@ -110,28 +111,23 @@ class GTecAmp(amplifier.Amplifier):
         if notchfilter:
             bs_hp, bs_lp, bs_fs, bs_order = notchfilter
             bs_b, bs_a = iirfilter(bs_order/2, [bs_hp/(bs_fs/2), bs_lp/(bs_fs/2)], ftype='butter', btype='bandstop')
-            bs_filter = list(bs_b).extend(list(bs_a))
+            bs_filter = list(bs_b)
+            bs_filter.extend(list(bs_a))
             bs_filter = struct.pack("<"+"d"*18, *bs_filter)
         else:
             bs_filter = null_filter
 
-        # set the band pass filters for all channels
-        idx = 0
-        for i in channels:
-            if i:
-                self.devh.controlMsg(CX_OUT, 0xc6, value=idx, buffer=bp_filter)
-            else:
-                self.devh.controlMsg(CX_OUT, 0xc6, value=idx, buffer=null_filter)
-            idx += 1
-
-        # set the band stop filters for all channels
-        idx = 0
-        for i in channels:
-            if i:
-                self.devh.controlMsg(CX_OUT, 0xc7, value=idx, buffer=bs_filter)
-            else:
-                self.devh.controlMsg(CX_OUT, 0xc7, value=idx, buffer=null_filter)
-            idx += 1
+        # set the filters for all channels
+        if bpfilter == notchfilter == None:
+            self.devh.controlMsg(CX_OUT, 0xc6, value=0x01, buffer=bp_filter)
+            self.devh.controlMsg(CX_OUT, 0xc7, value=0x01, buffer=bs_filter)
+        else:
+            idx = 1
+            for i in channels:
+                if i:
+                    self.devh.controlMsg(CX_OUT, 0xc6, value=idx, buffer=bp_filter)
+                    self.devh.controlMsg(CX_OUT, 0xc7, value=idx, buffer=bs_filter)
+                idx += 1
 
         # set the sampling frequency
         self.devh.controlMsg(CX_OUT, 0xb6, value=fs, buffer=0)
