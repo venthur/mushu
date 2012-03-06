@@ -133,16 +133,6 @@ class GTecAmp(amplifier.Amplifier):
         self.devh.controlMsg(CX_OUT, 0xb6, value=fs, buffer=0)
 
 
-    def _byteswap(self, i):
-        """Swap the bytes."""
-        first = i >> 8
-        second = i & 0xff
-        # swap
-        i = second << 8
-        i += first
-        return first
-
-
     def set_calibration_mode(self, mode):
         # buffer: [0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07]
         #          ====  ==========
