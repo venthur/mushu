@@ -44,8 +44,8 @@ class GTecAmp(amplifier.Amplifier):
         self.devh.setAltInterface(first_interface)
 
     def start_recording(self):
-        self.devh.controlMsg(CX_OUT, 0xb5, value=0x0800, buffer=0)
-        self.devh.controlMsg(CX_OUT, 0xf7, value=0x0000, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xb5, value=0x08, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xf7, value=0x00, buffer=0)
 
     def stop_recording(self):
         """Shut down the amplifier."""
@@ -69,14 +69,14 @@ class GTecAmp(amplifier.Amplifier):
     def set_mode(self, mode):
         """Set mode, 'impedance', 'data'."""
         if mode == 'impedance':
-            self.devh.controlMsg(CX_OUT, 0xc9, value=0x0000, buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xc2, value=0x0300, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc9, value=0x00, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc2, value=0x03, buffer=0)
         elif mode == 'calibrate':
-            self.devh.controlMsg(CX_OUT, 0xc1, value=0x0000, buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xc2, value=0x0200, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc1, value=0x00, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc2, value=0x02, buffer=0)
         elif mode == 'data':
-            self.devh.controlMsg(CX_OUT, 0xc0, value=0x0000, buffer=0)
-            self.devh.controlMsg(CX_OUT, 0xc2, value=0x0100, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc0, value=0x00, buffer=0)
+            self.devh.controlMsg(CX_OUT, 0xc2, value=0x01, buffer=0)
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
@@ -97,7 +97,7 @@ class GTecAmp(amplifier.Amplifier):
         # struct.pack('<'+'d'*18, *coeffs)
 
         # special filter: means no filter
-        null_filter = "\x00\x00\x00\x00\x00\x00\x3f\xf0"
+        null_filter = "\x00\x00\x00\x00\x00\x00\xf0\x3f"+"\x00\x00\x00\x00\x00\x00\x00\x00"*17
 
         if bpfilter:
             bp_hp, bp_lp, bp_fs, bp_order = bpfilter
@@ -134,7 +134,7 @@ class GTecAmp(amplifier.Amplifier):
             idx += 1
 
         # set the sampling frequency
-        self.devh.controlMsg(CX_OUT, 0xb6, value=self._byteswap(fs), buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xb6, value=fs, buffer=0)
 
 
     def _byteswap(self, i):
@@ -153,13 +153,13 @@ class GTecAmp(amplifier.Amplifier):
         # (1) mode:
         # (2) amplitude: little endian (0x07d0 = 2000)
         if mode == 'sine':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         elif mode == 'sawtooth':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x02, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x02, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         elif mode == 'whitenoise':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x05, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x05, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         elif mode == 'square':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x0000, buffer=[0x01, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x01, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
