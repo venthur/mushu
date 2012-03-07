@@ -157,8 +157,12 @@ def visualizer(q):
                 tmp = [0 for i in range(CHANNELS)]
             # get #CHANNELS * data points into data and the rest in data_buffer
             data_buffer = np.append(data_buffer, tmp)
-            data = np.append(data, data_buffer[:-(len(data_buffer) % CHANNELS)])
-            data_buffer = data_buffer[-(len(data_buffer) % CHANNELS):]
+            if len(data_buffer) % CHANNELS == 0:
+                data = np.append(data, data_buffer)
+                data_buffer = []
+            else:
+                data = np.append(data, data_buffer[:-(len(data_buffer) % CHANNELS)])
+                data_buffer = data_buffer[-(len(data_buffer) % CHANNELS):]
             # reshape and shorten
             data = np.reshape(data, (-1, CHANNELS))
             data = data[-PAST_POINTS:]
