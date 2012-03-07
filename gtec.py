@@ -152,13 +152,13 @@ class GTecAmp(amplifier.Amplifier):
         # (1) mode:
         # (2) amplitude: little endian (0x07d0 = 2000)
         if mode == 'sine':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer="\x03\xd0\x07\x02\x00\xff\x07")
         elif mode == 'sawtooth':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x02, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer="\x02\xd0\x07\x02\x00\xff\x07")
         elif mode == 'whitenoise':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x05, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer="\x05\xd0\x07\x02\x00\xff\x07")
         elif mode == 'square':
-            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer=[0x01, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07])
+            self.devh.controlMsg(CX_OUT, 0xcb, value=0x00, buffer="\x01\xd0\x07\x02\x00\xff\x07")
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
