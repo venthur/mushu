@@ -42,6 +42,19 @@ class GTecAmp(amplifier.Amplifier):
         first_setting = first_interface.alternateSetting
         self.devh.claimInterface(first_interface)
         self.devh.setAltInterface(first_interface)
+        # initialization straight from the usb-dump
+        self.set_mode('data')
+        self.devh.controlMsg(CX_OUT, 0xb6, value=0x80, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xb5, value=0x80, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xb9, value=0x00, buffer="\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10")
+        self.devh.controlMsg(CX_OUT, 0xcd, value=0x00, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xd3, value=0x01, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xca, value=0x01, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xc8, value=0x01, buffer="\x00"*16)
+        self.devh.controlMsg(CX_OUT, 0xbf, value=0x00, buffer=0)
+        self.devh.controlMsg(CX_OUT, 0xbe, value=0x00, buffer=0)
+        self.set_calibration_mode('sine')
+        self.set_sampling_ferquency(128, [False for i in range(16)], None, None)
 
     def start_recording(self):
         self.devh.controlMsg(CX_OUT, 0xb5, value=0x08, buffer=0)
