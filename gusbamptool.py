@@ -5,8 +5,6 @@ import threading
 from threading import Thread
 from multiprocessing import Process, Pipe
 
-#from gi.repository import Gtk
-
 import gtec
 
 
@@ -18,7 +16,27 @@ amp.start_recording()
 FETCHER_THREAD_STOPPING = False
 
 
-class Handler:
+class Gui(object):
+
+
+    def __init__(self):
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file('gusbamptool.glade')
+        handler = {
+                'onDeleteWindow' : self.onDeleteWindow,
+                'onConnectButtonClicked' : self.onConnectButtonClicked,
+                'onDisconnectButtonClicked' : self.onDisconnectButtonClicked,
+                'onStartButtonClicked' : self.onStartButtonClicked,
+                'onStopButtonClicked' : self.onStopButtonClicked,
+                'onSetFilterButtonClicked' : self.onSetFilterButtonClicked,
+                'onComboBoxChanged' : self.onComboBoxChanged,
+                'onComboBox2Changed' : self.onComboBox2Changed,
+                'onSamplingFrequencyComboBoxChanged' : self.onSamplingFrequencyComboBoxChanged
+                }
+        self.builder.connect_signals(handler)
+        window = self.builder.get_object('window1')
+        window.show_all()
+
 
     def onDeleteWindow(self, *args):
         global FETCHER_THREAD_STOPPING
@@ -38,6 +56,15 @@ class Handler:
     def onStopButtonClicked(self, button):
         print 'Stop.'
         amp.stop_recording()
+
+    def onSetFilterButtonClicked(self, button):
+        fs = 128
+        pbfilter = None
+        notchfilter = (48.0, 52.0, fs, 8)
+        channels = [False for i in range(16)]
+        channels[0] = True
+        amp.set_sampling_ferquency(fs, channels, pbfilter, notchfilter)
+        pass
 
 
     def onComboBoxChanged(self, combo):
@@ -80,7 +107,7 @@ class Handler:
             model = combo.get_model()
             row_id, name = model[tree_iter][:2]
             fs = int(row_id)
-            amp.set_sampling_ferquency(fs)
+            amp.set_sampling_ferquency(fs, [False for i in range(16)], None, None)
 
 
 def data_fetcher(amp, q):
@@ -162,11 +189,8 @@ if __name__ == '__main__':
     # setup the gtk gui
     from gi.repository import Gtk, GObject
     GObject.threads_init()
-    builder = Gtk.Builder()
-    builder.add_from_file('gusbamptool.glade')
-    builder.connect_signals(Handler())
-    window = builder.get_object('window1')
-    window.show_all()
+
+    gui = Gui()
     # setup the data fetcher
     t = Thread(target=data_fetcher, args=(amp, parent_conn))
     t.start()
