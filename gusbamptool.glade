@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkAdjustment" id="adjustment_band_hp">
+    <property name="upper">100</property>
+    <property name="value">0.5</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_band_lp">
+    <property name="upper">100</property>
+    <property name="value">80</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_band_order">
+    <property name="upper">8</property>
+    <property name="value">8</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_notch_hp">
+    <property name="upper">100</property>
+    <property name="value">48</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_notch_lp">
+    <property name="upper">100</property>
+    <property name="value">52</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_notch_order">
+    <property name="upper">8</property>
+    <property name="value">4</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <signal name="delete-event" handler="onDeleteWindow" swapped="no"/>
@@ -71,7 +107,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="comboboxtext3">
+              <object class="GtkComboBoxText" id="comboboxtext_fs">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <items>
@@ -160,7 +196,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton1">
+                          <object class="GtkCheckButton" id="checkbutton_band">
                             <property name="label" translatable="yes">Band Pass</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
@@ -168,6 +204,7 @@
                             <property name="receives_default">False</property>
                             <property name="use_action_appearance">False</property>
                             <property name="xalign">0</property>
+                            <property name="yalign">0.54000002145767212</property>
                             <property name="draw_indicator">True</property>
                           </object>
                           <packing>
@@ -178,7 +215,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton2">
+                          <object class="GtkCheckButton" id="checkbutton_notch">
                             <property name="label" translatable="yes">Notch</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
@@ -200,6 +237,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_band_order</property>
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
@@ -209,10 +247,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSpinButton" id="spin_orde_notch">
+                          <object class="GtkSpinButton" id="spin_order_notch">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_notch_order</property>
+                            <property name="climb_rate">2.2351741811588166e-10</property>
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
@@ -226,6 +266,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_band_hp</property>
                             <property name="digits">1</property>
                           </object>
                           <packing>
@@ -240,6 +281,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_notch_hp</property>
                             <property name="digits">1</property>
                           </object>
                           <packing>
@@ -254,6 +296,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_band_lp</property>
                             <property name="digits">1</property>
                           </object>
                           <packing>
@@ -268,6 +311,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="adjustment">adjustment_notch_lp</property>
                             <property name="digits">1</property>
                           </object>
                           <packing>
