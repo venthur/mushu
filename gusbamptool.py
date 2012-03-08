@@ -58,12 +58,33 @@ class Gui(object):
         amp.stop_recording()
 
     def onSetFilterButtonClicked(self, button):
-        fs = 128
-        pbfilter = None
-        notchfilter = (48.0, 52.0, fs, 8)
-        channels = [False for i in range(16)]
-        channels[0] = True
-        amp.set_sampling_ferquency(fs, channels, pbfilter, notchfilter)
+        channels = [True for i in range(16)]
+
+        combo = self.builder.get_object('comboboxtext_fs')
+        tree_iter = combo.get_active_iter()
+        if tree_iter != None:
+            model = combo.get_model()
+            row_id, name = model[tree_iter][:2]
+            fs = int(row_id)
+
+
+        if self.builder.get_object('checkbutton_notch').get_active():
+            notch_order = self.builder.get_object('spin_order_notch').get_value_as_int()
+            notch_hp = self.builder.get_object('spin_hp_notch').get_value()
+            notch_lp = self.builder.get_object('spin_lp_notch').get_value()
+            notchfilter = (notch_hp, notch_lp, fs, notch_order)
+        else:
+            notchfilter = None
+
+        if self.builder.get_object('checkbutton_band').get_active():
+            band_order = self.builder.get_object('spin_order_band').get_value_as_int()
+            band_hp = self.builder.get_object('spin_hp_band').get_value()
+            band_lp = self.builder.get_object('spin_lp_band').get_value()
+            bpfilter = (band_hp, band_lp, fs, band_order)
+        else:
+            bpfilter = None
+
+        amp.set_sampling_ferquency(fs, channels, bpfilter, notchfilter)
         pass
 
 
