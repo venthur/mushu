@@ -4,11 +4,15 @@
 import struct
 import time
 from exceptions import Exception
+import logging
 
 import usb
 from scipy.signal import iirfilter
 import amplifier
 
+
+logger = logging.getLogger(__name__)
+logger.info('Logger started')
 
 ID_VENDOR_GTEC = 0x153c
 ID_PRODUCT_GUSB_AMP = 0x0001
@@ -20,6 +24,7 @@ CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
 class GTecAmp(amplifier.Amplifier):
 
     def __init__(self):
+        logger.info('Initializing GTecAmp instance')
         # list of available amps
         self.amps = []
         for bus in usb.busses():

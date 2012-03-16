@@ -4,8 +4,14 @@
 import threading
 from threading import Thread
 from multiprocessing import Process, Pipe
+import logging
 
 import gtec
+
+
+logging.basicConfig(format='%(asctime)s %(name)10s %(levelname)8s %(message)s', level=logging.NOTSET)
+logger = logging.getLogger(__name__)
+logger.info('Logger started')
 
 
 amp = gtec = gtec.GTecAmp()
