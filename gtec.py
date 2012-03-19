@@ -130,7 +130,15 @@ class GTecAmp(amplifier.Amplifier):
             bs_hp, bs_lp, bs_fs, bs_order = notchfilter
             bs_b, bs_a = iirfilter(bs_order/2, [bs_hp/(bs_fs/2), bs_lp/(bs_fs/2)], ftype='butter', btype='bandstop')
             bs_filter = list(bs_b)
+            # the notch filter has (always?) an order of 4 so fill the gaps with
+            # zeros
+            if len(bs_filter) < 9:
+                diff = 9 - len(bs_filter)
+                bs_filter.extend([0.0 for i in range(diff)])
             bs_filter.extend(list(bs_a))
+            if len(bs_filter) < 18:
+                diff = 18 - len(bs_filter)
+                bs_filter.extend([0.0 for i in range(diff)])
             bs_filter = struct.pack("<"+"d"*18, *bs_filter)
         else:
             bs_filter = null_filter
