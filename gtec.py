@@ -72,6 +72,7 @@ class GTecAmp(amplifier.Amplifier):
 
     def get_data(self):
         """Get data."""
+        # TODO: should we use numpy arrays right here?
         # TODO: what is the in-endpoint
         # 0x2 or 0x86
         endpoint = 0x86
