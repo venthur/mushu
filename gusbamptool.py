@@ -212,12 +212,12 @@ def visualizer(q):
             data = data[-PAST_POINTS:]
             if len(data) == 0:
                 continue
-            SCALE = np.max(data) / 8.15
+            SCALE = np.max(data)
             SCALE *= 2
             j = CHANNELS - 1
             for line in ax.lines:
                 line.set_xdata([i for i in range(len(data))])
-                line.set_ydata(data[:, j]/8.15 + j*SCALE)
+                line.set_ydata(data[:, j] + j*SCALE)
                 #ax.draw_artist(line)
                 j -= 1
             plt.ylim(-SCALE, CHANNELS*SCALE)

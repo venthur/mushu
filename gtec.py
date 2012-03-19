@@ -34,6 +34,7 @@ class GTecAmp(amplifier.Amplifier):
                     self.amps.append(device)
         self.connected = False
         self.devh = None
+        self.mode = None
 
     def start(self):
         """Initialize the amplifier and make it ready."""
@@ -78,6 +79,11 @@ class GTecAmp(amplifier.Amplifier):
         data = self.devh.bulkRead(endpoint, size)
         data = ''.join([chr(i) for i in data])
         data = struct.unpack_from('<'+'f'*(len(data)/4), data)
+        if self.mode == 'impedance':
+            data = [self.calculate_impedance(i) for i in data]
+        elif self.mode == 'data':
+            # get data in mV
+            data = [i / 8.15 for i in data]
         return data
 
     def get_impedances(self):
@@ -89,12 +95,15 @@ class GTecAmp(amplifier.Amplifier):
         if mode == 'impedance':
             self.devh.controlMsg(CX_OUT, 0xc9, value=0x00, buffer=0)
             self.devh.controlMsg(CX_OUT, 0xc2, value=0x03, buffer=0)
+            self.mode = 'impedance'
         elif mode == 'calibrate':
             self.devh.controlMsg(CX_OUT, 0xc1, value=0x00, buffer=0)
             self.devh.controlMsg(CX_OUT, 0xc2, value=0x02, buffer=0)
+            self.mode = 'calibration'
         elif mode == 'data':
             self.devh.controlMsg(CX_OUT, 0xc0, value=0x00, buffer=0)
             self.devh.controlMsg(CX_OUT, 0xc2, value=0x01, buffer=0)
+            self.mode = 'data'
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
@@ -175,7 +184,7 @@ class GTecAmp(amplifier.Amplifier):
         else:
             raise AmpError('Unknown mode: %s' % mode)
 
-    def calculate_impedance(self, u_measured, u_applied):
+    def calculate_impedance(self, u_measured, u_applied=1e4):
         return (u_measured * 1e6) / (u_applied - u_measured) - 1e4
 
 
