@@ -222,8 +222,15 @@ def visualizer(q):
                 j -= 1
             plt.ylim(-SCALE, CHANNELS*SCALE)
             plt.xlim(i-PAST_POINTS, i)
+            #yticksmin = [-SCALE+SCALE*i for i in range(CHANNELS)]
+            #yticksmax = [SCALE*i for i in range(CHANNELS)]
+            #pos = []
+            #for i in range(CHANNELS):
+            #    pos.append(yticksmin[i])
+            #    pos.append(yticksmax[i])
+            #plt.yticks(pos, [-SCALE/2, SCALE]*CHANNELS)
             fig.canvas.draw()
-            #logger.debug('%.2f FPS' % (1/ (time.time() - t)))
+            logger.debug('%.2f FPS' % (1/ (time.time() - t)))
 
 
     gobject.idle_add(main)
