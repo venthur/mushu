@@ -214,6 +214,8 @@ def visualizer(q):
                 continue
             SCALE = np.max(data)
             SCALE *= 2
+            SPAN = 100000
+            SCALE = SPAN
             j = CHANNELS - 1
             for line in ax.lines:
                 line.set_xdata([i for i in range(len(data))])
