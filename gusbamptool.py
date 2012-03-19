@@ -173,6 +173,9 @@ def visualizer(q):
         fig.canvas.draw()
         data = []
         data_buffer = []
+        t2 = time.time()
+        k = 0
+        nsamples = 0
         while 1:
             t = time.time()
             #if not q.poll(0.1):
@@ -180,9 +183,21 @@ def visualizer(q):
             tmp = q.recv()
             while q.poll():
                 tmp = tmp + q.recv()
+            # display #samples / second
+            if tmp != None:
+                nsamples += len(tmp)
+                k += 1
+                if k == 100:
+                    sps = (nsamples/CHANNELS) / (time.time() - t2)
+                    print '%.2f samples / second\r' % sps
+                    t2 = time.time()
+                    nsamples = 0
+                    k = 0
+                #print tmp
             if tmp == 'quit':
                 break
             elif tmp is None:
+                continue
                 tmp = [0 for i in range(CHANNELS)]
             # get #CHANNELS * data points into data and the rest in data_buffer
             data_buffer = np.append(data_buffer, tmp)
