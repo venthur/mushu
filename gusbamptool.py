@@ -178,6 +178,8 @@ def visualizer(q):
             #if not q.poll(0.1):
             #    continue
             tmp = q.recv()
+            while q.poll():
+                tmp = tmp + q.recv()
             if tmp == 'quit':
                 break
             elif tmp is None:
@@ -193,18 +195,21 @@ def visualizer(q):
             # reshape and shorten
             data = np.reshape(data, (-1, CHANNELS))
             data = data[-PAST_POINTS:]
+            if len(data) == 0:
+                continue
             SCALE = np.max(data) / 8.15
             SCALE *= 2
             j = CHANNELS - 1
             for line in ax.lines:
                 line.set_xdata([i for i in range(len(data))])
                 line.set_ydata(data[:, j]/8.15 + j*SCALE)
-                ax.draw_artist(line)
+                #ax.draw_artist(line)
                 j -= 1
             plt.ylim(-SCALE, CHANNELS*SCALE)
             plt.xlim(i-PAST_POINTS, i)
             fig.canvas.draw()
-            print '%.2f FPS' % (1/ (time.time() - t))
+            #print '%.2f FPS' % (1/ (time.time() - t))
+
 
     gobject.idle_add(main)
     plt.show()
