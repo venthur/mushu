@@ -9,7 +9,7 @@ import logging
 import gtec
 
 
-logging.basicConfig(format='%(asctime)s %(name)10s %(levelname)8s %(message)s', level=logging.NOTSET)
+logging.basicConfig(format='%(asctime)s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
@@ -50,17 +50,17 @@ class Gui(object):
         Gtk.main_quit(*args)
 
     def onConnectButtonClicked(self, button):
-        print 'Connect.'
+        logger.debug('Connect.')
 
     def onDisconnectButtonClicked(self, button):
-        print 'Disconnect.'
+        logger.debug('Disconnect.')
 
     def onStartButtonClicked(self, button):
-        print 'Start.'
+        logger.debug('Start.')
         amp.start_recording()
 
     def onStopButtonClicked(self, button):
-        print 'Stop.'
+        logger.debug('Stop.')
         amp.stop_recording()
 
     def onSetFilterButtonClicked(self, button):
@@ -95,12 +95,12 @@ class Gui(object):
 
 
     def onComboBoxChanged(self, combo):
-        print 'ComboBox changed.'
+        logger.debug('ComboBox changed.')
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()
             row_id, name = model[tree_iter][:2]
-            print "Selected: ID=%s, name=%s" % (row_id, name)
+            logger.debug("Selected: ID=%s, name=%s" % (row_id, name))
             if row_id == 'Data':
                 amp.set_mode('data')
             elif row_id == 'Impedance':
@@ -125,7 +125,7 @@ class Gui(object):
             elif row_id == 'DLR':
                 amp.set_calibration_mode('dlr')
             else:
-                print 'Unknown row_id: %s' % row_id
+                logger.error('Unknown row_id: %s' % row_id)
 
 
     def onSamplingFrequencyComboBoxChanged(self, combo):
@@ -144,9 +144,9 @@ def data_fetcher(amp, q):
         except:
             data_buffer = None
         q.send(data_buffer)
-    print 'Sending visualizer process the stop marker.'
+    logger.debug('Sending visualizer process the stop marker.')
     q.send('quit')
-    print 'Terminating data fetcher thread.'
+    logger.debug('Terminating data fetcher thread.')
 
 
 def visualizer(q):
@@ -189,11 +189,11 @@ def visualizer(q):
                 k += 1
                 if k == 100:
                     sps = (nsamples/CHANNELS) / (time.time() - t2)
-                    print '%.2f samples / second\r' % sps
+                    logger.debug('%.2f samples / second\r' % sps)
                     t2 = time.time()
                     nsamples = 0
                     k = 0
-                #print tmp
+                #logger.debug(tmp)
             if tmp == 'quit':
                 break
             elif tmp is None:
@@ -223,13 +223,13 @@ def visualizer(q):
             plt.ylim(-SCALE, CHANNELS*SCALE)
             plt.xlim(i-PAST_POINTS, i)
             fig.canvas.draw()
-            #print '%.2f FPS' % (1/ (time.time() - t))
+            #logger.debug('%.2f FPS' % (1/ (time.time() - t)))
 
 
     gobject.idle_add(main)
     plt.show()
 
-    print 'Terminating visualizer process.'
+    logger.debug('Terminating visualizer process.')
 
 
 if __name__ == '__main__':
@@ -246,7 +246,7 @@ if __name__ == '__main__':
     t = Thread(target=data_fetcher, args=(amp, parent_conn))
     t.start()
     Gtk.main()
-    print 'Waiting for thread and process to stop...'
+    logger.debug('Waiting for thread and process to stop...')
     t.join()
     p.join()
 
