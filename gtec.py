@@ -53,12 +53,12 @@ class GTecAmp(amplifier.Amplifier):
         self.devh.controlMsg(CX_OUT, 0xb6, value=0x80, buffer=0)
         self.devh.controlMsg(CX_OUT, 0xb5, value=0x80, buffer=0)
         self.devh.controlMsg(CX_OUT, 0xb9, value=0x00, buffer="\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10")
-        self.devh.controlMsg(CX_OUT, 0xcd, value=0x00, buffer=0)
+        self.set_slave_mode(False)
         self.devh.controlMsg(CX_OUT, 0xd3, value=0x01, buffer=0)
         self.devh.controlMsg(CX_OUT, 0xca, value=0x01, buffer=0)
         self.devh.controlMsg(CX_OUT, 0xc8, value=0x01, buffer="\x00"*16)
-        self.devh.controlMsg(CX_OUT, 0xbf, value=0x00, buffer=0)
-        self.devh.controlMsg(CX_OUT, 0xbe, value=0x00, buffer=0)
+        self.set_common_reference()
+        self.set_common_ground()
         self.set_calibration_mode('sine')
         self.set_sampling_ferquency(128, [False for i in range(16)], None, None)
 
@@ -187,6 +187,41 @@ class GTecAmp(amplifier.Amplifier):
 
     def calculate_impedance(self, u_measured, u_applied=1e4):
         return (u_measured * 1e6) / (u_applied - u_measured) - 1e4
+
+
+    def set_common_ground(self, a=False, b=False, c=False, d=False):
+        """Set common ground for the electrodes.
+
+        Parameters:
+        a, b, c, d -- correspond to the groups on the amp, either of them can be
+            true or false
+
+        """
+        v = (d << 3) + (c << 2) + (b << 1) + a
+        self.devh.controlMsg(CX_OUT, 0xbe, value=v, buffer=0)
+
+
+    def set_common_reference(self, a=False, b=False, c=False, d=False):
+        """Set common reference for the electrodes.
+
+        Parameters:
+        a, b, c, d -- correspond to the groups on the amp, either of them can be
+            true or false
+
+        """
+        v = (d << 3) + (c << 2) + (b << 1) + a
+        self.devh.controlMsg(CX_OUT, 0xbf, value=v, buffer=0)
+
+
+    def set_slave_mode(self, slave):
+        """Set amp into slave or master mode.
+
+        Parameters:
+        slave -- if true, set into slave mode, set to master otherwise
+
+        """
+        v = 1 if slave else 0
+        self.devh.controlMsg(CX_OUT, 0xcd, value=v, buffer=0)
 
 
 class AmpError(Exception):
