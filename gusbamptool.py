@@ -254,9 +254,11 @@ if __name__ == '__main__':
     # setup the gtk gui
     gui = Gui(child_conn)
     # setup the data fetcher
-    t = Thread(target=data_fetcher, args=(amp, parent_conn))
-    t.start()
+    p = Process(target=data_fetcher, args=(amp, parent_conn))
+    p.daemon = True
+    logger.debug(p.daemon)
+    p.start()
     Gtk.main()
     logger.debug('Waiting for thread and process to stop...')
-    t.join()
+    p.join()
 
