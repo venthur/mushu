@@ -1,0 +1,2 @@
+* Now that the data_fetcher is a process, it shares the same amp as the other
+  process, how do we fix that?
