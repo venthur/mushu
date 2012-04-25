@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-amp = gtec = gtec.GTecAmp()
+amp = gtec.GTecAmp()
 amp.start()
 amp.start_recording()
 
