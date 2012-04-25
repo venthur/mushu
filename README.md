@@ -31,3 +31,11 @@ Output Format
   * TOBI Interface A
 
 
+Author
+------
+
+  * [Bastian Venthur][venthur]
+
+
+  [venthur]: http://venthur.de
+
