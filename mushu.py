@@ -3,7 +3,7 @@
 
 import threading
 from threading import Thread
-from multiprocessing import Process, Pipe
+from multiprocessing import Process, Pipe, Event
 import logging
 import time
 
@@ -30,9 +30,6 @@ logger.info('Logger started')
 amp = gtec.GTecAmp()
 amp.start()
 amp.start_recording()
-
-# signal to stop the data fetching thread and visualizer process
-FETCHER_THREAD_STOPPING = False
 
 
 class Gui(object):
@@ -76,8 +73,6 @@ class Gui(object):
 
 
     def onDeleteWindow(self, *args):
-        global FETCHER_THREAD_STOPPING
-        FETCHER_THREAD_STOPPING = True
         Gtk.main_quit(*args)
 
     def onConnectButtonClicked(self, button):
@@ -236,8 +231,8 @@ class Gui(object):
         return True
 
 
-def data_fetcher(amp, q):
-    while not FETCHER_THREAD_STOPPING:
+def data_fetcher(amp, q, e):
+    while not e.is_set():
         try:
             data_buffer = amp.get_data()
         except:
@@ -254,11 +249,13 @@ if __name__ == '__main__':
     # setup the gtk gui
     gui = Gui(child_conn)
     # setup the data fetcher
-    p = Process(target=data_fetcher, args=(amp, parent_conn))
+    e = Event()
+    p = Process(target=data_fetcher, args=(amp, parent_conn, e))
     p.daemon = True
     logger.debug(p.daemon)
     p.start()
     Gtk.main()
     logger.debug('Waiting for thread and process to stop...')
+    e.set()
     p.join()
 
