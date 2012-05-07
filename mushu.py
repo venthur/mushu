@@ -3,8 +3,21 @@
 
 import threading
 from threading import Thread
-from multiprocessing import Process, Pipe
+from multiprocessing import Process, Pipe, Event
 import logging
+import time
+
+import matplotlib
+matplotlib.use('GTKAgg')
+from gi.repository import Gtk, GObject
+from matplotlib.figure import Figure
+from backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+
+GObject.threads_init()
+
+import numpy as np
+
+
 
 import gtec
 
@@ -14,18 +27,16 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-amp = gtec = gtec.GTecAmp()
+amp = gtec.GTecAmp()
 amp.start()
 amp.start_recording()
-
-# signal to stop the data fetching thread and visualizer process
-FETCHER_THREAD_STOPPING = False
 
 
 class Gui(object):
 
 
-    def __init__(self):
+    def __init__(self, q):
+        self.q = q
         self.builder = Gtk.Builder()
         self.builder.add_from_file('gusbamptool.glade')
         handler = {
@@ -43,10 +54,25 @@ class Gui(object):
         window = self.builder.get_object('window1')
         window.show_all()
 
+        # set up the figure
+        fig = Figure()
+        self.canvas = FigureCanvas(fig)
+        self.canvas.show()
+        self.canvas.set_size_request(800, 600)
+        self.axis = fig.add_subplot(111)
+        place = self.builder.get_object('box1')
+        place.pack_start(self.canvas, True, True, 0)
+        place.reorder_child(self.canvas, 1)
+
+        self.CHANNELS = 17
+        self.PAST_POINTS = 256
+        self.SCALE = 30000
+
+        self.init_plot()
+        GObject.idle_add(self.visualizer)
+
 
     def onDeleteWindow(self, *args):
-        global FETCHER_THREAD_STOPPING
-        FETCHER_THREAD_STOPPING = True
         Gtk.main_quit(*args)
 
     def onConnectButtonClicked(self, button):
@@ -137,8 +163,76 @@ class Gui(object):
             amp.set_sampling_ferquency(fs, [False for i in range(16)], None, None)
 
 
-def data_fetcher(amp, q):
-    while not FETCHER_THREAD_STOPPING:
+    def init_plot(self):
+        for i in range(self.CHANNELS):
+            self.axis.plot(0)
+        self.canvas.draw()
+        self.data = []
+        self.data_buffer = []
+        self.t2 = time.time()
+        self.k = 0
+        self.nsamples = 0
+
+
+    def visualizer(self):
+
+        t = time.time()
+        tmp = self.q.recv()
+        while self.q.poll():
+            tmp = tmp + self.q.recv()
+        # display #samples / second
+        if tmp != None:
+            self.nsamples += len(tmp)
+            self.k += 1
+            if self.k == 100:
+                sps = (self.nsamples / self.CHANNELS) / (time.time() - self.t2)
+                logger.debug('%.2f samples / second\r' % sps)
+                self.t2 = time.time()
+                self.nsamples = 0
+                self.k = 0
+            #logger.debug(tmp)
+        if tmp == 'quit':
+            return False
+        elif tmp is None:
+            return True
+        # get #CHANNELS * data points into data and the rest in data_buffer
+        self.data_buffer = np.append(self.data_buffer, tmp)
+        if len(self.data_buffer) % self.CHANNELS == 0:
+            self.data = np.append(self.data, self.data_buffer)
+            self.data_buffer = []
+        else:
+            self.data = np.append(self.data, self.data_buffer[:-(len(self.data_buffer) % self.CHANNELS)])
+            self.data_buffer = self.data_buffer[-(len(self.data_buffer) % self.CHANNELS):]
+        # reshape and shorten
+        self.data = np.reshape(self.data, (-1, self.CHANNELS))
+        self.data = self.data[-self.PAST_POINTS:]
+        if len(self.data) == 0:
+            return True
+        SCALE = np.max(self.data)
+        SCALE *= 2
+        SPAN = 100000
+        SCALE = SPAN
+        j = self.CHANNELS - 1
+        for line in self.axis.lines:
+            line.set_xdata([i for i in range(len(self.data))])
+            line.set_ydata(self.data[:, j] + j * SCALE)
+            j -= 1
+        self.axis.set_ylim(-SCALE, self.CHANNELS * SCALE)
+        self.axis.set_xlim(i - self.PAST_POINTS, i)
+        #yticksmin = [-SCALE+SCALE*i for i in range(CHANNELS)]
+        #yticksmax = [SCALE*i for i in range(CHANNELS)]
+        #pos = []
+        #for i in range(CHANNELS):
+        #    pos.append(yticksmin[i])
+        #    pos.append(yticksmax[i])
+        #plt.yticks(pos, [-SCALE/2, SCALE]*CHANNELS)
+        self.canvas.draw()
+        logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+        return True
+
+
+def data_fetcher(amp, q, e):
+    while not e.is_set():
         try:
             data_buffer = amp.get_data()
         except:
@@ -149,113 +243,19 @@ def data_fetcher(amp, q):
     logger.debug('Terminating data fetcher thread.')
 
 
-def visualizer(q):
-    # import our stuff, since we're in a new process
-    import time
-
-    import gobject
-    import matplotlib
-    matplotlib.use('GTKAgg')
-    from matplotlib import pyplot as plt
-    import numpy as np
-
-
-    CHANNELS = 17
-    PAST_POINTS = 256
-    SCALE = 30000
-
-    fig = plt.figure()
-
-    def main():
-        ax = plt.subplot(111)
-        for i in range(CHANNELS):
-            ax.plot(0)
-        fig.canvas.draw()
-        data = []
-        data_buffer = []
-        t2 = time.time()
-        k = 0
-        nsamples = 0
-        while 1:
-            t = time.time()
-            #if not q.poll(0.1):
-            #    continue
-            tmp = q.recv()
-            while q.poll():
-                tmp = tmp + q.recv()
-            # display #samples / second
-            if tmp != None:
-                nsamples += len(tmp)
-                k += 1
-                if k == 100:
-                    sps = (nsamples/CHANNELS) / (time.time() - t2)
-                    logger.debug('%.2f samples / second\r' % sps)
-                    t2 = time.time()
-                    nsamples = 0
-                    k = 0
-                #logger.debug(tmp)
-            if tmp == 'quit':
-                break
-            elif tmp is None:
-                continue
-                tmp = [0 for i in range(CHANNELS)]
-            # get #CHANNELS * data points into data and the rest in data_buffer
-            data_buffer = np.append(data_buffer, tmp)
-            if len(data_buffer) % CHANNELS == 0:
-                data = np.append(data, data_buffer)
-                data_buffer = []
-            else:
-                data = np.append(data, data_buffer[:-(len(data_buffer) % CHANNELS)])
-                data_buffer = data_buffer[-(len(data_buffer) % CHANNELS):]
-            # reshape and shorten
-            data = np.reshape(data, (-1, CHANNELS))
-            data = data[-PAST_POINTS:]
-            if len(data) == 0:
-                continue
-            SCALE = np.max(data)
-            SCALE *= 2
-            SPAN = 100000
-            SCALE = SPAN
-            j = CHANNELS - 1
-            for line in ax.lines:
-                line.set_xdata([i for i in range(len(data))])
-                line.set_ydata(data[:, j] + j*SCALE)
-                #ax.draw_artist(line)
-                j -= 1
-            plt.ylim(-SCALE, CHANNELS*SCALE)
-            plt.xlim(i-PAST_POINTS, i)
-            #yticksmin = [-SCALE+SCALE*i for i in range(CHANNELS)]
-            #yticksmax = [SCALE*i for i in range(CHANNELS)]
-            #pos = []
-            #for i in range(CHANNELS):
-            #    pos.append(yticksmin[i])
-            #    pos.append(yticksmax[i])
-            #plt.yticks(pos, [-SCALE/2, SCALE]*CHANNELS)
-            fig.canvas.draw()
-            logger.debug('%.2f FPS' % (1/ (time.time() - t)))
-
-
-    gobject.idle_add(main)
-    plt.show()
-
-    logger.debug('Terminating visualizer process.')
-
-
 if __name__ == '__main__':
     # setup the visualizer process
     parent_conn, child_conn = Pipe()
-    p = Process(target=visualizer, args=(child_conn,))
-    p.start()
     # setup the gtk gui
-    from gi.repository import Gtk, GObject
-    GObject.threads_init()
-
-    gui = Gui()
+    gui = Gui(child_conn)
     # setup the data fetcher
-    t = Thread(target=data_fetcher, args=(amp, parent_conn))
-    t.start()
+    e = Event()
+    p = Process(target=data_fetcher, args=(amp, parent_conn, e))
+    p.daemon = True
+    logger.debug(p.daemon)
+    p.start()
     Gtk.main()
     logger.debug('Waiting for thread and process to stop...')
-    t.join()
+    e.set()
     p.join()
 
