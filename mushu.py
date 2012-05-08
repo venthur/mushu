@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 
-import threading
-from threading import Thread
 from multiprocessing import Process, Pipe, Event
 import logging
 import time
