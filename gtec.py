@@ -8,8 +8,9 @@ import logging
 
 import usb
 from scipy.signal import iirfilter
-import amplifier
+import numpy as np
 
+import amplifier
 
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
@@ -79,12 +80,12 @@ class GTecAmp(amplifier.Amplifier):
         size = 512
         data = self.devh.bulkRead(endpoint, size)
         data = ''.join([chr(i) for i in data])
-        data = struct.unpack_from('<'+'f'*(len(data)/4), data)
+        data = np.fromstring(data, np.float32)
         if self.mode == 'impedance':
-            data = [self.calculate_impedance(i) for i in data]
+            data = self.calculate_impedance(data)
         elif self.mode == 'data':
             # get data in mV
-            data = [i / 8.15 for i in data]
+            data /= 8.15
         return data
 
     def get_impedances(self):

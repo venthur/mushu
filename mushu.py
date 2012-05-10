@@ -177,7 +177,7 @@ class Gui(object):
         t = time.time()
         tmp = self.q.recv()
         while self.q.poll():
-            tmp = tmp + self.q.recv()
+            tmp = np.append(tmp, self.q.recv())
         # display #samples / second
         if tmp != None:
             self.nsamples += len(tmp)
