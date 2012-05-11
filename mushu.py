@@ -208,8 +208,9 @@ class Gui(object):
         SPAN = 100000
         SCALE = SPAN
         j = self.CHANNELS - 1
+        x = [i for i in range(len(self.data))]
         for line in self.axis.lines:
-            line.set_xdata([i for i in range(len(self.data))])
+            line.set_xdata(x)
             line.set_ydata(self.data[:, j] + j * SCALE)
             j -= 1
         self.axis.set_ylim(-SCALE, self.CHANNELS * SCALE)
