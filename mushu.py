@@ -203,8 +203,8 @@ class Gui(object):
         self.data = self.data[-self.PAST_POINTS:]
         if len(self.data) == 0:
             return True
-        SCALE = np.max(self.data)
-        SCALE *= 2
+        #SCALE = np.max(self.data)
+        #SCALE *= 2
         SPAN = 100000
         SCALE = SPAN
         j = self.CHANNELS - 1
