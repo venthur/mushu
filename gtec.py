@@ -79,8 +79,8 @@ class GTecAmp(amplifier.Amplifier):
         endpoint = 0x86
         size = 512
         data = self.devh.bulkRead(endpoint, size)
-        data = ''.join([chr(i) for i in data])
-        data = np.fromstring(data, np.float32)
+        data = ''.join(map(chr, data))
+        data = np.fromstring(data, np.float32, len(data)/4)
         if self.mode == 'impedance':
             data = self.calculate_impedance(data)
         elif self.mode == 'data':
