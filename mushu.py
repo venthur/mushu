@@ -195,14 +195,11 @@ class Gui(object):
             return True
         # get #CHANNELS * data points into data and the rest in data_buffer
         self.data_buffer = np.append(self.data_buffer, tmp)
-        if len(self.data_buffer) % self.CHANNELS == 0:
-            self.data = np.append(self.data, self.data_buffer)
-            self.data_buffer = []
-        else:
-            self.data = np.append(self.data, self.data_buffer[:-(len(self.data_buffer) % self.CHANNELS)])
-            self.data_buffer = self.data_buffer[-(len(self.data_buffer) % self.CHANNELS):]
-        # reshape and shorten
-        self.data = np.reshape(self.data, (-1, self.CHANNELS))
+        self.data = np.append(self.data, self.data_buffer)
+        elements = (len(self.data) / self.CHANNELS) * self.CHANNELS
+        self.data_buffer = self.data[elements:]
+        self.data = self.data[:elements].reshape(-1, self.CHANNELS)
+
         self.data = self.data[-self.PAST_POINTS:]
         if len(self.data) == 0:
             return True
