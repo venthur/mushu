@@ -234,7 +234,9 @@ class AmpError(Exception):
     pass
 
 
-if __name__ == '__main__':
+
+
+def main():
     amp = GTecAmp()
     amp.start()
     try:
@@ -246,4 +248,12 @@ if __name__ == '__main__':
                 print "%.5f seconds (%.5f ps), length: %d" % (dt, (len(data) / 16.) * 1/dt, len(data))
     finally:
         amp.stop()
+
+if __name__ == '__main__':
+    import sys
+    import cProfile
+    if len(sys.argv) > 1 and sys.argv[1].startswith('prof'):
+        cProfile.run('main()', 'prof')
+    else:
+        main()
 
