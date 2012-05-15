@@ -77,8 +77,13 @@ class GTecAmp(amplifier.Amplifier):
         # TODO: what is the in-endpoint
         # 0x2 or 0x86
         endpoint = 0x86
-        size = 512
-        data = self.devh.bulkRead(endpoint, size)
+        # TODO what is the optimal number here
+        size = 2028 #512
+        try:
+            # TODO what is the optimal timeout here?
+            data = self.devh.bulkRead(endpoint, size, 100)
+        except usb.USBError:
+            data = []
         data = ''.join(map(chr, data))
         data = np.fromstring(data, np.float32, len(data)/4)
         if self.mode == 'impedance':
