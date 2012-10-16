@@ -17,7 +17,7 @@ import numpy as np
 
 
 
-import gtec
+from amps import gtec
 
 
 logging.basicConfig(format='%(asctime)s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
@@ -25,10 +25,12 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-amp = gtec.GTecAmp()
-amp.start()
-amp.start_recording()
+#amp = gtec.GTecAmp()
+#amp.start()
+#amp.start_recording()
 
+from amps.randomamp import RandomAmp
+amp = RandomAmp()
 
 class Gui(object):
 

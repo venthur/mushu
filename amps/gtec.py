@@ -1,6 +1,5 @@
 #!/usb/bin/env python
 
-
 import struct
 import time
 from exceptions import Exception
