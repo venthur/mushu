@@ -196,18 +196,23 @@ class Gui(object):
         elif tmp is None:
             return True
         # get #CHANNELS * data points into data and the rest in data_buffer
-        self.data_buffer = np.append(self.data_buffer, tmp)
-        self.data = np.append(self.data, self.data_buffer)
-        elements = (len(self.data) / self.CHANNELS) * self.CHANNELS
-        self.data_buffer = self.data[elements:]
-        self.data = self.data[:elements].reshape(-1, self.CHANNELS)
+        if len(tmp) % self.CHANNELS:
+            logger.warning('Got incomplete packet or so, droping it.')
+            return True
+        self.data = np.append(self.data, tmp)
+        self.data = self.data.reshape(-1, self.CHANNELS)
+        #self.data_buffer = np.append(self.data_buffer, tmp)
+        #self.data = np.append(self.data, self.data_buffer)
+        #elements = (len(self.data) / self.CHANNELS) * self.CHANNELS
+        #self.data_buffer = self.data[elements:]
+        #self.data = self.data[:elements].reshape(-1, self.CHANNELS)
 
         self.data = self.data[-self.PAST_POINTS:]
         if len(self.data) == 0:
             return True
         #SCALE = np.max(self.data)
         #SCALE *= 2
-        SPAN = 100000
+        SPAN = 1000
         SCALE = SPAN
         j = self.CHANNELS - 1
         x = [i for i in range(len(self.data))]
