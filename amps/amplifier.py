@@ -1,7 +1,14 @@
 
 class Amplifier(object):
 
-    def __init__(self):
+    def configure(self, config):
+        """Configure the amplifier.
+
+        Use this method to set the mode (i.e. impedance, data, ...), sampling
+        frequency, filter, etc.
+
+        This depends strongly on the amplifier.
+        """
         pass
 
     def start(self):
@@ -16,11 +23,4 @@ class Amplifier(object):
         """Get data."""
         pass
 
-    def get_impedances(self):
-        """Get the impedances."""
-        pass
-
-    def set_mode(self, mode):
-        """Set mode, 'impedance', 'data'."""
-        pass
 
