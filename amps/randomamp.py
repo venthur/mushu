@@ -47,7 +47,6 @@ if __name__ == '__main__':
 
     # the same using a context manager, start and stop are called by the
     # context manager
-    with amp as a
+    with amp as a:
         for i in range(10):
             print a.get_data()
-
