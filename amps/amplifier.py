@@ -12,15 +12,17 @@ class Amplifier(object):
         pass
 
     def start(self):
-        """Initialize the amplifier and make it ready."""
+        """Make the amplifier ready for delivering data."""
         pass
 
     def stop(self):
-        """Shut down the amplifier."""
+        """Stop the amplifier."""
         pass
 
     def get_data(self):
-        """Get data."""
-        pass
+        """Get data.
 
+        This method is called as fast as possible.
+        """
+        pass
 
