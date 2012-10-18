@@ -20,7 +20,6 @@ ID_PRODUCT_GUSB_AMP = 0x0001
 CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
 
 
-
 class GTecAmp(amplifier.Amplifier):
 
     def __init__(self):
@@ -32,12 +31,9 @@ class GTecAmp(amplifier.Amplifier):
                 if (device.idVendor == ID_VENDOR_GTEC and
                     device.idProduct == ID_PRODUCT_GUSB_AMP):
                     self.amps.append(device)
-        self.connected = False
         self.devh = None
         self.mode = None
-
-    def start(self):
-        """Initialize the amplifier and make it ready."""
+        # Initialize the amplifier and make it ready.
         device = self.amps[0]
         self.devh = device.open()
         # detach kernel driver if nessecairy
@@ -62,12 +58,11 @@ class GTecAmp(amplifier.Amplifier):
         self.set_calibration_mode('sine')
         self.set_sampling_ferquency(128, [False for i in range(16)], None, None)
 
-    def start_recording(self):
+    def start(self):
         self.devh.controlMsg(CX_OUT, 0xb5, value=0x08, buffer=0)
         self.devh.controlMsg(CX_OUT, 0xf7, value=0x00, buffer=0)
 
-    def stop_recording(self):
-        """Shut down the amplifier."""
+    def stop(self):
         self.devh.controlMsg(CX_OUT, 0xb8, [])
 
     def get_data(self):
@@ -85,6 +80,11 @@ class GTecAmp(amplifier.Amplifier):
             data = []
         data = ''.join(map(chr, data))
         data = np.fromstring(data, np.float32, len(data)/4)
+        try:
+            data = data.reshape(-1, 17)
+        except:
+            logger.error("Got incomplete packet from the amp, discarding it!")
+            data = np.array([]).reshape(-1, 17)
         if self.mode == 'impedance':
             data = self.calculate_impedance(data)
         elif self.mode == 'data':
@@ -92,9 +92,9 @@ class GTecAmp(amplifier.Amplifier):
             data /= 8.15
         return data
 
-    def get_impedances(self):
-        """Get the impedances."""
-        pass
+    ###########################################################################
+    # Low level amplifier methods
+    ###########################################################################
 
     def set_mode(self, mode):
         """Set mode, 'impedance', 'data'."""

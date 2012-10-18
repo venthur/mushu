@@ -25,12 +25,10 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-#amp = gtec.GTecAmp()
-#amp.start()
-#amp.start_recording()
+amp = gtec.GTecAmp()
 
-from amps.randomamp import RandomAmp
-amp = RandomAmp()
+#from amps.randomamp import RandomAmp
+#amp = RandomAmp()
 
 class Gui(object):
 
@@ -83,11 +81,11 @@ class Gui(object):
 
     def onStartButtonClicked(self, button):
         logger.debug('Start.')
-        amp.start_recording()
+        amp.start()
 
     def onStopButtonClicked(self, button):
         logger.debug('Stop.')
-        amp.stop_recording()
+        amp.stop()
 
     def onSetFilterButtonClicked(self, button):
         channels = [True for i in range(16)]
@@ -167,7 +165,7 @@ class Gui(object):
         for i in range(self.CHANNELS):
             self.axis.plot(0)
         self.canvas.draw()
-        self.data = []
+        self.data = np.array([]).reshape(-1, 17)
         self.data_buffer = []
         self.t2 = time.time()
         self.k = 0
@@ -177,9 +175,10 @@ class Gui(object):
     def visualizer(self):
 
         t = time.time()
-        tmp = self.q.recv()
+        tmp = []
+        tmp.append(self.q.recv())
         while self.q.poll():
-            tmp = np.append(tmp, self.q.recv())
+            tmp.append(self.q.recv())
         # display #samples / second
         if tmp != None:
             self.nsamples += len(tmp)
@@ -191,29 +190,23 @@ class Gui(object):
                 self.nsamples = 0
                 self.k = 0
             #logger.debug(tmp)
-        if tmp == 'quit':
+        if 'quit' in tmp:
             return False
-        elif tmp is None:
+        elif tmp[-1] is None:
             return True
-        # get #CHANNELS * data points into data and the rest in data_buffer
-        if len(tmp) % self.CHANNELS:
-            logger.warning('Got incomplete packet or so, droping it.')
+        elif len(tmp) == 0:
             return True
-        self.data = np.append(self.data, tmp)
-        self.data = self.data.reshape(-1, self.CHANNELS)
-        #self.data_buffer = np.append(self.data_buffer, tmp)
-        #self.data = np.append(self.data, self.data_buffer)
-        #elements = (len(self.data) / self.CHANNELS) * self.CHANNELS
-        #self.data_buffer = self.data[elements:]
-        #self.data = self.data[:elements].reshape(-1, self.CHANNELS)
+        new_data = np.concatenate(tmp)
+        self.data = np.concatenate([self.data, new_data])
 
         self.data = self.data[-self.PAST_POINTS:]
         if len(self.data) == 0:
             return True
-        #SCALE = np.max(self.data)
-        #SCALE *= 2
-        SPAN = 1000
-        SCALE = SPAN
+        dmin = self.data.min()
+        dmax = self.data.max()
+        dr = (dmax - dmin) * 0.7
+        SCALE = 10000
+        SCALE = dr
         j = self.CHANNELS - 1
         x = [i for i in range(len(self.data))]
         for line in self.axis.lines:
@@ -222,13 +215,6 @@ class Gui(object):
             j -= 1
         self.axis.set_ylim(-SCALE, self.CHANNELS * SCALE)
         self.axis.set_xlim(i - self.PAST_POINTS, i)
-        #yticksmin = [-SCALE+SCALE*i for i in range(CHANNELS)]
-        #yticksmax = [SCALE*i for i in range(CHANNELS)]
-        #pos = []
-        #for i in range(CHANNELS):
-        #    pos.append(yticksmin[i])
-        #    pos.append(yticksmax[i])
-        #plt.yticks(pos, [-SCALE/2, SCALE]*CHANNELS)
         self.canvas.draw()
         logger.debug('%.2f FPS' % (1 / (time.time() - t)))
         return True
