@@ -12,7 +12,7 @@ class RandomAmp(Amplifier):
 
     def __init__(self):
         self.channels = 17
-        self.fs = 400
+        self.fs = 100
         self.last_sample = time.time()
 
     @property
