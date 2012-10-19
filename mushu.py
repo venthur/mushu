@@ -173,12 +173,16 @@ class Gui(object):
 
 
     def visualizer(self):
-
         t = time.time()
         tmp = []
         tmp.append(self.q.recv())
         while self.q.poll():
-            tmp.append(self.q.recv())
+            i = self.q.recv()
+            if i == 'quit':
+                return False
+            if i is None:
+                return True
+            tmp.append(i)
         # display #samples / second
         if tmp != None:
             self.nsamples += len(tmp)
@@ -189,16 +193,9 @@ class Gui(object):
                 self.t2 = time.time()
                 self.nsamples = 0
                 self.k = 0
-            #logger.debug(tmp)
-        if 'quit' in tmp:
-            return False
-        elif tmp[-1] is None:
-            return True
-        elif len(tmp) == 0:
-            return True
+        # append the new data
         new_data = np.concatenate(tmp)
         self.data = np.concatenate([self.data, new_data])
-
         self.data = self.data[-self.PAST_POINTS:]
         if len(self.data) == 0:
             return True
