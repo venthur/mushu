@@ -201,15 +201,12 @@ class Gui(object):
         dmin = self.data.min()
         dmax = self.data.max()
         dr = (dmax - dmin) * 0.7
-        SCALE = 10000
         SCALE = dr
-        j = self.CHANNELS - 1
         x = [i for i in range(len(self.data))]
-        for line in self.axis.lines:
+        for j, line in enumerate(self.axis.lines):
             line.set_xdata(x)
             line.set_ydata(self.data[:, j] + j * SCALE)
-            j -= 1
-        self.axis.set_ylim(-SCALE, self.CHANNELS * SCALE)
+        self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
         self.axis.set_xlim(i - self.PAST_POINTS, i)
         self.canvas.draw()
         logger.debug('%.2f FPS' % (1 / (time.time() - t)))
