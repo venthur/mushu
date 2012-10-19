@@ -185,10 +185,10 @@ class Gui(object):
             tmp.append(i)
         # display #samples / second
         if tmp != None:
-            self.nsamples += len(tmp)
+            self.nsamples += sum([i.shape[0] for i in tmp])
             self.k += 1
             if self.k == 100:
-                sps = (self.nsamples / self.CHANNELS) / (time.time() - self.t2)
+                sps = self.nsamples / (time.time() - self.t2)
                 logger.debug('%.2f samples / second\r' % sps)
                 self.t2 = time.time()
                 self.nsamples = 0
