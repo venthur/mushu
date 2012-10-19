@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-amp = gtec.GTecAmp()
+#amp = gtec.GTecAmp()
 
-#from amps.randomamp import RandomAmp
-#amp = RandomAmp()
+from amps.randomamp import RandomAmp
+amp = RandomAmp()
 
 class Gui(object):
 
@@ -209,7 +209,7 @@ class Gui(object):
         self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
         self.axis.set_xlim(i - self.PAST_POINTS, i)
         self.canvas.draw()
-        logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+        #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
         return True
 
 
