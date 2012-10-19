@@ -197,8 +197,7 @@ class Gui(object):
         new_data = np.concatenate(tmp)
         self.data = np.concatenate([self.data, new_data])
         self.data = self.data[-self.PAST_POINTS:]
-        if len(self.data) == 0:
-            return True
+        # plot the data
         dmin = self.data.min()
         dmax = self.data.max()
         dr = (dmax - dmin) * 0.7
