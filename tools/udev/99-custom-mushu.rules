@@ -1,3 +1,6 @@
 # udev rule for gusb amp
 SUBSYSTEM=="usb", ATTRS{idVendor}=="153c", ATTRS{idProduct}=="0001", GROUP="plugdev"
 
+# emotiv epoc
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1234", ATTRS{idProduct}=="ed02", GROUP="plugdev"
+
