@@ -42,11 +42,8 @@ class Epoc(Amplifier):
         try:
             raw = self.dev.read(ENDPOINT_IN, 32, 1, timeout=1000)
             raw = self.decrypt(raw)
-            #print str(bin(raw))[2:].rjust(256)
             data = self.parse_raw(raw)
             data = np.array(data)
-            #tmp =  data / np.average(data[1:-2])
-            #print tmp[1:-2]
         except Exception as e:
             print e
             data = np.array()
