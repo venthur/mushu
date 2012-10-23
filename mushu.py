@@ -18,7 +18,8 @@ import numpy as np
 
 
 from amps import gtec
-
+from amps import emotiv
+from amps.randomamp import RandomAmp
 
 logging.basicConfig(format='%(asctime)s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
 logger = logging.getLogger(__name__)
@@ -26,9 +27,8 @@ logger.info('Logger started')
 
 
 #amp = gtec.GTecAmp()
-
-from amps.randomamp import RandomAmp
-amp = RandomAmp()
+#amp = RandomAmp()
+amp = emotiv.Epoc()
 
 class Gui(object):
 
@@ -62,7 +62,7 @@ class Gui(object):
         place.pack_start(self.canvas, True, True, 0)
         place.reorder_child(self.canvas, 1)
 
-        self.CHANNELS = 17
+        self.CHANNELS = 18
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
@@ -165,7 +165,7 @@ class Gui(object):
         for i in range(self.CHANNELS):
             self.axis.plot(0)
         self.canvas.draw()
-        self.data = np.array([]).reshape(-1, 17)
+        self.data = np.array([]).reshape(-1, self.CHANNELS)
         self.data_buffer = []
         self.t2 = time.time()
         self.k = 0
