@@ -37,6 +37,10 @@ class Epoc(Amplifier):
         usb.util.claim_interface(self.dev, 1)
         # prepare AES
         self.cipher = AES.new(self.generate_key(serial, True))
+        # internal states for battery and impedance we have to store since it
+        # is not sent with every frame.
+        self._battery = 0
+        self._quality = [0 for i in range(14)]
 
     def get_data(self):
         try:
@@ -47,7 +51,7 @@ class Epoc(Amplifier):
         except Exception as e:
             print e
             data = np.array()
-        return data.reshape(-1, 18)
+        return data.reshape(1, -1)
 
     def generate_key(self, sn, research=True):
         """Generate the encryption key.
@@ -82,19 +86,26 @@ class Epoc(Amplifier):
         # TODO: Handle battery and counter correctly
         data = []
         shift = 256
-        # counter / battery
+        # 1x counter / battery (8 bit)
+        # if the first bit is not set, the remaining 7 bits are the counter
+        # otherwise the remaining bits are the battery
         shift -= 8
-        data.append((raw >> shift) & 0b11111111)
-        # 7x data, 1x quality
-        for i in range(8):
+        tmp = (raw >> shift) & 0b11111111
+        if tmp & 0b10000000:
+            # battery
+            counter = 128
+            self._battery = tmp & 0b01111111
+        else:
+            # counter
+            counter = tmp & 0b01111111
+        data.append(counter)
+        data.append(self._battery)
+        # 7x data, 2x ???, 7x data (14 bit)
+        for i in range(16):
             shift -= 14
             data.append((raw >> shift) & 0b11111111111111)
-        shift -= 14
-        # 7x data
-        for i in range(7):
-            shift -= 14
-            data.append((raw >> shift) & 0b11111111111111)
-        # 2x gyroscope
+        # 2x gyroscope (8 bit)
+        # the first bit denotes the sign the remaining 7 bits the number
         for i in range(2):
             shift -= 8
             tmp = (raw >> shift) & 0b01111111
@@ -102,6 +113,15 @@ class Epoc(Amplifier):
             if (raw >> shift) & 0b10000000:
                 tmp *= -1
             data.append(tmp)
+        # 1x ??? (8 bit)
+        # we assume it is the contact quality for an electrode, the counter
+        # gives the number of the electrode. since we only have 14 electrodes
+        # we only take the values from counters 0..13 and 64..77
+        tmp = (raw & 0b11111111)
+        if counter < 128:
+            if counter % 64 < 14:
+                self._quality[counter % 64] = int(tmp)
+        data.extend(self._quality)
         return [int(i) for i in data]
 
 
@@ -113,4 +133,4 @@ if __name__ == '__main__':
             print amp.get_data()
         except Exception as e:
             print e
-        break
+            break
