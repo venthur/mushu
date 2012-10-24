@@ -43,14 +43,14 @@ class Epoc(Amplifier):
         self._quality = [0 for i in range(14)]
         # channel info
         self.channel = ['Counter', 'Battery',
-                        'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7',
-                        'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C14',
+                        'F3', 'FC5', 'AF3', 'F7', 'T7', 'P7', 'O1',
+                        'O2', 'P8', 'T8', 'F8', 'AF4', 'FC6', 'F4',
                         'Gyro 1', 'Cyro 2',
-                        'Quality C1', 'Quality C2', 'Quality C3',
-                        'Quality C4', 'Quality C5', 'Quality C6',
-                        'Quality C7', 'Quality C8', 'Quality C9',
-                        'Quality C10', 'Quality C11', 'Quality C12',
-                        'Quality C13', 'Quality C14']
+                        'Quality F3', 'Quality FC5', 'Quality AF3',
+                        'Quality F7', 'Quality T7', 'Quality P7',
+                        'Quality 01', 'Quality O2', 'Quality P8',
+                        'Quality T8', 'Quality F8', 'Quality AF4',
+                        'Quality FC6', 'Quality F4']
 
     def get_data(self):
         try:
