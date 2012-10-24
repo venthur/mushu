@@ -41,6 +41,16 @@ class Epoc(Amplifier):
         # is not sent with every frame.
         self._battery = 0
         self._quality = [0 for i in range(14)]
+        # channel info
+        self.channel = ['Counter', 'Battery',
+                        'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7',
+                        'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C14',
+                        'Gyro 1', 'Cyro 2',
+                        'Quality C1', 'Quality C2', 'Quality C3',
+                        'Quality C4', 'Quality C5', 'Quality C6',
+                        'Quality C7', 'Quality C8', 'Quality C9',
+                        'Quality C10', 'Quality C11', 'Quality C12',
+                        'Quality C13', 'Quality C14']
 
     def get_data(self):
         try:
@@ -83,7 +93,6 @@ class Epoc(Amplifier):
 
     def parse_raw(self, raw):
         """Parse raw data."""
-        # TODO: Handle battery and counter correctly
         data = []
         shift = 256
         # 1x counter / battery (8 bit)
@@ -100,8 +109,23 @@ class Epoc(Amplifier):
             counter = tmp & 0b01111111
         data.append(counter)
         data.append(self._battery)
-        # 7x data, 2x ???, 7x data (14 bit)
-        for i in range(16):
+        # 7x data (14 bit)
+        for i in range(7):
+            shift -= 14
+            data.append((raw >> shift) & 0b11111111111111)
+        # 1x quality (14 bit)
+        # we assume it is the contact quality for an electrode, the counter
+        # gives the number of the electrode. since we only have 14 electrodes
+        # we only take the values from counters 0..13 and 64..77
+        shift -= 14
+        tmp = (raw >> shift) & 0b11111111111111
+        if counter < 128:
+            if counter % 64 < 14:
+                self._quality[counter % 64] = tmp
+        # 1x ??? (14 bit)
+        shift -= 14
+        # 7x data (14 bit)
+        for i in range(7):
             shift -= 14
             data.append((raw >> shift) & 0b11111111111111)
         # 2x gyroscope (8 bit)
@@ -114,13 +138,7 @@ class Epoc(Amplifier):
                 tmp *= -1
             data.append(tmp)
         # 1x ??? (8 bit)
-        # we assume it is the contact quality for an electrode, the counter
-        # gives the number of the electrode. since we only have 14 electrodes
-        # we only take the values from counters 0..13 and 64..77
-        tmp = (raw & 0b11111111)
-        if counter < 128:
-            if counter % 64 < 14:
-                self._quality[counter % 64] = int(tmp)
+        shift -= 8
         data.extend(self._quality)
         return [int(i) for i in data]
 
