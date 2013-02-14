@@ -2,6 +2,18 @@
 class Amplifier(object):
     """Amplifier base class.
 
+    The base class is very generic on purpose. Amplifiers from different
+    vendors vary in so many ways that it is difficult to find a common set of
+    methods that all support.
+
+    In the spirit of "encapsulating what varies", I decided to encapsulate the
+    configuration. So the main configuration of the amplifier, like setting the
+    mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in
+    `configure` and is very specific for the amplifier at hand.
+
+    `start`, `stop`, and `get_data` is very generic and must be supported by
+    all derived amplifier classes.
+
     How an amplifier should be used:
 
         amp = Amp()
