@@ -4,6 +4,7 @@
 from multiprocessing import Process, Pipe, Event
 import logging
 import time
+import pkgutil
 
 import matplotlib
 matplotlib.use('GTKAgg')
@@ -15,11 +16,9 @@ GObject.threads_init()
 
 import numpy as np
 
-
-
-from amps import gtec
-from amps import emotiv
-from amps.randomamp import RandomAmp
+from libmushu.amps import gtec
+from libmushu.amps import emotiv
+from libmushu.amps.randomamp import RandomAmp
 
 logging.basicConfig(format='%(asctime)s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
 logger = logging.getLogger(__name__)
@@ -36,7 +35,8 @@ class Gui(object):
     def __init__(self, q):
         self.q = q
         self.builder = Gtk.Builder()
-        self.builder.add_from_file('gusbamptool.glade')
+        gladefile = pkgutil.get_data('libmushu', 'glade/gusbamptool.glade')
+        self.builder.add_from_string(gladefile)
         handler = {
                 'onDeleteWindow' : self.onDeleteWindow,
                 'onConnectButtonClicked' : self.onConnectButtonClicked,
