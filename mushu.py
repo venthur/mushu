@@ -26,8 +26,8 @@ logger.info('Logger started')
 
 
 #amp = gtec.GTecAmp()
-#amp = RandomAmp()
-amp = emotiv.Epoc()
+amp = RandomAmp()
+#amp = emotiv.Epoc()
 
 class Gui(object):
 
