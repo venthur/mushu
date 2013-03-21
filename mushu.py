@@ -62,7 +62,7 @@ class Gui(object):
         place.pack_start(self.canvas, True, True, 0)
         place.reorder_child(self.canvas, 1)
 
-        self.CHANNELS = 18
+        self.CHANNELS = 14
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
@@ -198,25 +198,29 @@ class Gui(object):
         self.data = np.concatenate([self.data, new_data])
         self.data = self.data[-self.PAST_POINTS:]
         # plot the data
-        dmin = self.data.min()
-        dmax = self.data.max()
+        data_clean = self.normalize(self.data)
+        dmin = data_clean.min()
+        dmax = data_clean.max()
         dr = (dmax - dmin) * 0.7
         SCALE = dr
         x = [i for i in range(len(self.data))]
         for j, line in enumerate(self.axis.lines):
             line.set_xdata(x)
-            line.set_ydata(self.data[:, j] + j * SCALE)
+            #line.set_ydata(self.data[:, j] + j * SCALE)
+            line.set_ydata(data_clean[:, j] + j * SCALE)
         self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
         self.axis.set_xlim(i - self.PAST_POINTS, i)
         self.canvas.draw()
         #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
         return True
 
+    def normalize(self, data):
+        return data - np.average(data)
 
 def data_fetcher(amp, q, e):
     while not e.is_set():
         try:
-            data_buffer = amp.get_data()
+            data_buffer = amp.get_data()[:,[2,3,4,5,6,7,8,9, 10, 11, 12, 13, 14, 15]]
         except:
             data_buffer = None
         q.send(data_buffer)
