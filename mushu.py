@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use('GTKAgg')
 from gi.repository import Gtk, GObject
 from matplotlib.figure import Figure
-from backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 
 GObject.threads_init()
 
