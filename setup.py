@@ -13,6 +13,5 @@ setup(
     url = 'http://github.com/venthur/mushu/',
     packages = ['libmushu', 'libmushu.amps'],
     scripts = ['mushu.py'],
-    package_data = {'libmushu' : ['glade/*.glade']}
 )
 

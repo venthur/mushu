@@ -2,17 +2,18 @@
 
 
 from multiprocessing import Process, Pipe, Event
+from threading import Thread
 import logging
 import time
 import pkgutil
+import ttk
+import Tkinter as tk
 
 import matplotlib
-matplotlib.use('GTKAgg')
-from gi.repository import Gtk, GObject
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+matplotlib.use('TkAgg')
 
-GObject.threads_init()
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg as FigureCanvas
 
 import numpy as np
 
@@ -29,137 +30,67 @@ logger.info('Logger started')
 amp = RandomAmp()
 #amp = emotiv.Epoc()
 
-class Gui(object):
-
+class Gui(ttk.Frame):
 
     def __init__(self, q):
+        self.amp_started = False
+
+        ttk.Frame.__init__(self)
+
+        self.style = ttk.Style()
+        self.style.theme_use('default')
+
+        self.pack()
         self.q = q
-        self.builder = Gtk.Builder()
-        gladefile = pkgutil.get_data('libmushu', 'glade/gusbamptool.glade')
-        self.builder.add_from_string(gladefile)
-        handler = {
-                'onDeleteWindow' : self.onDeleteWindow,
-                'onConnectButtonClicked' : self.onConnectButtonClicked,
-                'onDisconnectButtonClicked' : self.onDisconnectButtonClicked,
-                'onStartButtonClicked' : self.onStartButtonClicked,
-                'onStopButtonClicked' : self.onStopButtonClicked,
-                'onSetFilterButtonClicked' : self.onSetFilterButtonClicked,
-                'onComboBoxChanged' : self.onComboBoxChanged,
-                'onComboBox2Changed' : self.onComboBox2Changed,
-                'onSamplingFrequencyComboBoxChanged' : self.onSamplingFrequencyComboBoxChanged
-                }
-        self.builder.connect_signals(handler)
-        window = self.builder.get_object('window1')
-        window.show_all()
+
+        frame = tk.Frame()
+        frame.pack(fill=tk.BOTH, expand=1)
+
+        self.label1 = ttk.Label(frame, text='Select Amplifier')
+        self.label1.grid(column=0, row=0, sticky='we')
+        self.amp_combobox = ttk.Combobox(frame, values=['Foo', 'Bar', 'Baz'])
+        self.amp_combobox.grid(column=0, row=1, sticky='we')
+        self.label2 = ttk.Label(frame, text='Configure Amplifier')
+        self.label2.grid(column=1, row=0, sticky='we')
+        self.configure_button = ttk.Button(frame, text='Configure')
+        self.configure_button.grid(column=1, row=1, sticky='we')
+        self.label3 = ttk.Label(frame, text='Start/Stop Amplifier')
+        self.label3.grid(column=2, row=0, sticky='we')
+        self.start_stop_button = ttk.Button(frame, text='Start', command=self.onStartStopButtonClicked)
+        self.start_stop_button.grid(column=2, row=1, sticky='we')
 
         # set up the figure
         fig = Figure()
-        self.canvas = FigureCanvas(fig)
+        self.canvas = FigureCanvas(fig, master=self.master)
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self.canvas.show()
-        self.canvas.set_size_request(800, 600)
         self.axis = fig.add_subplot(111)
-        place = self.builder.get_object('box1')
-        place.pack_start(self.canvas, True, True, 0)
-        place.reorder_child(self.canvas, 1)
 
         self.CHANNELS = 14
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
         self.init_plot()
-        GObject.idle_add(self.visualizer)
+        Thread(target=self.visualizer).start()
 
-
-    def onDeleteWindow(self, *args):
-        Gtk.main_quit(*args)
-
-    def onConnectButtonClicked(self, button):
+    def onConnectButtonClicked(self):
         logger.debug('Connect.')
 
-    def onDisconnectButtonClicked(self, button):
+    def onDisconnectButtonClicked(self):
         logger.debug('Disconnect.')
 
-    def onStartButtonClicked(self, button):
+    def onStartStopButtonClicked(self):
         logger.debug('Start.')
-        amp.start()
-
-    def onStopButtonClicked(self, button):
-        logger.debug('Stop.')
-        amp.stop()
-
-    def onSetFilterButtonClicked(self, button):
-        channels = [True for i in range(16)]
-
-        combo = self.builder.get_object('comboboxtext_fs')
-        tree_iter = combo.get_active_iter()
-        if tree_iter != None:
-            model = combo.get_model()
-            row_id, name = model[tree_iter][:2]
-            fs = int(row_id)
-
-
-        if self.builder.get_object('checkbutton_notch').get_active():
-            notch_order = self.builder.get_object('spin_order_notch').get_value_as_int()
-            notch_hp = self.builder.get_object('spin_hp_notch').get_value()
-            notch_lp = self.builder.get_object('spin_lp_notch').get_value()
-            notchfilter = (notch_hp, notch_lp, fs, notch_order)
+        if self.amp_started:
+            logger.debug('Stop.')
+            amp.stop()
+            self.start_stop_button.config(text='Start')
+            self.amp_started = False
         else:
-            notchfilter = None
-
-        if self.builder.get_object('checkbutton_band').get_active():
-            band_order = self.builder.get_object('spin_order_band').get_value_as_int()
-            band_hp = self.builder.get_object('spin_hp_band').get_value()
-            band_lp = self.builder.get_object('spin_lp_band').get_value()
-            bpfilter = (band_hp, band_lp, fs, band_order)
-        else:
-            bpfilter = None
-
-        amp.set_sampling_ferquency(fs, channels, bpfilter, notchfilter)
-        pass
-
-
-    def onComboBoxChanged(self, combo):
-        logger.debug('ComboBox changed.')
-        tree_iter = combo.get_active_iter()
-        if tree_iter != None:
-            model = combo.get_model()
-            row_id, name = model[tree_iter][:2]
-            logger.debug("Selected: ID=%s, name=%s" % (row_id, name))
-            if row_id == 'Data':
-                amp.set_mode('data')
-            elif row_id == 'Impedance':
-                amp.set_mode('impedance')
-            elif row_id == 'Calibration':
-                amp.set_mode('calibrate')
-
-
-    def onComboBox2Changed(self, combo):
-        tree_iter = combo.get_active_iter()
-        if tree_iter != None:
-            model = combo.get_model()
-            row_id, name = model[tree_iter][:2]
-            if row_id == 'Sine':
-                amp.set_calibration_mode('sine')
-            elif row_id == 'Sawtooth':
-                amp.set_calibration_mode('sawtooth')
-            elif row_id == 'White Noise':
-                amp.set_calibration_mode('whitenoise')
-            elif row_id == 'Square':
-                amp.set_calibration_mode('square')
-            elif row_id == 'DLR':
-                amp.set_calibration_mode('dlr')
-            else:
-                logger.error('Unknown row_id: %s' % row_id)
-
-
-    def onSamplingFrequencyComboBoxChanged(self, combo):
-        tree_iter = combo.get_active_iter()
-        if tree_iter != None:
-            model = combo.get_model()
-            row_id, name = model[tree_iter][:2]
-            fs = int(row_id)
-            amp.set_sampling_ferquency(fs, [False for i in range(16)], None, None)
-
+            logger.debug('Start.')
+            amp.start()
+            self.start_stop_button.config(text='Stop')
+            self.amp_started = True
 
     def init_plot(self):
         for i in range(self.CHANNELS):
@@ -171,48 +102,48 @@ class Gui(object):
         self.k = 0
         self.nsamples = 0
 
-
     def visualizer(self):
-        t = time.time()
-        tmp = []
-        tmp.append(self.q.recv())
-        while self.q.poll():
-            i = self.q.recv()
-            if i == 'quit':
-                return False
-            if i is None:
-                return True
-            tmp.append(i)
-        # display #samples / second
-        if tmp != None:
-            self.nsamples += sum([i.shape[0] for i in tmp])
-            self.k += 1
-            if self.k == 100:
-                sps = self.nsamples / (time.time() - self.t2)
-                logger.debug('%.2f samples / second\r' % sps)
-                self.t2 = time.time()
-                self.nsamples = 0
-                self.k = 0
-        # append the new data
-        new_data = np.concatenate(tmp)
-        self.data = np.concatenate([self.data, new_data])
-        self.data = self.data[-self.PAST_POINTS:]
-        # plot the data
-        data_clean = self.normalize(self.data)
-        dmin = data_clean.min()
-        dmax = data_clean.max()
-        dr = (dmax - dmin) * 0.7
-        SCALE = dr
-        x = [i for i in range(len(self.data))]
-        for j, line in enumerate(self.axis.lines):
-            line.set_xdata(x)
-            #line.set_ydata(self.data[:, j] + j * SCALE)
-            line.set_ydata(data_clean[:, j] + j * SCALE)
-        self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
-        self.axis.set_xlim(i - self.PAST_POINTS, i)
-        self.canvas.draw()
-        #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
-        return True
+        while 1:
+            t = time.time()
+            tmp = []
+            tmp.append(self.q.recv())
+            while self.q.poll():
+                i = self.q.recv()
+                if i == 'quit':
+                    return
+                if i is None:
+                    continue
+                tmp.append(i)
+            # display #samples / second
+            if tmp != None:
+                self.nsamples += sum([i.shape[0] for i in tmp])
+                self.k += 1
+                if self.k == 100:
+                    sps = self.nsamples / (time.time() - self.t2)
+                    logger.debug('%.2f samples / second\r' % sps)
+                    self.t2 = time.time()
+                    self.nsamples = 0
+                    self.k = 0
+            # append the new data
+            new_data = np.concatenate(tmp)
+            self.data = np.concatenate([self.data, new_data])
+            self.data = self.data[-self.PAST_POINTS:]
+            # plot the data
+            data_clean = self.normalize(self.data)
+            dmin = data_clean.min()
+            dmax = data_clean.max()
+            dr = (dmax - dmin) * 0.7
+            SCALE = dr
+            x = [i for i in range(len(self.data))]
+            for j, line in enumerate(self.axis.lines):
+                line.set_xdata(x)
+                #line.set_ydata(self.data[:, j] + j * SCALE)
+                line.set_ydata(data_clean[:, j] + j * SCALE)
+            self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
+            self.axis.set_xlim(i - self.PAST_POINTS, i)
+            self.canvas.draw()
+            #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+            continue
 
     def normalize(self, data):
         return data - np.average(data)
@@ -240,7 +171,7 @@ if __name__ == '__main__':
     p.daemon = True
     logger.debug(p.daemon)
     p.start()
-    Gtk.main()
+    gui.mainloop()
     logger.debug('Waiting for thread and process to stop...')
     e.set()
     p.join()
