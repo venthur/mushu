@@ -21,7 +21,7 @@ from libmushu.amps import gtec
 from libmushu.amps import emotiv
 from libmushu.amps.randomamp import RandomAmp
 
-logging.basicConfig(format='%(asctime)s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
+logging.basicConfig(format='%(relativeCreated)10.0f %(threadName)-10s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
