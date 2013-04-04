@@ -64,7 +64,7 @@ class Gui(ttk.Frame):
         self.SCALE = 30000
 
         self.init_plot()
-        Thread(target=self.visualizer).start()
+        self.master.after_idle(self.visualizer)
 
     def onConnectButtonClicked(self):
         logger.debug('Connect.')
@@ -100,43 +100,42 @@ class Gui(ttk.Frame):
         self.nsamples = 0
 
     def visualizer(self):
-        while 1:
-            tmp = self.amp.get_data()
-            # display #samples / second
-            if tmp is not None:
-                self.nsamples += tmp.shape[0]
-                self.k += 1
-                if self.k == 100:
-                    sps = self.nsamples / (time.time() - self.t2)
-                    logger.debug('%.2f samples / second\r' % sps)
-                    self.t2 = time.time()
-                    self.nsamples = 0
-                    self.k = 0
-            # check if nr of channels has changed since the last probe
-            if tmp.shape[1] != self.data.shape[1]:
-                logger.debug('Number of channels has changed, re-initializing the plot.')
-                self.CHANNELS = tmp.shape[1]
-                self.init_plot()
-            # append the new data
-            new_data = tmp
-            self.data = np.concatenate([self.data, new_data])
-            self.data = self.data[-self.PAST_POINTS:]
-            # plot the data
-            data_clean = self.normalize(self.data)
-            dmin = data_clean.min()
-            dmax = data_clean.max()
-            dr = (dmax - dmin) * 0.7
-            SCALE = dr
-            x = [i for i in range(len(self.data))]
-            for j, line in enumerate(self.axis.lines):
-                line.set_xdata(x)
-                #line.set_ydata(self.data[:, j] + j * SCALE)
-                line.set_ydata(data_clean[:, j] + j * SCALE)
-            self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
-            self.axis.set_xlim(i - self.PAST_POINTS, i)
-            self.canvas.draw()
-            #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
-            continue
+        tmp = self.amp.get_data()
+        # display #samples / second
+        if tmp is not None:
+            self.nsamples += tmp.shape[0]
+            self.k += 1
+            if self.k == 100:
+                sps = self.nsamples / (time.time() - self.t2)
+                logger.debug('%.2f samples / second\r' % sps)
+                self.t2 = time.time()
+                self.nsamples = 0
+                self.k = 0
+        # check if nr of channels has changed since the last probe
+        if tmp.shape[1] != self.data.shape[1]:
+            logger.debug('Number of channels has changed, re-initializing the plot.')
+            self.CHANNELS = tmp.shape[1]
+            self.init_plot()
+        # append the new data
+        new_data = tmp
+        self.data = np.concatenate([self.data, new_data])
+        self.data = self.data[-self.PAST_POINTS:]
+        # plot the data
+        data_clean = self.normalize(self.data)
+        dmin = data_clean.min()
+        dmax = data_clean.max()
+        dr = (dmax - dmin) * 0.7
+        SCALE = dr
+        x = [i for i in range(len(self.data))]
+        for j, line in enumerate(self.axis.lines):
+            line.set_xdata(x)
+            #line.set_ydata(self.data[:, j] + j * SCALE)
+            line.set_ydata(data_clean[:, j] + j * SCALE)
+        self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
+        self.axis.set_xlim(i - self.PAST_POINTS, i)
+        self.canvas.draw()
+        #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+        self.master.after(10, self.visualizer)
 
     def normalize(self, data):
         return data - np.average(data)
