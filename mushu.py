@@ -33,10 +33,6 @@ class Gui(ttk.Frame):
 
         ttk.Frame.__init__(self, master)
         self.master.title('Mushu')
-
-        self.style = ttk.Style()
-        self.style.theme_use('default')
-
         self.pack()
 
         frame = tk.Frame(self)
