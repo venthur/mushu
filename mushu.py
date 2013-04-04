@@ -32,10 +32,11 @@ amp = RandomAmp()
 
 class Gui(ttk.Frame):
 
-    def __init__(self, q):
+    def __init__(self, master, q):
         self.amp_started = False
 
-        ttk.Frame.__init__(self)
+        ttk.Frame.__init__(self, master)
+        self.master.title('Mushu')
 
         self.style = ttk.Style()
         self.style.theme_use('default')
@@ -43,16 +44,15 @@ class Gui(ttk.Frame):
         self.pack()
         self.q = q
 
-        frame = tk.Frame()
+        frame = tk.Frame(self)
         frame.pack(fill=tk.BOTH, expand=1)
-
         self.label1 = ttk.Label(frame, text='Select Amplifier')
         self.label1.grid(column=0, row=0, sticky='we')
         self.amp_combobox = ttk.Combobox(frame, values=['Foo', 'Bar', 'Baz'])
         self.amp_combobox.grid(column=0, row=1, sticky='we')
         self.label2 = ttk.Label(frame, text='Configure Amplifier')
         self.label2.grid(column=1, row=0, sticky='we')
-        self.configure_button = ttk.Button(frame, text='Configure')
+        self.configure_button = ttk.Button(frame, text='Configure', command=self.onConfigureButtonClicked)
         self.configure_button.grid(column=1, row=1, sticky='we')
         self.label3 = ttk.Label(frame, text='Start/Stop Amplifier')
         self.label3.grid(column=2, row=0, sticky='we')
@@ -91,6 +91,9 @@ class Gui(ttk.Frame):
             amp.start()
             self.start_stop_button.config(text='Stop')
             self.amp_started = True
+
+    def onConfigureButtonClicked(self):
+        amp.configure_with_gui()
 
     def init_plot(self):
         for i in range(self.CHANNELS):
@@ -164,7 +167,8 @@ if __name__ == '__main__':
     # setup the visualizer process
     parent_conn, child_conn = Pipe()
     # setup the gtk gui
-    gui = Gui(child_conn)
+    root = tk.Tk()
+    gui = Gui(root, child_conn)
     # setup the data fetcher
     e = Event()
     p = Process(target=data_fetcher, args=(amp, parent_conn, e))

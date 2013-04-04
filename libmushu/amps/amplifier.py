@@ -71,6 +71,14 @@ class Amplifier(object):
         """
         pass
 
+    def configure_with_gui(self):
+        """Configure the amplifier interactively.
+
+        Use this method to spawn a GUI which allows for configuring the
+        amplifier.
+        """
+        pass
+
     def start(self):
         """Make the amplifier ready for delivering data."""
         pass
