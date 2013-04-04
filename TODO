@@ -1,2 +1,6 @@
 * Now that the data_fetcher is a process, it shares the same amp as the other
   process, how do we fix that?
+* maybe add a staticmethod to the amp base class to test if this amp is
+  connected to the computer and thus available
+* maybe add a classmethod to the amp base class .from_config(cls, configstr)
+  which returns an amplifier which is already configured
