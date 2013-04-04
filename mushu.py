@@ -26,23 +26,14 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-#amp = gtec.GTecAmp()
-amp = RandomAmp()
-#amp = emotiv.Epoc()
-
 class Gui(ttk.Frame):
 
-    def __init__(self, master, q):
+    def __init__(self, master):
         self.amp_started = False
 
         ttk.Frame.__init__(self, master)
         self.master.title('Mushu')
-
-        self.style = ttk.Style()
-        self.style.theme_use('default')
-
         self.pack()
-        self.q = q
 
         frame = tk.Frame(self)
         frame.pack(fill=tk.BOTH, expand=1)
@@ -66,12 +57,14 @@ class Gui(ttk.Frame):
         self.canvas.show()
         self.axis = fig.add_subplot(111)
 
-        self.CHANNELS = 14
+        self.amp = RandomAmp()
+
+        self.CHANNELS = 17
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
         self.init_plot()
-        Thread(target=self.visualizer).start()
+        self.master.after_idle(self.visualizer)
 
     def onConnectButtonClicked(self):
         logger.debug('Connect.')
@@ -83,19 +76,20 @@ class Gui(ttk.Frame):
         logger.debug('Start.')
         if self.amp_started:
             logger.debug('Stop.')
-            amp.stop()
+            self.amp.stop()
             self.start_stop_button.config(text='Start')
             self.amp_started = False
         else:
             logger.debug('Start.')
-            amp.start()
+            self.amp.start()
             self.start_stop_button.config(text='Stop')
             self.amp_started = True
 
     def onConfigureButtonClicked(self):
-        amp.configure_with_gui()
+        self.amp.configure_with_gui()
 
     def init_plot(self):
+        self.axis.lines = []
         for i in range(self.CHANNELS):
             self.axis.plot(0)
         self.canvas.draw()
@@ -106,77 +100,48 @@ class Gui(ttk.Frame):
         self.nsamples = 0
 
     def visualizer(self):
-        while 1:
-            t = time.time()
-            tmp = []
-            tmp.append(self.q.recv())
-            while self.q.poll():
-                i = self.q.recv()
-                if i == 'quit':
-                    return
-                if i is None:
-                    continue
-                tmp.append(i)
-            # display #samples / second
-            if tmp != None:
-                self.nsamples += sum([i.shape[0] for i in tmp])
-                self.k += 1
-                if self.k == 100:
-                    sps = self.nsamples / (time.time() - self.t2)
-                    logger.debug('%.2f samples / second\r' % sps)
-                    self.t2 = time.time()
-                    self.nsamples = 0
-                    self.k = 0
-            # append the new data
-            new_data = np.concatenate(tmp)
-            self.data = np.concatenate([self.data, new_data])
-            self.data = self.data[-self.PAST_POINTS:]
-            # plot the data
-            data_clean = self.normalize(self.data)
-            dmin = data_clean.min()
-            dmax = data_clean.max()
-            dr = (dmax - dmin) * 0.7
-            SCALE = dr
-            x = [i for i in range(len(self.data))]
-            for j, line in enumerate(self.axis.lines):
-                line.set_xdata(x)
-                #line.set_ydata(self.data[:, j] + j * SCALE)
-                line.set_ydata(data_clean[:, j] + j * SCALE)
-            self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
-            self.axis.set_xlim(i - self.PAST_POINTS, i)
-            self.canvas.draw()
-            #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
-            continue
+        tmp = self.amp.get_data()
+        # display #samples / second
+        if tmp is not None:
+            self.nsamples += tmp.shape[0]
+            self.k += 1
+            if self.k == 100:
+                sps = self.nsamples / (time.time() - self.t2)
+                logger.debug('%.2f samples / second\r' % sps)
+                self.t2 = time.time()
+                self.nsamples = 0
+                self.k = 0
+        # check if nr of channels has changed since the last probe
+        if tmp.shape[1] != self.data.shape[1]:
+            logger.debug('Number of channels has changed, re-initializing the plot.')
+            self.CHANNELS = tmp.shape[1]
+            self.init_plot()
+        # append the new data
+        new_data = tmp
+        self.data = np.concatenate([self.data, new_data])
+        self.data = self.data[-self.PAST_POINTS:]
+        # plot the data
+        data_clean = self.normalize(self.data)
+        dmin = data_clean.min()
+        dmax = data_clean.max()
+        dr = (dmax - dmin) * 0.7
+        SCALE = dr
+        x = [i for i in range(len(self.data))]
+        for j, line in enumerate(self.axis.lines):
+            line.set_xdata(x)
+            #line.set_ydata(self.data[:, j] + j * SCALE)
+            line.set_ydata(data_clean[:, j] + j * SCALE)
+        self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
+        self.axis.set_xlim(i - self.PAST_POINTS, i)
+        self.canvas.draw()
+        #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+        self.master.after(10, self.visualizer)
 
     def normalize(self, data):
         return data - np.average(data)
 
-def data_fetcher(amp, q, e):
-    while not e.is_set():
-        try:
-            data_buffer = amp.get_data()[:,[2,3,4,5,6,7,8,9, 10, 11, 12, 13, 14, 15]]
-        except:
-            data_buffer = None
-        q.send(data_buffer)
-    logger.debug('Sending visualizer process the stop marker.')
-    q.send('quit')
-    logger.debug('Terminating data fetcher thread.')
-
-
 if __name__ == '__main__':
-    # setup the visualizer process
-    parent_conn, child_conn = Pipe()
-    # setup the gtk gui
     root = tk.Tk()
-    gui = Gui(root, child_conn)
-    # setup the data fetcher
-    e = Event()
-    p = Process(target=data_fetcher, args=(amp, parent_conn, e))
-    p.daemon = True
-    logger.debug(p.daemon)
-    p.start()
+    gui = Gui(root)
     gui.mainloop()
-    logger.debug('Waiting for thread and process to stop...')
-    e.set()
-    p.join()
 

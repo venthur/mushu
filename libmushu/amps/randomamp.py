@@ -59,7 +59,7 @@ class ConfigDialog(tk.Toplevel):
         self.label_chan.grid(column=0, row=0, sticky='W')
         self.label_fs = ttk.Label(frame1, text='Sampling Frequency')
         self.label_fs.grid(column=0, row=1, sticky='W')
-        self.sbox_chan = tk.Spinbox(frame1, from_=1, to=10)
+        self.sbox_chan = tk.Spinbox(frame1, from_=1, to=128)
         self.sbox_chan.delete(0)
         self.sbox_chan.insert(0, self.amp.channels)
         self.sbox_chan.grid(column=1, row=0, sticky='E')
