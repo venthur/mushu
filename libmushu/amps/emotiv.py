@@ -63,6 +63,13 @@ class Epoc(Amplifier):
             data = np.array()
         return data.reshape(1, -1)
 
+    @staticmethod
+    def is_available():
+        if usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID) is None:
+            return False
+        else:
+            return True
+
     def generate_key(self, sn, research=True):
         """Generate the encryption key.
 

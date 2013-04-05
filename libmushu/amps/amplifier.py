@@ -94,3 +94,13 @@ class Amplifier(object):
         """
         pass
 
+    @staticmethod
+    def is_available():
+        """Is the amplifier connected to the computer?
+
+        This method should be overwritten by derived classes and return True if
+        the amplifier is connected to the computer or False if not.
+        """
+        raise NotImplementedError
+
+

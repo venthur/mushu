@@ -92,6 +92,15 @@ class GTecAmp(amplifier.Amplifier):
             data /= 8.15
         return data
 
+    @staticmethod
+    def is_available():
+        for bus in usb.busses():
+            for device in bus.devices:
+                if (device.idVendor == ID_VENDOR_GTEC and
+                    device.idProduct == ID_PRODUCT_GUSB_AMP):
+                    return True
+        return False
+
     ###########################################################################
     # Low level amplifier methods
     ###########################################################################

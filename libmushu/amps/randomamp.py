@@ -44,6 +44,10 @@ class RandomAmp(Amplifier):
         self.fs = cfg['fs']
         self.channels = cfg['channels']
 
+    @staticmethod
+    def is_available():
+        return True
+
 class ConfigDialog(tk.Toplevel):
 
     def __init__(self, amp):
