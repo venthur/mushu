@@ -6,6 +6,11 @@ acquisition software written in Python.
 
   [mushu]: http://bbci.de/mushu
 
+Supported Amplifiers
+--------------------
+
+  * g.USBamp by g.tec
+  * EPOC by emotiv
 
 Motivation
 ----------
