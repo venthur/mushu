@@ -1,5 +1,7 @@
 #!/usb/bin/env python
 
+# TODO: update to new version of pyusb
+
 import struct
 import time
 from exceptions import Exception
@@ -20,10 +22,10 @@ ID_PRODUCT_GUSB_AMP = 0x0001
 CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
 
 
-class GTecAmp(amplifier.Amplifier):
+class GUSBamp(amplifier.Amplifier):
 
     def __init__(self):
-        logger.info('Initializing GTecAmp instance')
+        logger.info('Initializing GUSBamp instance')
         # list of available amps
         self.amps = []
         for bus in usb.busses():
