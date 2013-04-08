@@ -59,7 +59,8 @@ class Gui(ttk.Frame):
 
         self.amp = available_amps[0]()
 
-        self.CHANNELS = 17
+        self.channels = self.amp.get_channels()
+        self.n_channels = len(self.channels)
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
@@ -87,13 +88,15 @@ class Gui(ttk.Frame):
 
     def onConfigureButtonClicked(self):
         self.amp.configure_with_gui()
+        self.channels = self.amp.get_channels()
+        self.n_channels = len(self.channels)
 
     def init_plot(self):
         self.axis.lines = []
-        for i in range(self.CHANNELS):
+        for i in range(self.n_channels):
             self.axis.plot(0)
         self.canvas.draw()
-        self.data = np.array([]).reshape(-1, self.CHANNELS)
+        self.data = np.array([]).reshape(-1, self.n_channels)
         self.data_buffer = []
         self.t2 = time.time()
         self.k = 0
@@ -114,7 +117,8 @@ class Gui(ttk.Frame):
         # check if nr of channels has changed since the last probe
         if tmp.shape[1] != self.data.shape[1]:
             logger.debug('Number of channels has changed, re-initializing the plot.')
-            self.CHANNELS = tmp.shape[1]
+            self.channels = self.amp.get_channels()
+            self.n_channels = len(self.channels)
             self.init_plot()
         # append the new data
         new_data = tmp
@@ -126,13 +130,17 @@ class Gui(ttk.Frame):
         dmax = data_clean.max()
         dr = (dmax - dmin) * 0.7
         SCALE = dr
+        ticklocs = []
         x = [i for i in range(len(self.data))]
         for j, line in enumerate(self.axis.lines):
             line.set_xdata(x)
             #line.set_ydata(self.data[:, j] + j * SCALE)
             line.set_ydata(data_clean[:, j] + j * SCALE)
-        self.axis.set_ylim(-SCALE, (1 + self.CHANNELS) * SCALE)
+            ticklocs.append(j * SCALE)
+        self.axis.set_ylim(-SCALE, self.n_channels * SCALE)
         self.axis.set_xlim(i - self.PAST_POINTS, i)
+        self.axis.set_yticks(ticklocs)
+        self.axis.set_yticklabels(self.channels)
         self.canvas.draw()
         #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
         self.master.after(10, self.visualizer)
