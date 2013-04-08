@@ -19,6 +19,7 @@ class Amplifier(object):
         amp = Amp()
         # measure impedance
         amp.configure(config)
+        channels = amp.get_channels()
         amp.start()
         while 1:
             data = amp.get_data()
@@ -27,6 +28,7 @@ class Amplifier(object):
         amp.stop()
         # measure data
         amp.configure(config)
+        channels = amp.get_channels()
         amp.start()
         while 1:
             data = amp.get_data()
@@ -91,6 +93,14 @@ class Amplifier(object):
         """Get data.
 
         This method is called as fast as possible.
+        """
+        pass
+
+    def get_channels(self):
+        """Return the list of channelnames.
+
+        The list has the same order as the data, i.e. the second name in the
+        list represents the second colum of the data returned by `get_data`.
         """
         pass
 

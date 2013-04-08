@@ -44,6 +44,9 @@ class RandomAmp(Amplifier):
         self.fs = cfg['fs']
         self.channels = cfg['channels']
 
+    def get_channels(self):
+        return ['Ch_%d' % i for i in range(self.channels)]
+
     @staticmethod
     def is_available():
         return True
