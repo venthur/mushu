@@ -17,9 +17,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg as FigureCanvas
 
 import numpy as np
 
-from libmushu.amps import gtec
-from libmushu.amps import emotiv
-from libmushu.amps.randomamp import RandomAmp
+import libmushu
 
 logging.basicConfig(format='%(relativeCreated)10.0f %(threadName)-10s %(name)-10s %(levelname)8s %(message)s', level=logging.NOTSET)
 logger = logging.getLogger(__name__)
@@ -35,11 +33,13 @@ class Gui(ttk.Frame):
         self.master.title('Mushu')
         self.pack()
 
+        available_amps = libmushu.get_available_amps()
+
         frame = tk.Frame(self)
         frame.pack(fill=tk.BOTH, expand=1)
         self.label1 = ttk.Label(frame, text='Select Amplifier')
         self.label1.grid(column=0, row=0, sticky='we')
-        self.amp_combobox = ttk.Combobox(frame, values=['Foo', 'Bar', 'Baz'])
+        self.amp_combobox = ttk.Combobox(frame, values=[str(i) for i in available_amps])
         self.amp_combobox.grid(column=0, row=1, sticky='we')
         self.label2 = ttk.Label(frame, text='Configure Amplifier')
         self.label2.grid(column=1, row=0, sticky='we')
@@ -57,7 +57,7 @@ class Gui(ttk.Frame):
         self.canvas.show()
         self.axis = fig.add_subplot(111)
 
-        self.amp = RandomAmp()
+        self.amp = available_amps[0]()
 
         self.CHANNELS = 17
         self.PAST_POINTS = 256
