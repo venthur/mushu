@@ -1,6 +1,7 @@
-* Now that the data_fetcher is a process, it shares the same amp as the other
-  process, how do we fix that?
-* maybe add a staticmethod to the amp base class to test if this amp is
-  connected to the computer and thus available
+* Think about how to receive triggers
+* add get_channels to GTecAmp
+* add get_channels to Epoc
+* add configure_with_gui to GTecAmp
+* add configure_with_gui to Epoc
 * maybe add a classmethod to the amp base class .from_config(cls, configstr)
   which returns an amplifier which is already configured
