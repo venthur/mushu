@@ -1,5 +1,11 @@
+* Write data to file
 * Port to Python 3
 * Think about how to receive triggers
+    * maybe as decorators (not Python-decorators):
+
+        >>> amp = SomeAmp()
+        >>> amp = TcpTriggerDecorator(amp)
+
 * add get_channels to GTecAmp
 * add get_channels to Epoc
 * add configure_with_gui to GTecAmp
