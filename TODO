@@ -1,3 +1,12 @@
+* is it better to store the trigger as a seperate channel or as a list of
+  (timestamps, event)?  Write data to file
+    * pro as-channel:
+        * 
+    * con:
+        * does not allow for saving two or more events at the same time
+        * inefficient storing
+        * inefficient searching for triggers on long recordings
+        * events have to be from the same type as the rest of the data
 * Write data to file
 * Port to Python 3
 * Think about how to receive triggers
