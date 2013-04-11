@@ -1,7 +1,10 @@
-* is it better to store the trigger as a seperate channel or as a list of
+* How to we handle trigger in get_data?
+  * Timestamp in ms since start
+  * Timestamp in #sample within this block
+* is it better to store the trigger as a separate channel or as a list of
   (timestamps, event)?  Write data to file
     * pro as-channel:
-        * 
+        *
     * con:
         * does not allow for saving two or more events at the same time
         * inefficient storing
@@ -21,3 +24,4 @@
 * add configure_with_gui to Epoc
 * maybe add a classmethod to the amp base class .from_config(cls, configstr)
   which returns an amplifier which is already configured
+
