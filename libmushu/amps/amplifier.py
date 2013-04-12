@@ -36,32 +36,7 @@ class Amplifier(object):
                 break
         amp.stop()
 
-    or using the context manager:
-
-        amp = Amp()
-        # measure impedance
-        amp.configure(config)
-        with amp as a:
-            while 1:
-                data = a.get_data()
-                if enough:
-                    break
-        # measure impedance
-        amp.configure(config)
-        with amp as a:
-            while 1:
-                data = a.get_data()
-                if enough:
-                    break
-
     """
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
 
     def configure(self, config):
         """Configure the amplifier.
