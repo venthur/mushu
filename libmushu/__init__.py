@@ -1,3 +1,5 @@
+from __future__ import division
+
 from importlib import import_module
 import logging
 import select
@@ -69,7 +71,6 @@ class AmpDecorator():
         # get tcp marker and merge them with markers from the amp
         self.time_old = self.time
         self.time = time.time()
-        # / lock
         # merge markers
         # duration of the block / #samples gives the length of a sample
         # independently from the current sampling frequency.
@@ -79,6 +80,8 @@ class AmpDecorator():
         tcp_marker = []
         while not self.marker_queue.empty():
             m = self.marker_queue.get()
+            if not self._debug_tcp_marker_timestamps:
+                m[0] = (m[0] - self.time_old) // t_sample
             tcp_marker.append(m)
         for m in tcp_marker:
             delay = (m[0] - float(m[1])) * 1000
@@ -87,8 +90,6 @@ class AmpDecorator():
             #logger.debug("Marker delay: %.4fms" % delay)
         marker = sorted(marker + tcp_marker)
         # save data to files
-        #if marker:
-        #    logger.debug(marker)
         return data, marker
 
     def get_channels(self):
