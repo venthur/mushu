@@ -29,6 +29,11 @@ class AmpDecorator():
 
     def __init__(self, ampcls):
         self.amp = ampcls()
+        # Setting this option, will make the Amp to discard all markers from
+        # the underlying amp driver and return only TCP markers. It will also
+        # return the timestamp instead of sample number within block. This is
+        # only useful for debugging and gathering latency information.
+        self._debug_tcp_marker_timestamps = False
 
     def start(self, filename=None):
         # prepare files for writing
@@ -39,7 +44,11 @@ class AmpDecorator():
         self.tcp_reader_running = Event()
         self.tcp_reader_running.set()
         tcp_reader_ready = Event()
-        self.tcp_reader = Process(target=tcp_reader, args=(self.marker_queue, self.tcp_reader_running, tcp_reader_ready ))
+        self.tcp_reader = Process(target=tcp_reader,
+                                  args=(self.marker_queue,
+                                        self.tcp_reader_running,
+                                        tcp_reader_ready)
+                                  )
         self.tcp_reader.start()
         logger.debug('Waiting for TCP reader to become ready...')
         tcp_reader_ready.wait()
@@ -74,6 +83,7 @@ class AmpDecorator():
         # merge markers
         # duration of the block / #samples gives the length of a sample
         # independently from the current sampling frequency.
+        # TODO: rethink if that is really the best solution (fs from #samples)
         delta_t = self.time - self.time_old
         samples = len(data)
         t_sample = delta_t / samples
@@ -83,12 +93,12 @@ class AmpDecorator():
             if not self._debug_tcp_marker_timestamps:
                 m[0] = (m[0] - self.time_old) // t_sample
             tcp_marker.append(m)
-        for m in tcp_marker:
-            delay = (m[0] - float(m[1])) * 1000
-            if delay > .5:
-                logger.warning("Marker delay: %.4fms" % delay)
-            #logger.debug("Marker delay: %.4fms" % delay)
-        marker = sorted(marker + tcp_marker)
+        # TODO: don't return the marker which are newer than the newest data,
+        # keep them for the next iteration instead
+        if not self._debug_tcp_marker_timestamps:
+            marker = sorted(marker + tcp_marker)
+        else:
+            marker = sorted(tcp_marker)
         # save data to files
         return data, marker
 
