@@ -59,6 +59,7 @@ class Gui(ttk.Frame):
 
         ampcls = available_amps[0]
         self.amp = libmushu.AmpDecorator(ampcls)
+        self.amp.start()
 
         self.channels = self.amp.get_channels()
         self.n_channels = len(self.channels)
@@ -104,7 +105,7 @@ class Gui(ttk.Frame):
         self.nsamples = 0
 
     def visualizer(self):
-        tmp = self.amp.get_data()
+        tmp, marker = self.amp.get_data()
         # display #samples / second
         if tmp is not None:
             self.nsamples += tmp.shape[0]
