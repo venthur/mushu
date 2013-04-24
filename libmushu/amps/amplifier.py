@@ -77,7 +77,11 @@ class Amplifier(object):
         The list has the same order as the data, i.e. the second name in the
         list represents the second colum of the data returned by `get_data`.
         """
-        pass
+        raise NotImplementedError
+
+    def get_sampling_frequency(self):
+        """Return the sampling frequency."""
+        raise NotImplementedError
 
     @staticmethod
     def is_available():
@@ -87,5 +91,4 @@ class Amplifier(object):
         the amplifier is connected to the computer or False if not.
         """
         raise NotImplementedError
-
 
