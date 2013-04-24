@@ -101,12 +101,13 @@ class AmpDecorator():
         # merge markers
         tcp_marker = []
         time.sleep(0.2 / 1000)
+        future_markers = []
         while not self.marker_queue.empty():
             m = self.marker_queue.get()
             if not self._debug_tcp_marker_timestamps:
                 if m[0] > self.time:
                     #logger.debug('Marker is newer than the last sample of the current block, queueing it for the next block.')
-                    self.marker_queue.put(m)
+                    future_markers.append(m)
                     continue
                 dt = m[0] - self.time_old
                 if dt < 0:
@@ -116,8 +117,9 @@ class AmpDecorator():
                     # int(x) truncates towards zero, that's what we want
                     m[0] = int(dt * self.amp.get_sampling_frequency())
             tcp_marker.append(m)
-        # TODO: don't return the marker which are newer than the newest data,
-        # keep them for the next iteration instead
+        # put markers which belong to the next block back into the queue
+        for m in future_markers:
+            self.marker_queue.put(m)
         if not self._debug_tcp_marker_timestamps:
             marker = sorted(marker + tcp_marker)
         else:
