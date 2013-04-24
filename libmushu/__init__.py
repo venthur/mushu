@@ -5,7 +5,6 @@ import logging
 import select
 import socket
 import time
-from threading import Thread, Lock
 from multiprocessing import Process, Queue, Event
 import os
 import struct
@@ -145,7 +144,6 @@ class AmpDecorator():
         return self.amp.get_channels()
 
 
-
 def tcp_reader(queue, running, ready):
     # setup the server socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -189,12 +187,13 @@ def tcp_reader(queue, running, ready):
     logger.debug('Terminated select-loop')
     sock.close()
 
+
 def get_available_amps():
     available_amps = []
     for mod, cls in _available_amps:
         try:
             m = import_module('libmushu.amps.' + mod)
-        except ImportError, e:
+        except ImportError:
             logger.warning('Unable to import %s' % mod, exc_info=True)
             continue
         try:
