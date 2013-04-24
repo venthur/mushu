@@ -47,6 +47,9 @@ class RandomAmp(Amplifier):
     def get_channels(self):
         return ['Ch_%d' % i for i in range(self.channels)]
 
+    def get_sampling_frequency(self):
+        return self.fs
+
     @staticmethod
     def is_available():
         return True
