@@ -7,6 +7,8 @@ import socket
 import time
 from threading import Thread, Lock
 from multiprocessing import Process, Queue, Event
+import os
+import struct
 
 END_MARKER = '\n'
 BUFSIZE = 2**16
@@ -34,11 +36,24 @@ class AmpDecorator():
         # return the timestamp instead of sample number within block. This is
         # only useful for debugging and gathering latency information.
         self._debug_tcp_marker_timestamps = False
+        self.write_to_file = False
 
     def start(self, filename=None):
         # prepare files for writing
+        self.write_to_file = False
         if filename is not None:
-            self.fh = open(filename, 'bw')
+            self.write_to_file = True
+            filename_marker = filename + '.marker'
+            filename_eeg = filename + '.eeg'
+            filename_meta = filename + '.meta'
+            for filename in filename_marker, filename_eeg, filename_meta:
+                if os.path.exists(filename):
+                    logger.error('A file "%s" already exists, aborting.' % filename)
+                    raise Exception
+            self.fh_eeg = open(filename_eeg, 'w')
+            self.fh_marker = open(filename_marker, 'w')
+            self.fh_meta = open(filename_meta, 'w')
+
         # start the marker server
         self.marker_queue = Queue()
         self.tcp_reader_running = Event()
@@ -66,7 +81,10 @@ class AmpDecorator():
         self.tcp_reader.join()
         logger.debug('TCP reader process stopped.')
         # close the files
-        #self.fh.close()
+        if self.write_to_file:
+            logger.debug('Closing files.')
+            for fh in self.fh_eeg, self.fh_marker, self.fh_meta:
+                fh.close()
 
     def configure(self, config):
         self.amp.configure(config)
@@ -100,6 +118,12 @@ class AmpDecorator():
         else:
             marker = sorted(tcp_marker)
         # save data to files
+        if self.write_to_file:
+            for m in marker:
+                self.fh_marker.write("%i %s\n" % (m[0], m[1]))
+            for t in data:
+                for c in t:
+                    self.fh_eeg.write(struct.pack("f", c))
         return data, marker
 
     def get_channels(self):
