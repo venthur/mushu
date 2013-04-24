@@ -99,17 +99,22 @@ class AmpDecorator():
         self.time_old = self.time
         self.time = time.time()
         # merge markers
-        # duration of the block / #samples gives the length of a sample
-        # independently from the current sampling frequency.
-        # TODO: rethink if that is really the best solution (fs from #samples)
-        delta_t = self.time - self.time_old
-        samples = len(data)
-        t_sample = delta_t / samples
         tcp_marker = []
+        time.sleep(0.2 / 1000)
         while not self.marker_queue.empty():
             m = self.marker_queue.get()
             if not self._debug_tcp_marker_timestamps:
-                m[0] = (m[0] - self.time_old) // t_sample
+                if m[0] > self.time:
+                    #logger.debug('Marker is newer than the last sample of the current block, queueing it for the next block.')
+                    self.marker_queue.put(m)
+                    continue
+                dt = m[0] - self.time_old
+                if dt < 0:
+                    logger.warning('Marker is %.2fms older than current block, setting it to first sample of current block.' % abs(dt * 1000))
+                    m[0] = 0
+                else:
+                    # int(x) truncates towards zero, that's what we want
+                    m[0] = int(dt * self.amp.get_sampling_frequency())
             tcp_marker.append(m)
         # TODO: don't return the marker which are newer than the newest data,
         # keep them for the next iteration instead
