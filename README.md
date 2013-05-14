@@ -6,6 +6,20 @@ acquisition software written in Python.
 
   [mushu]: http://bbci.de/mushu
 
+Installation
+------------
+
+The required packages to run Mushu can be found in the file
+[requirements.txt](requirements.txt). To install all required packages at once
+one can use `pip`:
+
+```sh
+pip install -r requirements.txt
+```
+
+or simply install all packages line by line using the package manager of your
+operating system.
+
 Supported Amplifiers
 --------------------
 
