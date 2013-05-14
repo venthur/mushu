@@ -28,8 +28,9 @@ class RandomAmp(Amplifier):
 
     def get_data(self):
         # simulate blocking until we have enough data
-        if self.elapsed < self.sample_len:
-            time.sleep(self.sample_len - self.elapsed)
+        elapsed = self.elapsed
+        if elapsed < self.sample_len:
+            time.sleep(self.sample_len - elapsed)
         dt = self.elapsed
         samples = math.floor(self.fs * dt)
         data = np.random.randint(0, 1024, (samples, self.channels))
