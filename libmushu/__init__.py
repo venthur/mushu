@@ -107,6 +107,7 @@ class AmpDecorator():
         self.time = time.time()
         # merge markers
         tcp_marker = []
+        # wait 0.2ms to let late markers arrive in time for this block
         time.sleep(0.2 / 1000)
         future_markers = []
         while not self.marker_queue.empty():
