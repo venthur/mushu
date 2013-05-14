@@ -75,6 +75,8 @@ class AmpDecorator():
         logger.debug('Waiting for TCP reader to become ready...')
         tcp_reader_ready.wait()
         logger.debug('TCP reader is ready...')
+        # zero the sample counter
+        self.received_samples = 0
         # start the amp
         self.time = time.time()
         self.amp.start()
@@ -135,10 +137,16 @@ class AmpDecorator():
         # save data to files
         if self.write_to_file:
             for m in marker:
-                self.fh_marker.write("%i %s\n" % (m[0], m[1]))
+                # If we received 17 samples so far, the index of the last
+                # sample from the last block is 16. Since m[0] is the sample
+                # index of the current block starting with 0,
+                # received_samples + m[0] gives the correct index for the
+                # global marker list.
+                self.fh_marker.write("%i %s\n" % (self.received_samples + m[0], m[1]))
             for t in data:
                 for c in t:
                     self.fh_eeg.write(struct.pack("f", c))
+        self.received_samples += len(data)
         return data, marker
 
     def get_channels(self):
