@@ -35,7 +35,7 @@ class RandomAmp(Amplifier):
         samples = math.floor(self.fs * dt)
         data = np.random.randint(0, 1024, (samples, self.channels))
         self.last_sample = time.time()
-        return data
+        return data, []
 
     def configure_with_gui(self):
         dialog = ConfigDialog(self)
