@@ -54,12 +54,12 @@ class AmpDecorator():
             self.fh_eeg = open(filename_eeg, 'w')
             self.fh_marker = open(filename_marker, 'w')
             self.fh_meta = open(filename_meta, 'w')
-        # write meta data
-        meta = {'Channels': self.amp.get_channels(),
-                'Sampling Frequency': self.amp.get_sampling_frequency(),
-                'Amp': str(self.amp)
-                }
-        json.dump(meta, self.fh_meta, indent=4)
+            # write meta data
+            meta = {'Channels': self.amp.get_channels(),
+                    'Sampling Frequency': self.amp.get_sampling_frequency(),
+                    'Amp': str(self.amp)
+                    }
+            json.dump(meta, self.fh_meta, indent=4)
 
         # start the marker server
         self.marker_queue = Queue()
