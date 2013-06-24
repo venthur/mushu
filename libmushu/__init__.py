@@ -28,6 +28,24 @@ logger.info('Logger started')
 class AmpDecorator():
     """This class 'decorates' the Low-Level Amplifier classes with Marker and
     Save-To-File functionality.
+
+    Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
+    On Linux the resolution is 1us. This is due to limitations of Python's
+    time.time method, or rather a Windows specific issue.
+
+    There exists currently no precise timer, providing times which are
+    comparable between two running processes on Windows. The performance
+    counter provided on Windows, has a much better resolution but is relative
+    to the processes start time and it drifts (1s per 100s), so it is only
+    precise for a relatively short amount of time.
+
+    If a higher precision is needed one has to replace the time.time calls with
+    something which provides a better precision. For example one could create a
+    third process which provides times or regularly synchronize both processes
+    with the clock synchronization algorithm as described here:
+
+        http://en.wikipedia.org/wiki/Network_Time_Protocol
+
     """
 
     def __init__(self, ampcls):
