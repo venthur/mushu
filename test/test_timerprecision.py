@@ -2,6 +2,7 @@ from __future__ import division
 import time
 import unittest
 
+
 class TestTimerPrecision(unittest.TestCase):
 
     def test_precision(self):
@@ -14,7 +15,7 @@ class TestTimerPrecision(unittest.TestCase):
             times.append(time.time())
         # remove duplicates
         times = list(set(times))
-        resolution =(max(times) - min(times)) / len(times)
+        resolution = (max(times) - min(times)) / len(times)
         self.assertLessEqual(resolution, 10*1e-6)
 
 
