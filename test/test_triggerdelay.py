@@ -81,7 +81,8 @@ class TestTriggerDelay(unittest.TestCase):
             amp.configure(json.dumps(config))
             amp.start()
             delays = []
-            for j in range(i*2):
+            t_start = time.time()
+            while time.time() < t_start + 1:
                 data, marker = amp.get_data()
                 for timestamp, m in marker:
                     delta_t = (timestamp - float(m)) * 1000
@@ -90,7 +91,7 @@ class TestTriggerDelay(unittest.TestCase):
             delays = np.array(delays)
             logger.debug("Min: %.2f, Max: %.2f, Mean: %.2f, Std: %.2f" % (delays.min(), delays.max(), delays.mean(), delays.std()))
             self.assertLessEqual(delays.mean(), 1)
-            self.assertLessEqual(delays.max(), 1)
+            self.assertLessEqual(delays.max(), 10)
 
 if __name__ == '__main__':
     unittest.main()
