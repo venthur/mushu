@@ -2,23 +2,20 @@ from __future__ import division
 import time
 import unittest
 
-
 class TestTimerPrecision(unittest.TestCase):
 
     def test_precision(self):
-        """The precision of the timer must be at least 1ms."""
-        times = [time.time()]
-        t_start = times[0]
-        while 1:
-            t = time.time()
-            if t >= (t_start + 1):
-                break
-            if times[-1] != t:
-                times.append(t)
-        # how many different
-        precision = 1000 / len(times)
-        print precision
-        self.assertLessEqual(precision, 1)
+        """The precision of the timer must be at least 10us."""
+        # collect as many timestamps as possible in 1 second, remove the
+        # duplicates and count the number of elements
+        times = []
+        t_start = time.time()
+        while time.time() < t_start + 1:
+            times.append(time.time())
+        # remove duplicates
+        times = list(set(times))
+        resolution =(max(times) - min(times)) / len(times)
+        self.assertLessEqual(resolution, 10*1e-6)
 
 
 if __name__ == '__main__':
