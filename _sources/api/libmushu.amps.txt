@@ -1,0 +1,35 @@
+amps Package
+============
+
+:mod:`amplifier` Module
+-----------------------
+
+.. automodule:: libmushu.amps.amplifier
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`emotiv` Module
+--------------------
+
+.. automodule:: libmushu.amps.emotiv
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`gtec` Module
+------------------
+
+.. automodule:: libmushu.amps.gtec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`randomamp` Module
+-----------------------
+
+.. automodule:: libmushu.amps.randomamp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
