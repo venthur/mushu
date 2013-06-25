@@ -23,7 +23,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="up" title="libmushu" href="modules.html" />
+    <link rel="next" title="amps Package" href="libmushu.amps.html" />
+    <link rel="prev" title="libmushu" href="modules.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +38,14 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.amps.html" title="amps Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="libmushu"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">libmushu</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,6 +63,14 @@
 <em class="property">class </em><tt class="descclassname">libmushu.__init__.</tt><tt class="descname">AmpDecorator</tt><big>(</big><em>ampcls</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with Marker and
 Save-To-File functionality.</p>
+<p>You use it by decorating (not as in Python-Decorator, but in the GoF sense)
+the low level amplifier class you want to use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
+<span class="kn">from</span> <span class="nn">libmushu.amps.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">Ampdecorator</span><span class="p">(</span><span class="n">RandomAmp</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
 On Linux the resolution is 1us. This is due to limitations of Python&#8217;s
 time.time method, or rather a Windows specific issue.</p>
@@ -143,6 +161,12 @@ with the clock synchronization algorithm as described here:</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">libmushu</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libmushu.amps.html"
+                        title="next chapter">amps Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/libmushu.txt"
@@ -174,7 +198,14 @@ with the clock synchronization algorithm as described here:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.amps.html" title="amps Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="libmushu"
+             >previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" >libmushu</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

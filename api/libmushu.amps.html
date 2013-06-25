@@ -23,7 +23,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="up" title="libmushu Package" href="libmushu.html" />
+    <link rel="prev" title="libmushu Package" href="libmushu.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +37,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.html" title="libmushu Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" >libmushu</a> &raquo;</li>
+          <li><a href="libmushu.html" accesskey="U">libmushu Package</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -63,33 +70,27 @@ mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in
 <p><cite>start</cite>, <cite>stop</cite>, and <cite>get_data</cite> is very generic and must be supported by
 all derived amplifier classes.</p>
 <p>How an amplifier should be used:</p>
-<blockquote>
-<div><p>amp = Amp()
-# measure impedance
-amp.configure(config)
-channels = amp.get_channels()
-amp.start()
-while 1:</p>
-<blockquote>
-<div><p>data = amp.get_data()
-if enough:</p>
-<blockquote>
-<div>break</div></blockquote>
-</div></blockquote>
-<p>amp.stop()
-# measure data
-amp.configure(config)
-channels = amp.get_channels()
-amp.start()
-while 1:</p>
-<blockquote>
-<div><p>data = amp.get_data()
-if enough:</p>
-<blockquote>
-<div>break</div></blockquote>
-</div></blockquote>
-<p>amp.stop()</p>
-</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span> <span class="o">=</span> <span class="n">Amp</span><span class="p">()</span>
+<span class="c"># measure impedance</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">channels</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_channels</span><span class="p">()</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">enough</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="c"># measure data</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">channels</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_channels</span><span class="p">()</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">enough</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="libmushu.amps.amplifier.Amplifier.configure">
 <tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.configure" title="Permalink to this definition">¶</a></dt>
@@ -227,20 +228,28 @@ weather it is a research- or consumer device.</p>
 <dt id="libmushu.amps.gtec.GUSBamp.set_common_ground">
 <tt class="descname">set_common_ground</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_common_ground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_common_ground" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set common ground for the electrodes.</p>
-<p>Parameters:
-a, b, c, d &#8211; correspond to the groups on the amp, either of them can be</p>
-<blockquote>
-<div>true or false</div></blockquote>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd><dl class="first last docutils">
+<dt>a, b, c, d &#8211; correspond to the groups on the amp, either of them</dt>
+<dd>can be true or false</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="libmushu.amps.gtec.GUSBamp.set_common_reference">
 <tt class="descname">set_common_reference</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_common_reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_common_reference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set common reference for the electrodes.</p>
-<p>Parameters:
-a, b, c, d &#8211; correspond to the groups on the amp, either of them can be</p>
-<blockquote>
-<div>true or false</div></blockquote>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd><dl class="first last docutils">
+<dt>a, b, c, d &#8211; correspond to the groups on the amp, either of them</dt>
+<dd>can be true or false</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -264,8 +273,10 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
 <dt id="libmushu.amps.gtec.GUSBamp.set_slave_mode">
 <tt class="descname">set_slave_mode</tt><big>(</big><em>slave</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_slave_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_slave_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set amp into slave or master mode.</p>
-<p>Parameters:
-slave &#8211; if true, set into slave mode, set to master otherwise</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>slave &#8211; if true, set into slave mode, set to master otherwise</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -376,6 +387,9 @@ slave &#8211; if true, set into slave mode, set to master otherwise</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libmushu.html"
+                        title="previous chapter">libmushu Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/libmushu.amps.txt"
@@ -407,7 +421,12 @@ slave &#8211; if true, set into slave mode, set to master otherwise</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.html" title="libmushu Package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" >libmushu</a> &raquo;</li>
+          <li><a href="libmushu.html" >libmushu Package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
