@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -153,8 +151,44 @@ the amplifier is connected to the computer or False if not.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="emotiv-module">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">emotiv</span></tt> Module<a class="headerlink" href="#emotiv-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-libmushu.amps.emotiv">
+<span id="emotiv-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">emotiv</span></tt> Module<a class="headerlink" href="#module-libmushu.amps.emotiv" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.amps.emotiv.Epoc">
+<em class="property">class </em><tt class="descclassname">libmushu.amps.emotiv.</tt><tt class="descname">Epoc</tt><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libmushu.amps.amplifier.Amplifier" title="libmushu.amps.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amps.amplifier.Amplifier</span></tt></a></p>
+<dl class="method">
+<dt id="libmushu.amps.emotiv.Epoc.decrypt">
+<tt class="descname">decrypt</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc.decrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc.decrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypt a raw package.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.emotiv.Epoc.generate_key">
+<tt class="descname">generate_key</tt><big>(</big><em>sn</em>, <em>research=True</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc.generate_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc.generate_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the encryption key.</p>
+<p>The key is based on the serial number of the device and the information
+weather it is a research- or consumer device.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.emotiv.Epoc.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.amps.emotiv.Epoc.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.emotiv.Epoc.parse_raw">
+<tt class="descname">parse_raw</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/emotiv.html#Epoc.parse_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.emotiv.Epoc.parse_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse raw data.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-libmushu.amps.gtec">
 <span id="gtec-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">gtec</span></tt> Module<a class="headerlink" href="#module-libmushu.amps.gtec" title="Permalink to this headline">¶</a></h2>
@@ -335,7 +369,7 @@ slave &#8211; if true, set into slave mode, set to master otherwise</p>
   <ul>
 <li><a class="reference internal" href="#">amps Package</a><ul>
 <li><a class="reference internal" href="#module-libmushu.amps.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a></li>
-<li><a class="reference internal" href="#emotiv-module"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.amps.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-libmushu.amps.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-libmushu.amps.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
 </ul>
@@ -378,7 +412,7 @@ slave &#8211; if true, set into slave mode, set to master otherwise</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Bastian Venthur.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>
