@@ -209,8 +209,8 @@ class GUSBamp(amplifier.Amplifier):
         """Set common ground for the electrodes.
 
         Parameters:
-        a, b, c, d -- correspond to the groups on the amp, either of them can be
-            true or false
+            a, b, c, d -- correspond to the groups on the amp, either of them
+                can be true or false
 
         """
         v = (d << 3) + (c << 2) + (b << 1) + a
@@ -221,8 +221,8 @@ class GUSBamp(amplifier.Amplifier):
         """Set common reference for the electrodes.
 
         Parameters:
-        a, b, c, d -- correspond to the groups on the amp, either of them can be
-            true or false
+            a, b, c, d -- correspond to the groups on the amp, either of them
+                can be true or false
 
         """
         v = (d << 3) + (c << 2) + (b << 1) + a
@@ -233,7 +233,7 @@ class GUSBamp(amplifier.Amplifier):
         """Set amp into slave or master mode.
 
         Parameters:
-        slave -- if true, set into slave mode, set to master otherwise
+            slave -- if true, set into slave mode, set to master otherwise
 
         """
         v = 1 if slave else 0

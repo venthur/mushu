@@ -16,6 +16,8 @@ class Amplifier(object):
 
     How an amplifier should be used:
 
+    ::
+
         amp = Amp()
         # measure impedance
         amp.configure(config)
