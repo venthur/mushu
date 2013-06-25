@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>amps Package &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="amps-package">
+<h1>amps Package<a class="headerlink" href="#amps-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-libmushu.amps.amplifier">
+<span id="amplifier-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">amplifier</span></tt> Module<a class="headerlink" href="#module-libmushu.amps.amplifier" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.amps.amplifier.Amplifier">
+<em class="property">class </em><tt class="descclassname">libmushu.amps.amplifier.</tt><tt class="descname">Amplifier</tt><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Amplifier base class.</p>
+<p>The base class is very generic on purpose. Amplifiers from different
+vendors vary in so many ways that it is difficult to find a common set of
+methods that all support.</p>
+<p>In the spirit of &#8220;encapsulating what varies&#8221;, I decided to encapsulate the
+configuration. So the main configuration of the amplifier, like setting the
+mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in
+<cite>configure</cite> and is very specific for the amplifier at hand.</p>
+<p><cite>start</cite>, <cite>stop</cite>, and <cite>get_data</cite> is very generic and must be supported by
+all derived amplifier classes.</p>
+<p>How an amplifier should be used:</p>
+<blockquote>
+<div><p>amp = Amp()
+# measure impedance
+amp.configure(config)
+channels = amp.get_channels()
+amp.start()
+while 1:</p>
+<blockquote>
+<div><p>data = amp.get_data()
+if enough:</p>
+<blockquote>
+<div>break</div></blockquote>
+</div></blockquote>
+<p>amp.stop()
+# measure data
+amp.configure(config)
+channels = amp.get_channels()
+amp.start()
+while 1:</p>
+<blockquote>
+<div><p>data = amp.get_data()
+if enough:</p>
+<blockquote>
+<div>break</div></blockquote>
+</div></blockquote>
+<p>amp.stop()</p>
+</div></blockquote>
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.configure">
+<tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the amplifier.</p>
+<p>Use this method to set the mode (i.e. impedance, data, ...), sampling
+frequency, filter, etc.</p>
+<p>This depends strongly on the amplifier.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the amplifier interactively.</p>
+<p>Use this method to spawn a GUI which allows for configuring the
+amplifier.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of channelnames.</p>
+<p>The list has the same order as the data, i.e. the second name in the
+list represents the second colum of the data returned by <cite>get_data</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data.</p>
+<p>This method is called as fast as possible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sampling frequency.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.amps.amplifier.Amplifier.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the amplifier connected to the computer?</p>
+<p>This method should be overwritten by derived classes and return True if
+the amplifier is connected to the computer or False if not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the amplifier ready for delivering data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.amplifier.Amplifier.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/amplifier.html#Amplifier.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.amplifier.Amplifier.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the amplifier.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="emotiv-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">emotiv</span></tt> Module<a class="headerlink" href="#emotiv-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-libmushu.amps.gtec">
+<span id="gtec-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">gtec</span></tt> Module<a class="headerlink" href="#module-libmushu.amps.gtec" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="libmushu.amps.gtec.AmpError">
+<em class="property">exception </em><tt class="descclassname">libmushu.amps.gtec.</tt><tt class="descname">AmpError</tt><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#AmpError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.AmpError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="libmushu.amps.gtec.GUSBamp">
+<em class="property">class </em><tt class="descclassname">libmushu.amps.gtec.</tt><tt class="descname">GUSBamp</tt><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libmushu.amps.amplifier.Amplifier" title="libmushu.amps.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amps.amplifier.Amplifier</span></tt></a></p>
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.calculate_impedance">
+<tt class="descname">calculate_impedance</tt><big>(</big><em>u_measured</em>, <em>u_applied=10000.0</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.calculate_impedance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.calculate_impedance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.amps.gtec.GUSBamp.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_calibration_mode">
+<tt class="descname">set_calibration_mode</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_calibration_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_calibration_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_common_ground">
+<tt class="descname">set_common_ground</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_common_ground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_common_ground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set common ground for the electrodes.</p>
+<p>Parameters:
+a, b, c, d &#8211; correspond to the groups on the amp, either of them can be</p>
+<blockquote>
+<div>true or false</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_common_reference">
+<tt class="descname">set_common_reference</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_common_reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_common_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set common reference for the electrodes.</p>
+<p>Parameters:
+a, b, c, d &#8211; correspond to the groups on the amp, either of them can be</p>
+<blockquote>
+<div>true or false</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_mode">
+<tt class="descname">set_mode</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set mode, &#8216;impedance&#8217;, &#8216;data&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_sampling_ferquency">
+<tt class="descname">set_sampling_ferquency</tt><big>(</big><em>fs</em>, <em>channels</em>, <em>bpfilter</em>, <em>notchfilter</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_sampling_ferquency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_sampling_ferquency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the sampling frequency and filters for individual channels.</p>
+<p>Parameters:
+fs &#8211; sampling frequency
+channels &#8211; list of booleans: channels[0] == True: enable filter for channel 0
+bpfilter &#8211; tuple: parameters for the band pass filter (hp, lp, fs, order) or None
+notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, order) or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.set_slave_mode">
+<tt class="descname">set_slave_mode</tt><big>(</big><em>slave</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.set_slave_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.set_slave_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set amp into slave or master mode.</p>
+<p>Parameters:
+slave &#8211; if true, set into slave mode, set to master otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.gtec.GUSBamp.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#GUSBamp.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.GUSBamp.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.amps.gtec.main">
+<tt class="descclassname">libmushu.amps.gtec.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/gtec.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.gtec.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-libmushu.amps.randomamp">
+<span id="randomamp-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">randomamp</span></tt> Module<a class="headerlink" href="#module-libmushu.amps.randomamp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.amps.randomamp.ConfigDialog">
+<em class="property">class </em><tt class="descclassname">libmushu.amps.randomamp.</tt><tt class="descname">ConfigDialog</tt><big>(</big><em>amp</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#ConfigDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.ConfigDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">Tkinter.Toplevel</span></tt></p>
+<dl class="method">
+<dt id="libmushu.amps.randomamp.ConfigDialog.cancel_pressed">
+<tt class="descname">cancel_pressed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#ConfigDialog.cancel_pressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.ConfigDialog.cancel_pressed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.randomamp.ConfigDialog.ok_pressed">
+<tt class="descname">ok_pressed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#ConfigDialog.ok_pressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.ConfigDialog.ok_pressed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="libmushu.amps.randomamp.RandomAmp">
+<em class="property">class </em><tt class="descclassname">libmushu.amps.randomamp.</tt><tt class="descname">RandomAmp</tt><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libmushu.amps.amplifier.Amplifier" title="libmushu.amps.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amps.amplifier.Amplifier</span></tt></a></p>
+<p>An amplifier that produces random data.</p>
+<dl class="method">
+<dt id="libmushu.amps.randomamp.RandomAmp.configure">
+<tt class="descname">configure</tt><big>(</big><em>cfg</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.randomamp.RandomAmp.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="libmushu.amps.randomamp.RandomAmp.elapsed">
+<tt class="descname">elapsed</tt><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.elapsed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.randomamp.RandomAmp.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.randomamp.RandomAmp.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amps.randomamp.RandomAmp.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.amps.randomamp.RandomAmp.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="libmushu.amps.randomamp.RandomAmp.sample_len">
+<tt class="descname">sample_len</tt><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#RandomAmp.sample_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.RandomAmp.sample_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.amps.randomamp.test_configgui">
+<tt class="descclassname">libmushu.amps.randomamp.</tt><tt class="descname">test_configgui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amps/randomamp.html#test_configgui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amps.randomamp.test_configgui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">amps Package</a><ul>
+<li><a class="reference internal" href="#module-libmushu.amps.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a></li>
+<li><a class="reference internal" href="#emotiv-module"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.amps.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.amps.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/libmushu.amps.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

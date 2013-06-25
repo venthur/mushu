@@ -1,0 +1,18 @@
+libmushu Package
+================
+
+:mod:`libmushu` Package
+-----------------------
+
+.. automodule:: libmushu.__init__
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    libmushu.amps
+

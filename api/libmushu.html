@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>libmushu Package &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="libmushu-package">
+<h1>libmushu Package<a class="headerlink" href="#libmushu-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">libmushu</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-libmushu.__init__"></span><dl class="class">
+<dt id="libmushu.__init__.AmpDecorator">
+<em class="property">class </em><tt class="descclassname">libmushu.__init__.</tt><tt class="descname">AmpDecorator</tt><big>(</big><em>ampcls</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with Marker and
+Save-To-File functionality.</p>
+<p>Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
+On Linux the resolution is 1us. This is due to limitations of Python&#8217;s
+time.time method, or rather a Windows specific issue.</p>
+<p>There exists currently no precise timer, providing times which are
+comparable between two running processes on Windows. The performance
+counter provided on Windows, has a much better resolution but is relative
+to the processes start time and it drifts (1s per 100s), so it is only
+precise for a relatively short amount of time.</p>
+<p>If a higher precision is needed one has to replace the time.time calls with
+something which provides a better precision. For example one could create a
+third process which provides times or regularly synchronize both processes
+with the clock synchronization algorithm as described here:</p>
+<blockquote>
+<div><a class="reference external" href="http://en.wikipedia.org/wiki/Network_Time_Protocol">http://en.wikipedia.org/wiki/Network_Time_Protocol</a></div></blockquote>
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.configure">
+<tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.start">
+<tt class="descname">start</tt><big>(</big><em>filename=None</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.__init__.AmpDecorator.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.__init__.get_available_amps">
+<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_available_amps</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_available_amps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_available_amps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libmushu.__init__.tcp_reader">
+<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">tcp_reader</tt><big>(</big><em>queue</em>, <em>running</em>, <em>ready</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#tcp_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.tcp_reader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libmushu.amps.html">amps Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#emotiv-module"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">libmushu Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">libmushu</span></tt> Package</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/libmushu.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
