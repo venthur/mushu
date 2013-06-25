@@ -4,7 +4,7 @@ GH_PAGES=gh_pages
 
 
 rm -rf $GH_PAGES
-git clone . $GH_PAGES
+git clone git@github.com:venthur/mushu $GH_PAGES
 cd $GH_PAGES
 git checkout gh-pages
 cp -r ../doc/_build/html/* .
