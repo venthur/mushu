@@ -26,6 +26,13 @@ Supported Amplifiers
   * g.USBamp by g.tec
   * EPOC by emotiv
 
+Online Documentation
+--------------------
+
+Online documentation is available [here][mushudoc].
+
+  [mushudoc]: http://venthur.github.io/mushu
+
 Motivation
 ----------
 
