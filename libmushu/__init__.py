@@ -29,6 +29,17 @@ class AmpDecorator():
     """This class 'decorates' the Low-Level Amplifier classes with Marker and
     Save-To-File functionality.
 
+    You use it by decorating (not as in Python-Decorator, but in the GoF sense)
+    the low level amplifier class you want to use:
+
+    ::
+
+        import libmushu
+        from libmushu.amps.randomamp import RandomAmp
+
+        amp = libmushu.Ampdecorator(RandomAmp)
+
+
     Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
     On Linux the resolution is 1us. This is due to limitations of Python's
     time.time method, or rather a Windows specific issue.
