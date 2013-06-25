@@ -1,8 +1,8 @@
 # essential
-numpy==1.7.0
-matplotlib==1.2.0
-scipy==0.10.1
+numpy>=1.7.0
+matplotlib>=1.2.0
+scipy>=0.10.1
 # amplifier
-crypto==1.0.0
-pyusb==1.0.0a3
+crypto>=1.0.0
+pyusb>=1.0.0a3
 
