@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu.amps.emotiv &mdash; Mushu alpha documentation</title>
+    <title>libmushu.driver.emotiv &mdash; Mushu alpha documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -46,7 +46,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for libmushu.amps.emotiv</h1><div class="highlight"><pre>
+  <h1>Source code for libmushu.driver.emotiv</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 
 
@@ -56,7 +56,7 @@
 <span class="kn">import</span> <span class="nn">usb.core</span>
 <span class="kn">import</span> <span class="nn">usb.util</span>
 
-<span class="kn">from</span> <span class="nn">amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
+<span class="kn">from</span> <span class="nn">libmushu.amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
 
 
 <span class="n">VENDOR_ID</span> <span class="o">=</span> <span class="mh">0x1234</span>
@@ -65,7 +65,7 @@
 <span class="n">ENDPOINT_IN</span> <span class="o">=</span> <span class="n">usb</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">ENDPOINT_IN</span> <span class="o">|</span> <span class="mi">2</span>  <span class="c"># second endpoint</span>
 
 
-<div class="viewcode-block" id="Epoc"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc">[docs]</a><span class="k">class</span> <span class="nc">Epoc</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
+<div class="viewcode-block" id="Epoc"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc">[docs]</a><span class="k">class</span> <span class="nc">Epoc</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># find amplifier</span>
@@ -101,7 +101,7 @@
                         <span class="s">&#39;Quality T8&#39;</span><span class="p">,</span> <span class="s">&#39;Quality F8&#39;</span><span class="p">,</span> <span class="s">&#39;Quality AF4&#39;</span><span class="p">,</span>
                         <span class="s">&#39;Quality FC6&#39;</span><span class="p">,</span> <span class="s">&#39;Quality F4&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Epoc.get_data"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Epoc.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ENDPOINT_IN</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
             <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
@@ -113,13 +113,13 @@
         <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Epoc.is_available"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
+<div class="viewcode-block" id="Epoc.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">usb</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">idVendor</span><span class="o">=</span><span class="n">VENDOR_ID</span><span class="p">,</span> <span class="n">idProduct</span><span class="o">=</span><span class="n">PRODUCT_ID</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
 </div>
-<div class="viewcode-block" id="Epoc.generate_key"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc.generate_key">[docs]</a>    <span class="k">def</span> <span class="nf">generate_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">research</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Epoc.generate_key"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc.generate_key">[docs]</a>    <span class="k">def</span> <span class="nf">generate_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">research</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the encryption key.</span>
 
 <span class="sd">        The key is based on the serial number of the device and the information</span>
@@ -138,7 +138,7 @@
                            <span class="n">sn</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">sn</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="s">&#39;</span><span class="se">\x50</span><span class="s">&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">key</span>
 </div>
-<div class="viewcode-block" id="Epoc.decrypt"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc.decrypt">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
+<div class="viewcode-block" id="Epoc.decrypt"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc.decrypt">[docs]</a>    <span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Decrypt a raw package.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">raw</span><span class="p">[:</span><span class="mi">16</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="mi">16</span><span class="p">:])</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span>
@@ -147,7 +147,7 @@
             <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">tmp</span>
 </div>
-<div class="viewcode-block" id="Epoc.parse_raw"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.emotiv.Epoc.parse_raw">[docs]</a>    <span class="k">def</span> <span class="nf">parse_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
+<div class="viewcode-block" id="Epoc.parse_raw"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.emotiv.Epoc.parse_raw">[docs]</a>    <span class="k">def</span> <span class="nf">parse_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse raw data.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">shift</span> <span class="o">=</span> <span class="mi">256</span>

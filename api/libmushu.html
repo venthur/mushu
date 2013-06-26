@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../index.html" />
     <link rel="up" title="libmushu" href="modules.html" />
-    <link rel="next" title="amps Package" href="libmushu.amps.html" />
+    <link rel="next" title="driver Package" href="libmushu.driver.html" />
     <link rel="prev" title="libmushu" href="modules.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="libmushu.amps.html" title="amps Package"
+          <a href="libmushu.driver.html" title="driver Package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="modules.html" title="libmushu"
@@ -58,17 +58,85 @@
 <h1>libmushu Package<a class="headerlink" href="#libmushu-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">libmushu</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-libmushu.__init__"></span><dl class="class">
-<dt id="libmushu.__init__.AmpDecorator">
-<em class="property">class </em><tt class="descclassname">libmushu.__init__.</tt><tt class="descname">AmpDecorator</tt><big>(</big><em>ampcls</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with Marker and
+<span class="target" id="module-libmushu.__init__"></span><p>This module provides two functions: <a class="reference internal" href="#libmushu.__init__.get_available_amps" title="libmushu.__init__.get_available_amps"><tt class="xref py py-func docutils literal"><span class="pre">get_available_amps()</span></tt></a> which will tell
+you which amplifiers are currently available on your computer, and
+<a class="reference internal" href="#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">get_amp()</span></tt></a> which you can use to get an amplifier instance to work with.</p>
+<p>How to use libmushu with the decorated drivers (recommended):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
+
+<span class="c"># you know what amp you want to use:</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="s">&#39;epoc&#39;</span><span class="p">)</span>
+<span class="o">...</span>
+
+<span class="c"># Or: you select one of the available amps:</span>
+<span class="n">amps</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">amps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>How to use the libmushu&#8217;s low level driver drivers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You&#8217;ll will most likely want to use the decorated drivers and only deal with
+the low level drivers if you&#8217;re a developer or find that the
+<a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.ampdecorator.AmpDecorator</span></tt></a> does not provide the features you
+need.</p>
+<dl class="function">
+<dt id="libmushu.__init__.get_available_amps">
+<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_available_amps</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_available_amps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_available_amps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all available (e.g. connected) amplifiers.</p>
+<p>This method tests all supported amplifiers if they are connected to the
+system. More precisely: if the amplifiers <cite>is_available</cite> method returns
+True.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A list of the names of the amplifiers which are available.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.__init__.get_amp">
+<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_amp</tt><big>(</big><em>ampname</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_amp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an amplifier instance.</p>
+<p>This factory method takes a low level amplifier driver, wraps it in an
+AmpDecorator and returns an instance.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>ampname: A string representing the desired amplifier. The string must</dt>
+<dd>be a key in the <tt class="xref py py-data docutils literal"><span class="pre">supported_amps</span></tt> dictionary.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>An amplifier instance.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-libmushu.ampdecorator">
+<span id="ampdecorator-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">ampdecorator</span></tt> Module<a class="headerlink" href="#module-libmushu.ampdecorator" title="Permalink to this headline">¶</a></h2>
+<p>This module provides the <a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">AmpDecorator</span></tt></a> class.</p>
+<p>As a user, it is very unlikely that you&#8217;ll have to deal with it directly. Its
+main purpose is to add additional functionality to the low level amplifier
+drivers. This functionality includes features like: saving data to a file. or
+being able to receive marker via TCP/IP.</p>
+<p>By using the <a class="reference internal" href="#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt></a> method, you&#8217;ll automatically
+receive decorated amplifiers.</p>
+<dl class="class">
+<dt id="libmushu.ampdecorator.AmpDecorator">
+<em class="property">class </em><tt class="descclassname">libmushu.ampdecorator.</tt><tt class="descname">AmpDecorator</tt><big>(</big><em>ampcls</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
+<p>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with Marker and
 Save-To-File functionality.</p>
 <p>You use it by decorating (not as in Python-Decorator, but in the GoF sense)
 the low level amplifier class you want to use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
-<span class="kn">from</span> <span class="nn">libmushu.amps.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+<span class="kn">from</span> <span class="nn">libmushu.ampdecorator</span> <span class="kn">import</span> <span class="n">AmpDecorator</span>
+<span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
 
-<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">Ampdecorator</span><span class="p">(</span><span class="n">RandomAmp</span><span class="p">)</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">Ampdecorator</span><span class="p">(</span><span class="n">RandomAmp</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
@@ -86,57 +154,197 @@ with the clock synchronization algorithm as described here:</p>
 <blockquote>
 <div><a class="reference external" href="http://en.wikipedia.org/wiki/Network_Time_Protocol">http://en.wikipedia.org/wiki/Network_Time_Protocol</a></div></blockquote>
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.configure">
-<tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.configure" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.configure">
+<tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.configure" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.configure_with_gui">
-<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.configure_with_gui" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.get_channels">
-<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.get_channels" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.get_channels" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.get_data">
-<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.get_data" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.get_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.start">
-<tt class="descname">start</tt><big>(</big><em>filename=None</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.start" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.start">
+<tt class="descname">start</tt><big>(</big><em>filename=None</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="libmushu.__init__.AmpDecorator.stop">
-<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#AmpDecorator.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.AmpDecorator.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="libmushu.ampdecorator.AmpDecorator.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.stop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
-<dt id="libmushu.__init__.get_available_amps">
-<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_available_amps</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_available_amps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_available_amps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="libmushu.ampdecorator.tcp_reader">
+<tt class="descclassname">libmushu.ampdecorator.</tt><tt class="descname">tcp_reader</tt><big>(</big><em>queue</em>, <em>running</em>, <em>ready</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#tcp_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.tcp_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marker-reading process.</p>
+<p>This method runs in a seperate process and receives TCP markers. Whenever a
+marker is received, it is put together with a timestamp into a queue.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>queue: This queue is used to send markers to a different process.</p>
+<dl class="docutils">
+<dt>running: This event is used to signal this process to terminate its</dt>
+<dd>main loop.</dd>
+<dt>ready: This signal is used to signal the &#8220;parent&#8221;-process that this</dt>
+<dd>process is ready to receive marker.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
 
-<dl class="function">
-<dt id="libmushu.__init__.tcp_reader">
-<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">tcp_reader</tt><big>(</big><em>queue</em>, <em>running</em>, <em>ready</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#tcp_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.tcp_reader" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</div>
+<div class="section" id="module-libmushu.amplifier">
+<span id="amplifier-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">amplifier</span></tt> Module<a class="headerlink" href="#module-libmushu.amplifier" title="Permalink to this headline">¶</a></h2>
+<p>This module provides the <a class="reference internal" href="#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">Amplifier</span></tt></a> class, which is the base class of
+all low level amplifier drivers. If you want to write a driver for a specific
+amplifier your driver must derive from the <a class="reference internal" href="#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">Amplifier</span></tt></a> class and
+implement its methods.</p>
+<p>Users will not use your driver directly but a decorated version of it which
+provides additional features like writing data to a file and receiving marker
+via TCP.</p>
+<dl class="class">
+<dt id="libmushu.amplifier.Amplifier">
+<em class="property">class </em><tt class="descclassname">libmushu.amplifier.</tt><tt class="descname">Amplifier</tt><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Amplifier base class.</p>
+<p>The base class is very generic on purpose. Amplifiers from different
+vendors vary in so many ways that it is difficult to find a common set of
+methods that all support.</p>
+<p>In the spirit of &#8220;encapsulating what varies&#8221;, I decided to encapsulate the
+configuration. So the main configuration of the amplifier, like setting the
+mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in
+<a class="reference internal" href="#libmushu.amplifier.Amplifier.configure" title="libmushu.amplifier.Amplifier.configure"><tt class="xref py py-meth docutils literal"><span class="pre">configure()</span></tt></a> and is very specific for the amplifier at hand.</p>
+<p><a class="reference internal" href="#libmushu.amplifier.Amplifier.start" title="libmushu.amplifier.Amplifier.start"><tt class="xref py py-meth docutils literal"><span class="pre">start()</span></tt></a>, <a class="reference internal" href="#libmushu.amplifier.Amplifier.stop" title="libmushu.amplifier.Amplifier.stop"><tt class="xref py py-meth docutils literal"><span class="pre">stop()</span></tt></a>, and <a class="reference internal" href="#libmushu.amplifier.Amplifier.get_data" title="libmushu.amplifier.Amplifier.get_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_data()</span></tt></a> is very generic and must
+be supported by all derived amplifier classes.</p>
+<p>How an amplifier should be used:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">amp</span> <span class="o">=</span> <span class="n">Amp</span><span class="p">()</span>
+
+<span class="c"># measure impedance</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">enough</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="c"># measure data</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">channels</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_channels</span><span class="p">()</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">enough</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.configure">
+<tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the amplifier.</p>
+<p>Use this method to set the mode (i.e. impedance, data, ...), sampling
+frequency, filter, etc.</p>
+<p>This depends strongly on the amplifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>config: The configuration of the amplifier.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the amplifier interactively.</p>
+<p>Use this method to spawn a GUI which allows for configuring the
+amplifier. After the configuring is done it should call
+<a class="reference internal" href="#libmushu.amplifier.Amplifier.configure" title="libmushu.amplifier.Amplifier.configure"><tt class="xref py py-meth docutils literal"><span class="pre">configure()</span></tt></a> to configure the amplifier.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of channel names.</p>
+<p>The list has the same order as the data, i.e. the second name in the
+list represents the second colum of the data returned by
+<a class="reference internal" href="#libmushu.amplifier.Amplifier.get_data" title="libmushu.amplifier.Amplifier.get_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_data()</span></tt></a>.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A list of channel names.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data from the amplifier.</p>
+<p>This method is called as fast as possible (e.g. hundreds of times per
+second) and returns the data and the marker (if supported).</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A numpy array (time, channels) and a list of markers.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sampling frequency.</p>
+<p>This method returns the sampling frequency which is currently enabled
+in the amplifier.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A float.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.amplifier.Amplifier.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the amplifier connected to the computer?</p>
+<p>This method should be overwritten by derived classes and return True if
+the amplifier is connected to the computer or False if not.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A boolean</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the amplifier ready for delivering data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.amplifier.Amplifier.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/amplifier.html#Amplifier.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.amplifier.Amplifier.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the amplifier.</p>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="libmushu.amps.html">amps Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.amps.html#module-libmushu.amps.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libmushu.driver.html">driver Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#id1"><tt class="docutils literal"><span class="pre">driver</span></tt> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
@@ -154,6 +362,8 @@ with the clock synchronization algorithm as described here:</p>
   <ul>
 <li><a class="reference internal" href="#">libmushu Package</a><ul>
 <li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">libmushu</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-libmushu.ampdecorator"><tt class="docutils literal"><span class="pre">ampdecorator</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a></li>
 <li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 </ul>
 </li>
@@ -165,8 +375,8 @@ with the clock synchronization algorithm as described here:</p>
   <p class="topless"><a href="modules.html"
                         title="previous chapter">libmushu</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="libmushu.amps.html"
-                        title="next chapter">amps Package</a></p>
+  <p class="topless"><a href="libmushu.driver.html"
+                        title="next chapter">driver Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/libmushu.txt"
@@ -199,7 +409,7 @@ with the clock synchronization algorithm as described here:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="libmushu.amps.html" title="amps Package"
+          <a href="libmushu.driver.html" title="driver Package"
              >next</a> |</li>
         <li class="right" >
           <a href="modules.html" title="libmushu"

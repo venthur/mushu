@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu.amps.gtec &mdash; Mushu alpha documentation</title>
+    <title>libmushu.driver.gtec &mdash; Mushu alpha documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -46,7 +46,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for libmushu.amps.gtec</h1><div class="highlight"><pre>
+  <h1>Source code for libmushu.driver.gtec</h1><div class="highlight"><pre>
 <span class="c">#!/usb/bin/env python</span>
 
 <span class="c"># TODO: update to new version of pyusb</span>
@@ -60,7 +60,8 @@
 <span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">iirfilter</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">amplifier</span>
+<span class="kn">from</span> <span class="nn">libmushu.amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
+
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Logger started&#39;</span><span class="p">)</span>
@@ -71,7 +72,7 @@
 <span class="n">CX_OUT</span> <span class="o">=</span> <span class="n">usb</span><span class="o">.</span><span class="n">TYPE_VENDOR</span> <span class="o">|</span> <span class="n">usb</span><span class="o">.</span><span class="n">ENDPOINT_OUT</span>
 
 
-<div class="viewcode-block" id="GUSBamp"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp">[docs]</a><span class="k">class</span> <span class="nc">GUSBamp</span><span class="p">(</span><span class="n">amplifier</span><span class="o">.</span><span class="n">Amplifier</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp">[docs]</a><span class="k">class</span> <span class="nc">GUSBamp</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Initializing GUSBamp instance&#39;</span><span class="p">)</span>
@@ -109,14 +110,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_calibration_mode</span><span class="p">(</span><span class="s">&#39;sine&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_sampling_ferquency</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="p">[</span><span class="bp">False</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)],</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GUSBamp.start"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.start"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xb5</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mh">0x08</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xf7</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GUSBamp.stop"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.stop"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xb8</span><span class="p">,</span> <span class="p">[])</span>
 </div>
-<div class="viewcode-block" id="GUSBamp.get_data"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get data.&quot;&quot;&quot;</span>
         <span class="c"># TODO: should we use numpy arrays right here?</span>
         <span class="c"># TODO: what is the in-endpoint</span>
@@ -144,7 +145,7 @@
         <span class="k">return</span> <span class="n">data</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="GUSBamp.is_available"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
+<div class="viewcode-block" id="GUSBamp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">bus</span> <span class="ow">in</span> <span class="n">usb</span><span class="o">.</span><span class="n">busses</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">bus</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="o">==</span> <span class="n">ID_VENDOR_GTEC</span> <span class="ow">and</span>
@@ -156,7 +157,7 @@
     <span class="c"># Low level amplifier methods</span>
     <span class="c">###########################################################################</span>
 </div>
-<div class="viewcode-block" id="GUSBamp.set_mode"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_mode"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set mode, &#39;impedance&#39;, &#39;data&#39;.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;impedance&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xc9</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -174,7 +175,7 @@
             <span class="k">raise</span> <span class="n">AmpError</span><span class="p">(</span><span class="s">&#39;Unknown mode: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">mode</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="GUSBamp.set_sampling_ferquency"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_sampling_ferquency">[docs]</a>    <span class="k">def</span> <span class="nf">set_sampling_ferquency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">bpfilter</span><span class="p">,</span> <span class="n">notchfilter</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_sampling_ferquency"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_sampling_ferquency">[docs]</a>    <span class="k">def</span> <span class="nf">set_sampling_ferquency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">bpfilter</span><span class="p">,</span> <span class="n">notchfilter</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the sampling frequency and filters for individual channels.</span>
 
 <span class="sd">        Parameters:</span>
@@ -234,7 +235,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xb6</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="GUSBamp.set_calibration_mode"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_calibration_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_calibration_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_calibration_mode"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_calibration_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_calibration_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="c"># buffer: [0x03, 0xd0, 0x07, 0x02, 0x00, 0xff, 0x07]</span>
         <span class="c">#          ====  ==========</span>
         <span class="c"># (1) mode:</span>
@@ -250,11 +251,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AmpError</span><span class="p">(</span><span class="s">&#39;Unknown mode: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">mode</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="GUSBamp.calculate_impedance"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.calculate_impedance">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_impedance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_measured</span><span class="p">,</span> <span class="n">u_applied</span><span class="o">=</span><span class="mf">1e4</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.calculate_impedance"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.calculate_impedance">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_impedance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_measured</span><span class="p">,</span> <span class="n">u_applied</span><span class="o">=</span><span class="mf">1e4</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">u_measured</span> <span class="o">*</span> <span class="mf">1e6</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">u_applied</span> <span class="o">-</span> <span class="n">u_measured</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1e4</span>
 
 </div>
-<div class="viewcode-block" id="GUSBamp.set_common_ground"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_common_ground">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_ground</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_common_ground"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_common_ground">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_ground</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set common ground for the electrodes.</span>
 
 <span class="sd">        Parameters:</span>
@@ -266,7 +267,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xbe</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="GUSBamp.set_common_reference"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_common_reference">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_common_reference"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_common_reference">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set common reference for the electrodes.</span>
 
 <span class="sd">        Parameters:</span>
@@ -278,7 +279,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xbf</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="GUSBamp.set_slave_mode"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.GUSBamp.set_slave_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_slave_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slave</span><span class="p">):</span>
+<div class="viewcode-block" id="GUSBamp.set_slave_mode"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.set_slave_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_slave_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slave</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set amp into slave or master mode.</span>
 
 <span class="sd">        Parameters:</span>
@@ -289,13 +290,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">CX_OUT</span><span class="p">,</span> <span class="mh">0xcd</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </div></div>
-<div class="viewcode-block" id="AmpError"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.AmpError">[docs]</a><span class="k">class</span> <span class="nc">AmpError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="AmpError"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.AmpError">[docs]</a><span class="k">class</span> <span class="nc">AmpError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
 
 </div>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../api/libmushu.amps.html#libmushu.amps.gtec.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">amp</span> <span class="o">=</span> <span class="n">GTecAmp</span><span class="p">()</span>
     <span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>

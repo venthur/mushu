@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>libmushu.ampdecorator &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for libmushu.ampdecorator</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides the :class:`AmpDecorator` class.</span>
+
+<span class="sd">As a user, it is very unlikely that you&#39;ll have to deal with it directly. Its</span>
+<span class="sd">main purpose is to add additional functionality to the low level amplifier</span>
+<span class="sd">drivers. This functionality includes features like: saving data to a file. or</span>
+<span class="sd">being able to receive marker via TCP/IP.</span>
+
+<span class="sd">By using the :func:`libmushu.__init__.get_amp` method, you&#39;ll automatically</span>
+<span class="sd">receive decorated amplifiers.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Event</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">libmushu.amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Logger started&#39;</span><span class="p">)</span>
+
+
+<span class="n">END_MARKER</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+<span class="n">BUFSIZE</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">16</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">12345</span>
+
+
+<div class="viewcode-block" id="AmpDecorator"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator">[docs]</a><span class="k">class</span> <span class="nc">AmpDecorator</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class &#39;decorates&#39; the Low-Level Amplifier classes with Marker and</span>
+<span class="sd">    Save-To-File functionality.</span>
+
+<span class="sd">    You use it by decorating (not as in Python-Decorator, but in the GoF sense)</span>
+<span class="sd">    the low level amplifier class you want to use::</span>
+
+<span class="sd">        import libmushu</span>
+<span class="sd">        from libmushu.ampdecorator import AmpDecorator</span>
+<span class="sd">        from libmushu.driver.randomamp import RandomAmp</span>
+
+<span class="sd">        amp = Ampdecorator(RandomAmp)</span>
+
+<span class="sd">    Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.</span>
+<span class="sd">    On Linux the resolution is 1us. This is due to limitations of Python&#39;s</span>
+<span class="sd">    time.time method, or rather a Windows specific issue.</span>
+
+<span class="sd">    There exists currently no precise timer, providing times which are</span>
+<span class="sd">    comparable between two running processes on Windows. The performance</span>
+<span class="sd">    counter provided on Windows, has a much better resolution but is relative</span>
+<span class="sd">    to the processes start time and it drifts (1s per 100s), so it is only</span>
+<span class="sd">    precise for a relatively short amount of time.</span>
+
+<span class="sd">    If a higher precision is needed one has to replace the time.time calls with</span>
+<span class="sd">    something which provides a better precision. For example one could create a</span>
+<span class="sd">    third process which provides times or regularly synchronize both processes</span>
+<span class="sd">    with the clock synchronization algorithm as described here:</span>
+
+<span class="sd">        http://en.wikipedia.org/wiki/Network_Time_Protocol</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ampcls</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span> <span class="o">=</span> <span class="n">ampcls</span><span class="p">()</span>
+        <span class="c"># Setting this option, will make the Amp to discard all markers from</span>
+        <span class="c"># the underlying amp driver and return only TCP markers. It will also</span>
+        <span class="c"># return the timestamp instead of sample number within block. This is</span>
+        <span class="c"># only useful for debugging and gathering latency information.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_tcp_marker_timestamps</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="AmpDecorator.start"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c"># prepare files for writing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">filename_marker</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.marker&#39;</span>
+            <span class="n">filename_eeg</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.eeg&#39;</span>
+            <span class="n">filename_meta</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.meta&#39;</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filename_marker</span><span class="p">,</span> <span class="n">filename_eeg</span><span class="p">,</span> <span class="n">filename_meta</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;A file &quot;</span><span class="si">%s</span><span class="s">&quot; already exists, aborting.&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh_eeg</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_eeg</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh_marker</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_marker</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh_meta</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_meta</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="c"># write meta data</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Channels&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">get_channels</span><span class="p">(),</span>
+                    <span class="s">&#39;Sampling Frequency&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">get_sampling_frequency</span><span class="p">(),</span>
+                    <span class="s">&#39;Amp&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="p">)</span>
+                    <span class="p">}</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_meta</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="c"># start the marker server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marker_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader_running</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader_running</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">tcp_reader_ready</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">tcp_reader</span><span class="p">,</span>
+                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marker_queue</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader_running</span><span class="p">,</span>
+                                        <span class="n">tcp_reader_ready</span><span class="p">)</span>
+                                  <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Waiting for TCP reader to become ready...&#39;</span><span class="p">)</span>
+        <span class="n">tcp_reader_ready</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;TCP reader is ready...&#39;</span><span class="p">)</span>
+        <span class="c"># zero the sample counter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">received_samples</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c"># start the amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="AmpDecorator.stop"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># stop the amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="c"># stop the marker server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader_running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Waiting for TCP reader process to stop...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcp_reader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;TCP reader process stopped.&#39;</span><span class="p">)</span>
+        <span class="c"># close the files</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Closing files.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">fh</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_eeg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_marker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_meta</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="AmpDecorator.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AmpDecorator.configure_with_gui"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.configure_with_gui">[docs]</a>    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure_with_gui</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="AmpDecorator.get_data"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># get data and marker from underlying amp</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="c"># get tcp marker and merge them with markers from the amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c"># merge markers</span>
+        <span class="n">tcp_marker</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># wait 0.2ms to let late markers arrive in time for this block</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="n">future_markers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">marker_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marker_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_tcp_marker_timestamps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">:</span>
+                    <span class="c">#logger.debug(&#39;Marker is newer than the last sample of the current block, queueing it for the next block.&#39;)</span>
+                    <span class="n">future_markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_old</span>
+                <span class="k">if</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Marker is </span><span class="si">%.2f</span><span class="s">ms older than current block, setting it to first sample of current block.&#39;</span> <span class="o">%</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+                    <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># int(x) truncates towards zero, that&#39;s what we want</span>
+                    <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">get_sampling_frequency</span><span class="p">())</span>
+            <span class="n">tcp_marker</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="c"># put markers which belong to the next block back into the queue</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">future_markers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marker_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debug_tcp_marker_timestamps</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">marker</span> <span class="o">+</span> <span class="n">tcp_marker</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tcp_marker</span><span class="p">)</span>
+        <span class="c"># save data to files</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">marker</span><span class="p">:</span>
+                <span class="c"># If we received 17 samples so far, the index of the last</span>
+                <span class="c"># sample from the last block is 16. Since m[0] is the sample</span>
+                <span class="c"># index of the current block starting with 0,</span>
+                <span class="c"># received_samples + m[0] gives the correct index for the</span>
+                <span class="c"># global marker list.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fh_marker</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%i</span><span class="s"> </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">received_samples</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fh_eeg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&quot;f&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">received_samples</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">marker</span>
+</div>
+<div class="viewcode-block" id="AmpDecorator.get_channels"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">get_channels</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="tcp_reader"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.tcp_reader">[docs]</a><span class="k">def</span> <span class="nf">tcp_reader</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">running</span><span class="p">,</span> <span class="n">ready</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Marker-reading process.</span>
+
+<span class="sd">    This method runs in a seperate process and receives TCP markers. Whenever a</span>
+<span class="sd">    marker is received, it is put together with a timestamp into a queue.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">        queue: This queue is used to send markers to a different process.</span>
+
+<span class="sd">        running: This event is used to signal this process to terminate its</span>
+<span class="sd">            main loop.</span>
+
+<span class="sd">        ready: This signal is used to signal the &quot;parent&quot;-process that this</span>
+<span class="sd">            process is ready to receive marker.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># setup the server socket</span>
+    <span class="n">server_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">server_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">server_socket</span><span class="o">.</span><span class="n">setblocking</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">server_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+    <span class="n">server_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">ready</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="c"># read the socket until &#39;running&#39; is set to false</span>
+    <span class="n">rlist</span><span class="p">,</span> <span class="n">wlist</span><span class="p">,</span> <span class="n">elist</span> <span class="o">=</span> <span class="p">[</span><span class="n">server_socket</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">running</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="n">readables</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">rlist</span><span class="p">,</span> <span class="n">wlist</span><span class="p">,</span> <span class="n">elist</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sock</span> <span class="ow">in</span> <span class="n">readables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sock</span> <span class="o">==</span> <span class="n">server_socket</span><span class="p">:</span>
+                <span class="c"># a new connection is opened</span>
+                <span class="n">connection</span><span class="p">,</span> <span class="n">address</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Incoming connection from </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span>
+                <span class="n">rlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+                <span class="n">data_buffer</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">BUFSIZE</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="c"># an open connection was closed</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Connection closed&#39;</span><span class="p">)</span>
+                    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="n">rlist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># received maybe incomplete data from a</span>
+                    <span class="c"># connection</span>
+                    <span class="c"># TODO: are we? I thought we&#39;re using TCP?</span>
+                    <span class="n">data_buffer</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">data_buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">])</span>
+                    <span class="n">split</span> <span class="o">=</span> <span class="n">data_buffer</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="n">END_MARKER</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c"># data_buffer contains at least one complete</span>
+                        <span class="c"># message</span>
+                        <span class="n">data_buffer</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">messages</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">END_MARKER</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+                            <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">([</span><span class="n">t</span><span class="p">,</span> <span class="n">m</span><span class="p">])</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Terminated select-loop&#39;</span><span class="p">)</span>
+    <span class="c"># close all connections and the socket</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">rlist</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

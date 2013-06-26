@@ -16,8 +16,8 @@ Quickstart
 
     # select the first available amp and decorate it with tcp-marker- and
     # save-to-file-functionality
-    ampcls = available_amps[0]
-    amp = libmushu.AmpDecorator(ampcls)
+    ampname = available_amps[0]
+    amp = libmushu.get_amp(ampname)
 
     # configure the amplifier
     amp.configure(cfg)

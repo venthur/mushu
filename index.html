@@ -58,8 +58,8 @@
 
 <span class="c"># select the first available amp and decorate it with tcp-marker- and</span>
 <span class="c"># save-to-file-functionality</span>
-<span class="n">ampcls</span> <span class="o">=</span> <span class="n">available_amps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">AmpDecorator</span><span class="p">(</span><span class="n">ampcls</span><span class="p">)</span>
+<span class="n">ampname</span> <span class="o">=</span> <span class="n">available_amps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">ampname</span><span class="p">)</span>
 
 <span class="c"># configure the amplifier</span>
 <span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>

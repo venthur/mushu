@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>driver Package &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="up" title="libmushu Package" href="libmushu.html" />
+    <link rel="prev" title="libmushu Package" href="libmushu.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.html" title="libmushu Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" >libmushu</a> &raquo;</li>
+          <li><a href="libmushu.html" accesskey="U">libmushu Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="driver-package">
+<h1>driver Package<a class="headerlink" href="#driver-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">driver</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-libmushu.driver"></span><p>This package contains the low-level drivers for various amplifiers.</p>
+<p>As a user, you&#8217;ll probably not deal with them directly but with their decorated
+counterparts via <a class="reference internal" href="libmushu.html#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt></a>.</p>
+<p>If you want to use the low level drivers directly you can use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>TODO: Add a &#8216;writing your own drivers&#8217; section or tutorial.</p>
+</div>
+<div class="section" id="module-libmushu.driver.emotiv">
+<span id="emotiv-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">emotiv</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.emotiv" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.driver.emotiv.Epoc">
+<em class="property">class </em><tt class="descclassname">libmushu.driver.emotiv.</tt><tt class="descname">Epoc</tt><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
+<dl class="method">
+<dt id="libmushu.driver.emotiv.Epoc.decrypt">
+<tt class="descname">decrypt</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.decrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.decrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypt a raw package.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.emotiv.Epoc.generate_key">
+<tt class="descname">generate_key</tt><big>(</big><em>sn</em>, <em>research=True</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.generate_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.generate_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the encryption key.</p>
+<p>The key is based on the serial number of the device and the information
+weather it is a research- or consumer device.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.emotiv.Epoc.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.driver.emotiv.Epoc.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.emotiv.Epoc.parse_raw">
+<tt class="descname">parse_raw</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.parse_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.parse_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse raw data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-libmushu.driver.gtec">
+<span id="gtec-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">gtec</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.gtec" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="libmushu.driver.gtec.AmpError">
+<em class="property">exception </em><tt class="descclassname">libmushu.driver.gtec.</tt><tt class="descname">AmpError</tt><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#AmpError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.AmpError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="libmushu.driver.gtec.GUSBamp">
+<em class="property">class </em><tt class="descclassname">libmushu.driver.gtec.</tt><tt class="descname">GUSBamp</tt><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.calculate_impedance">
+<tt class="descname">calculate_impedance</tt><big>(</big><em>u_measured</em>, <em>u_applied=10000.0</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.calculate_impedance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.calculate_impedance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.driver.gtec.GUSBamp.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_calibration_mode">
+<tt class="descname">set_calibration_mode</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_calibration_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_calibration_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_common_ground">
+<tt class="descname">set_common_ground</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_common_ground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_common_ground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set common ground for the electrodes.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd><dl class="first last docutils">
+<dt>a, b, c, d &#8211; correspond to the groups on the amp, either of them</dt>
+<dd>can be true or false</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_common_reference">
+<tt class="descname">set_common_reference</tt><big>(</big><em>a=False</em>, <em>b=False</em>, <em>c=False</em>, <em>d=False</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_common_reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_common_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set common reference for the electrodes.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd><dl class="first last docutils">
+<dt>a, b, c, d &#8211; correspond to the groups on the amp, either of them</dt>
+<dd>can be true or false</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_mode">
+<tt class="descname">set_mode</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set mode, &#8216;impedance&#8217;, &#8216;data&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_sampling_ferquency">
+<tt class="descname">set_sampling_ferquency</tt><big>(</big><em>fs</em>, <em>channels</em>, <em>bpfilter</em>, <em>notchfilter</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_sampling_ferquency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_sampling_ferquency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the sampling frequency and filters for individual channels.</p>
+<p>Parameters:
+fs &#8211; sampling frequency
+channels &#8211; list of booleans: channels[0] == True: enable filter for channel 0
+bpfilter &#8211; tuple: parameters for the band pass filter (hp, lp, fs, order) or None
+notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, order) or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.set_slave_mode">
+<tt class="descname">set_slave_mode</tt><big>(</big><em>slave</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.set_slave_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.set_slave_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set amp into slave or master mode.</p>
+<dl class="docutils">
+<dt>Parameters:</dt>
+<dd>slave &#8211; if true, set into slave mode, set to master otherwise</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.gtec.GUSBamp.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#GUSBamp.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.GUSBamp.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.driver.gtec.main">
+<tt class="descclassname">libmushu.driver.gtec.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-libmushu.driver.randomamp">
+<span id="randomamp-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">randomamp</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.randomamp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.driver.randomamp.ConfigDialog">
+<em class="property">class </em><tt class="descclassname">libmushu.driver.randomamp.</tt><tt class="descname">ConfigDialog</tt><big>(</big><em>amp</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#ConfigDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.ConfigDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">Tkinter.Toplevel</span></tt></p>
+<dl class="method">
+<dt id="libmushu.driver.randomamp.ConfigDialog.cancel_pressed">
+<tt class="descname">cancel_pressed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#ConfigDialog.cancel_pressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.ConfigDialog.cancel_pressed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.randomamp.ConfigDialog.ok_pressed">
+<tt class="descname">ok_pressed</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#ConfigDialog.ok_pressed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.ConfigDialog.ok_pressed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="libmushu.driver.randomamp.RandomAmp">
+<em class="property">class </em><tt class="descclassname">libmushu.driver.randomamp.</tt><tt class="descname">RandomAmp</tt><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
+<p>An amplifier that produces random data.</p>
+<dl class="method">
+<dt id="libmushu.driver.randomamp.RandomAmp.configure">
+<tt class="descname">configure</tt><big>(</big><em>cfg</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.randomamp.RandomAmp.configure_with_gui">
+<tt class="descname">configure_with_gui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.configure_with_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.configure_with_gui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="libmushu.driver.randomamp.RandomAmp.elapsed">
+<tt class="descname">elapsed</tt><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.elapsed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.randomamp.RandomAmp.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.randomamp.RandomAmp.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.randomamp.RandomAmp.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.driver.randomamp.RandomAmp.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="libmushu.driver.randomamp.RandomAmp.sample_len">
+<tt class="descname">sample_len</tt><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp.sample_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp.sample_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.driver.randomamp.test_configgui">
+<tt class="descclassname">libmushu.driver.randomamp.</tt><tt class="descname">test_configgui</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#test_configgui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.test_configgui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">driver Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">driver</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libmushu.html"
+                        title="previous chapter">libmushu Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/libmushu.driver.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.html" title="libmushu Package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="modules.html" >libmushu</a> &raquo;</li>
+          <li><a href="libmushu.html" >libmushu Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>libmushu.amplifier &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for libmushu.amplifier</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides the :class:`Amplifier` class, which is the base class of</span>
+<span class="sd">all low level amplifier drivers. If you want to write a driver for a specific</span>
+<span class="sd">amplifier your driver must derive from the :class:`Amplifier` class and</span>
+<span class="sd">implement its methods.</span>
+
+<span class="sd">Users will not use your driver directly but a decorated version of it which</span>
+<span class="sd">provides additional features like writing data to a file and receiving marker</span>
+<span class="sd">via TCP.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Amplifier"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier">[docs]</a><span class="k">class</span> <span class="nc">Amplifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Amplifier base class.</span>
+
+<span class="sd">    The base class is very generic on purpose. Amplifiers from different</span>
+<span class="sd">    vendors vary in so many ways that it is difficult to find a common set of</span>
+<span class="sd">    methods that all support.</span>
+
+<span class="sd">    In the spirit of &quot;encapsulating what varies&quot;, I decided to encapsulate the</span>
+<span class="sd">    configuration. So the main configuration of the amplifier, like setting the</span>
+<span class="sd">    mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in</span>
+<span class="sd">    :meth:`configure` and is very specific for the amplifier at hand.</span>
+
+<span class="sd">    :meth:`start`, :meth:`stop`, and :meth:`get_data` is very generic and must</span>
+<span class="sd">    be supported by all derived amplifier classes.</span>
+
+<span class="sd">    How an amplifier should be used::</span>
+
+<span class="sd">        amp = Amp()</span>
+
+<span class="sd">        # measure impedance</span>
+<span class="sd">        amp.configure(config)</span>
+<span class="sd">        amp.start()</span>
+<span class="sd">        while 1:</span>
+<span class="sd">            data = amp.get_data()</span>
+<span class="sd">            if enough:</span>
+<span class="sd">                break</span>
+<span class="sd">        amp.stop()</span>
+
+<span class="sd">        # measure data</span>
+<span class="sd">        amp.configure(config)</span>
+<span class="sd">        channels = amp.get_channels()</span>
+<span class="sd">        amp.start()</span>
+<span class="sd">        while 1:</span>
+<span class="sd">            data = amp.get_data()</span>
+<span class="sd">            if enough:</span>
+<span class="sd">                break</span>
+<span class="sd">        amp.stop()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Amplifier.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure the amplifier.</span>
+
+<span class="sd">        Use this method to set the mode (i.e. impedance, data, ...), sampling</span>
+<span class="sd">        frequency, filter, etc.</span>
+
+<span class="sd">        This depends strongly on the amplifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: The configuration of the amplifier.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Amplifier.configure_with_gui"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure_with_gui">[docs]</a>    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure the amplifier interactively.</span>
+
+<span class="sd">        Use this method to spawn a GUI which allows for configuring the</span>
+<span class="sd">        amplifier. After the configuring is done it should call</span>
+<span class="sd">        :meth:`configure` to configure the amplifier.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Amplifier.start"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make the amplifier ready for delivering data.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Amplifier.stop"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stop the amplifier.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Amplifier.get_data"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get data from the amplifier.</span>
+
+<span class="sd">        This method is called as fast as possible (e.g. hundreds of times per</span>
+<span class="sd">        second) and returns the data and the marker (if supported).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A numpy array (time, channels) and a list of markers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Amplifier.get_channels"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of channel names.</span>
+
+<span class="sd">        The list has the same order as the data, i.e. the second name in the</span>
+<span class="sd">        list represents the second colum of the data returned by</span>
+<span class="sd">        :meth:`get_data`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of channel names.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Amplifier.get_sampling_frequency"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_sampling_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the sampling frequency.</span>
+
+<span class="sd">        This method returns the sampling frequency which is currently enabled</span>
+<span class="sd">        in the amplifier.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A float.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Amplifier.is_available"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Is the amplifier connected to the computer?</span>
+
+<span class="sd">        This method should be overwritten by derived classes and return True if</span>
+<span class="sd">        the amplifier is connected to the computer or False if not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

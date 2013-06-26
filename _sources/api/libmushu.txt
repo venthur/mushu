@@ -9,10 +9,26 @@ libmushu Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`ampdecorator` Module
+--------------------------
+
+.. automodule:: libmushu.ampdecorator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`amplifier` Module
+-----------------------
+
+.. automodule:: libmushu.amplifier
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
 .. toctree::
 
-    libmushu.amps
+    libmushu.driver
 
