@@ -7,7 +7,7 @@ import numpy as np
 import usb.core
 import usb.util
 
-from amplifier import Amplifier
+from libmushu.amplifier import Amplifier
 
 
 VENDOR_ID = 0x1234

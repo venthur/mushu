@@ -11,7 +11,8 @@ import usb
 from scipy.signal import iirfilter
 import numpy as np
 
-import amplifier
+from libmushu.amplifier import Amplifier
+
 
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
@@ -22,7 +23,7 @@ ID_PRODUCT_GUSB_AMP = 0x0001
 CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
 
 
-class GUSBamp(amplifier.Amplifier):
+class GUSBamp(Amplifier):
 
     def __init__(self):
         logger.info('Initializing GUSBamp instance')

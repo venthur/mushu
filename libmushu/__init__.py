@@ -2,242 +2,70 @@ from __future__ import division
 
 from importlib import import_module
 import logging
-import select
-import socket
-import time
-from multiprocessing import Process, Queue, Event
-import os
-import struct
-import json
+
+from libmushu.ampdecorator import AmpDecorator
 
 
-END_MARKER = '\n'
-BUFSIZE = 2**16
-PORT = 12345
+__all__ = ['supported_amps', 'get_available_amps', 'get_amp']
 
 
-_available_amps = [['emotiv', 'Epoc'],
-                   ['gtec', 'GUSBamp'],
-                   ['randomamp', 'RandomAmp']]
+# TODO: give proper names
+# TODO: low level driver must have a real name to 
+supported_amps = {
+    'emotiv': ['emotiv', 'Epoc'],
+    'gtec': ['gtec', 'GUSBamp'],
+    'randomamp': ['randomamp', 'RandomAmp']
+}
 
 
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 
-class AmpDecorator():
-    """This class 'decorates' the Low-Level Amplifier classes with Marker and
-    Save-To-File functionality.
+def get_available_amps():
+    """Retrieves all available (e.g. connected) amplifiers.
 
-    You use it by decorating (not as in Python-Decorator, but in the GoF sense)
-    the low level amplifier class you want to use:
+    This method tests all supported amplifiers if they are connected to the
+    system. More precisely: if the amplifiers `is_available` method returns
+    True.
 
-    ::
-
-        import libmushu
-        from libmushu.amps.randomamp import RandomAmp
-
-        amp = libmushu.Ampdecorator(RandomAmp)
-
-
-    Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
-    On Linux the resolution is 1us. This is due to limitations of Python's
-    time.time method, or rather a Windows specific issue.
-
-    There exists currently no precise timer, providing times which are
-    comparable between two running processes on Windows. The performance
-    counter provided on Windows, has a much better resolution but is relative
-    to the processes start time and it drifts (1s per 100s), so it is only
-    precise for a relatively short amount of time.
-
-    If a higher precision is needed one has to replace the time.time calls with
-    something which provides a better precision. For example one could create a
-    third process which provides times or regularly synchronize both processes
-    with the clock synchronization algorithm as described here:
-
-        http://en.wikipedia.org/wiki/Network_Time_Protocol
+    Returns:
+        A list of the names of the amplifiers which are available.
 
     """
-
-    def __init__(self, ampcls):
-        self.amp = ampcls()
-        # Setting this option, will make the Amp to discard all markers from
-        # the underlying amp driver and return only TCP markers. It will also
-        # return the timestamp instead of sample number within block. This is
-        # only useful for debugging and gathering latency information.
-        self._debug_tcp_marker_timestamps = False
-        self.write_to_file = False
-
-    def start(self, filename=None):
-        # prepare files for writing
-        self.write_to_file = False
-        if filename is not None:
-            self.write_to_file = True
-            filename_marker = filename + '.marker'
-            filename_eeg = filename + '.eeg'
-            filename_meta = filename + '.meta'
-            for filename in filename_marker, filename_eeg, filename_meta:
-                if os.path.exists(filename):
-                    logger.error('A file "%s" already exists, aborting.' % filename)
-                    raise Exception
-            self.fh_eeg = open(filename_eeg, 'w')
-            self.fh_marker = open(filename_marker, 'w')
-            self.fh_meta = open(filename_meta, 'w')
-            # write meta data
-            meta = {'Channels': self.amp.get_channels(),
-                    'Sampling Frequency': self.amp.get_sampling_frequency(),
-                    'Amp': str(self.amp)
-                    }
-            json.dump(meta, self.fh_meta, indent=4)
-
-        # start the marker server
-        self.marker_queue = Queue()
-        self.tcp_reader_running = Event()
-        self.tcp_reader_running.set()
-        tcp_reader_ready = Event()
-        self.tcp_reader = Process(target=tcp_reader,
-                                  args=(self.marker_queue,
-                                        self.tcp_reader_running,
-                                        tcp_reader_ready)
-                                  )
-        self.tcp_reader.start()
-        logger.debug('Waiting for TCP reader to become ready...')
-        tcp_reader_ready.wait()
-        logger.debug('TCP reader is ready...')
-        # zero the sample counter
-        self.received_samples = 0
-        # start the amp
-        self.time = time.time()
-        self.amp.start()
-
-    def stop(self):
-        # stop the amp
-        self.amp.stop()
-        # stop the marker server
-        self.tcp_reader_running.clear()
-        logger.debug('Waiting for TCP reader process to stop...')
-        self.tcp_reader.join()
-        logger.debug('TCP reader process stopped.')
-        # close the files
-        if self.write_to_file:
-            logger.debug('Closing files.')
-            for fh in self.fh_eeg, self.fh_marker, self.fh_meta:
-                fh.close()
-
-    def configure(self, config):
-        self.amp.configure(config)
-
-    def configure_with_gui(self):
-        self.amp.configure_with_gui()
-
-    def get_data(self):
-        # get data and marker from underlying amp
-        data, marker = self.amp.get_data()
-        # get tcp marker and merge them with markers from the amp
-        self.time_old = self.time
-        self.time = time.time()
-        # merge markers
-        tcp_marker = []
-        # wait 0.2ms to let late markers arrive in time for this block
-        time.sleep(0.2 / 1000)
-        future_markers = []
-        while not self.marker_queue.empty():
-            m = self.marker_queue.get()
-            if not self._debug_tcp_marker_timestamps:
-                if m[0] > self.time:
-                    #logger.debug('Marker is newer than the last sample of the current block, queueing it for the next block.')
-                    future_markers.append(m)
-                    continue
-                dt = m[0] - self.time_old
-                if dt < 0:
-                    logger.warning('Marker is %.2fms older than current block, setting it to first sample of current block.' % abs(dt * 1000))
-                    m[0] = 0
-                else:
-                    # int(x) truncates towards zero, that's what we want
-                    m[0] = int(dt * self.amp.get_sampling_frequency())
-            tcp_marker.append(m)
-        # put markers which belong to the next block back into the queue
-        for m in future_markers:
-            self.marker_queue.put(m)
-        if not self._debug_tcp_marker_timestamps:
-            marker = sorted(marker + tcp_marker)
-        else:
-            marker = sorted(tcp_marker)
-        # save data to files
-        if self.write_to_file:
-            for m in marker:
-                # If we received 17 samples so far, the index of the last
-                # sample from the last block is 16. Since m[0] is the sample
-                # index of the current block starting with 0,
-                # received_samples + m[0] gives the correct index for the
-                # global marker list.
-                self.fh_marker.write("%i %s\n" % (self.received_samples + m[0], m[1]))
-            for t in data:
-                for c in t:
-                    self.fh_eeg.write(struct.pack("f", c))
-        self.received_samples += len(data)
-        return data, marker
-
-    def get_channels(self):
-        return self.amp.get_channels()
-
-
-def tcp_reader(queue, running, ready):
-    # setup the server socket
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.setblocking(0)
-    server_socket.bind(('localhost', PORT))
-    server_socket.listen(5)
-    ready.set()
-    # read the socket until 'running' is set to false
-    rlist, wlist, elist = [server_socket], [], []
-    while running.is_set():
-        readables, _, _ = select.select(rlist, wlist, elist, 1)
-        t = time.time()
-        for sock in readables:
-            if sock == server_socket:
-                # a new connection is opened
-                connection, address = sock.accept()
-                logger.debug('Incoming connection from %s', address)
-                rlist.append(connection)
-                data_buffer = ''
-            else:
-                data = sock.recv(BUFSIZE)
-                if not data:
-                    # an open connection was closed
-                    logger.debug('Connection closed')
-                    sock.close()
-                    rlist.remove(sock)
-                else:
-                    # received maybe incomplete data from a
-                    # connection
-                    data_buffer = ''.join([data_buffer, data])
-                    split = data_buffer.rsplit(END_MARKER, 1)
-                    messages = []
-                    if len(split) > 1:
-                        # data_buffer contains at least one complete
-                        # message
-                        data_buffer = split[1]
-                        messages = split[0].split(END_MARKER)
-                        for m in messages:
-                            queue.put([t, m])
-    logger.debug('Terminated select-loop')
-    sock.close()
-
-
-def get_available_amps():
     available_amps = []
-    for mod, cls in _available_amps:
+    for name, (mod, cls) in supported_amps.items():
         try:
-            m = import_module('libmushu.amps.' + mod)
+            m = import_module('libmushu.driver.' + mod)
         except ImportError:
             logger.warning('Unable to import %s' % mod, exc_info=True)
             continue
         try:
             c = getattr(m, cls)
             if c.is_available():
-                available_amps.append(c)
+                available_amps.append(name)
         except:
             logger.warning('Unable to test if %s is available' % cls, exc_info=True)
     return available_amps
+
+
+def get_amp(ampname):
+    """Get an amplifier instance.
+
+
+    This factory method takes a low level amplifier driver, wraps it in an
+    AmpDecorator and returns an instance.
+
+    Args:
+        ampname: A string representing the desired amplifier. The string must
+            be a key in the supported_amps dictionary.
+
+    Returns:
+        An amplifier instance.
+
+    """
+    mod, cls = supported_amps.get(ampname)
+    m = import_module('libmushu.driver.' + mod)
+    c = getattr(m, cls)
+    return AmpDecorator(c)
+

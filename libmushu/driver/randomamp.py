@@ -7,7 +7,7 @@ import json
 
 import numpy as np
 
-from amplifier import Amplifier
+from libmushu.amplifier import Amplifier
 
 
 class RandomAmp(Amplifier):
