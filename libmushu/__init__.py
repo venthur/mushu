@@ -57,7 +57,7 @@ def get_amp(ampname):
 
     Args:
         ampname: A string representing the desired amplifier. The string must
-            be a key in the supported_amps dictionary.
+            be a key in the :data:`supported_amps` dictionary.
 
     Returns:
         An amplifier instance.
