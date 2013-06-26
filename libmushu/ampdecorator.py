@@ -1,3 +1,16 @@
+"""
+This module provides the :class:`AmpDecorator` class.
+
+As a user, it is very unlikely that you'll have to deal with it directly. Its
+main purpose is to add additional functionality to the low level amplifier
+drivers. This functionality includes features like: saving data to a file. or
+being able to receive marker via TCP/IP.
+
+By using the :func:`libmushu.__init__.get_amp` method, you'll automatically
+receive decorated amplifiers.
+
+"""
+
 from __future__ import division
 
 import select
@@ -26,15 +39,13 @@ class AmpDecorator(Amplifier):
     Save-To-File functionality.
 
     You use it by decorating (not as in Python-Decorator, but in the GoF sense)
-    the low level amplifier class you want to use:
-
-    ::
+    the low level amplifier class you want to use::
 
         import libmushu
-        from libmushu.amps.randomamp import RandomAmp
+        from libmushu.ampdecorator import AmpDecorator
+        from libmushu.driver.randomamp import RandomAmp
 
-        amp = libmushu.Ampdecorator(RandomAmp)
-
+        amp = Ampdecorator(RandomAmp)
 
     Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
     On Linux the resolution is 1us. This is due to limitations of Python's
@@ -179,6 +190,22 @@ class AmpDecorator(Amplifier):
 
 
 def tcp_reader(queue, running, ready):
+    """Marker-reading process.
+
+    This method runs in a seperate process and receives TCP markers. Whenever a
+    marker is received, it is put together with a timestamp into a queue.
+
+    Args:
+
+        queue: This queue is used to send markers to a different process.
+
+        running: This event is used to signal this process to terminate its
+            main loop.
+
+        ready: This signal is used to signal the "parent"-process that this
+            process is ready to receive marker.
+
+    """
     # setup the server socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -208,6 +235,7 @@ def tcp_reader(queue, running, ready):
                 else:
                     # received maybe incomplete data from a
                     # connection
+                    # TODO: are we? I thought we're using TCP?
                     data_buffer = ''.join([data_buffer, data])
                     split = data_buffer.rsplit(END_MARKER, 1)
                     messages = []
