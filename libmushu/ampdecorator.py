@@ -9,6 +9,9 @@ import struct
 import json
 import logging
 
+from libmushu.amplifier import Amplifier
+
+
 logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
@@ -18,7 +21,7 @@ BUFSIZE = 2**16
 PORT = 12345
 
 
-class AmpDecorator():
+class AmpDecorator(Amplifier):
     """This class 'decorates' the Low-Level Amplifier classes with Marker and
     Save-To-File functionality.
 
