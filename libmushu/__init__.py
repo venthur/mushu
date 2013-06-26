@@ -1,3 +1,34 @@
+"""
+This module provides two functions: :func:`get_available_amps` which will tell
+you which amplifiers are currently available on your computer, and
+:func:`get_amp` which you can use to get an amplifier instance to work with.
+
+How to use libmushu with the decorated drivers (recommended)::
+
+    import libmushu
+
+    # you know what amp you want to use:
+    amp = libmushu.get_amp('epoc')
+    ...
+
+    # Or: you select one of the available amps:
+    amps = libmushu.get_available_amps()
+    amp = libmushu.get_amp(amps[0])
+    ...
+
+How to use the libmushu's low level driver drivers::
+
+    from libmushu.driver.randomamp import RandomAmp
+    amp = RandomAmp()
+
+You'll will most likely want to use the decorated drivers and only deal with
+the low level drivers if you're a developer or find that the
+:class:`libmushu.ampdecorator.AmpDecorator` does not provide the features you
+need.
+
+"""
+
+
 from __future__ import division
 
 from importlib import import_module
@@ -9,7 +40,7 @@ from libmushu.ampdecorator import AmpDecorator
 __all__ = ['supported_amps', 'get_available_amps', 'get_amp']
 
 
-# TODO: low level driver must have a real name to 
+# TODO: low level driver must have a real name?
 supported_amps = {
     'epoc': ['emotiv', 'Epoc'],
     'gusbamp': ['gtec', 'GUSBamp'],
