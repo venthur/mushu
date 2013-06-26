@@ -9,11 +9,10 @@ from libmushu.ampdecorator import AmpDecorator
 __all__ = ['supported_amps', 'get_available_amps', 'get_amp']
 
 
-# TODO: give proper names
 # TODO: low level driver must have a real name to 
 supported_amps = {
-    'emotiv': ['emotiv', 'Epoc'],
-    'gtec': ['gtec', 'GUSBamp'],
+    'epoc': ['emotiv', 'Epoc'],
+    'gusbamp': ['gtec', 'GUSBamp'],
     'randomamp': ['randomamp', 'RandomAmp']
 }
 
