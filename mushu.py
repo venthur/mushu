@@ -74,8 +74,8 @@ class Gui(ttk.Frame):
         self.canvas.show()
         self.axis = fig.add_subplot(111)
 
-        ampcls = available_amps[0]
-        self.amp = libmushu.AmpDecorator(ampcls)
+        ampname = available_amps[0]
+        self.amp = libmushu.get_amp(ampname)
         self.amp.start()
 
         self.channels = self.amp.get_channels()

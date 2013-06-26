@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from __future__ import division
 
 import time
 import math
@@ -37,7 +38,7 @@ class RandomAmp(Amplifier):
 
     @property
     def sample_len(self):
-        return 1. / self.fs
+        return 1 / self.fs
 
     @property
     def elapsed(self):
