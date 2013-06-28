@@ -47,6 +47,25 @@
           <div class="body">
             
   <h1>Source code for libmushu.driver.randomamp</h1><div class="highlight"><pre>
+<span class="c"># randomamp.py</span>
+<span class="c"># Copyright (C) 2013  Bastian Venthur</span>
+<span class="c">#</span>
+<span class="c"># This program is free software; you can redistribute it and/or</span>
+<span class="c"># modify it under the terms of the GNU General Public License</span>
+<span class="c"># as published by the Free Software Foundation; either version 2</span>
+<span class="c"># of the License, or (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with this program; if not, write to the Free Software</span>
+<span class="c"># Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">Tkinter</span> <span class="kn">as</span> <span class="nn">tk</span>
@@ -58,8 +77,8 @@
 <span class="kn">from</span> <span class="nn">libmushu.amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
 
 
-<span class="k">class</span> <span class="nc">RandomAmp</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
-<div class="viewcode-block" id="RandomAmp"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp">[docs]</a>    <span class="sd">&quot;&quot;&quot;An amplifier that produces random data.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RandomAmp"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp">[docs]</a><span class="k">class</span> <span class="nc">RandomAmp</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An amplifier that produces random data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="mi">17</span>
@@ -67,15 +86,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sample_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="RandomAmp.sample_len"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.sample_len">[docs]</a>        <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
-
-    <span class="nd">@property</span></div>
-    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="RandomAmp.elapsed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.elapsed">[docs]</a>        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span>
-
-    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="RandomAmp.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_data">[docs]</a>        <span class="c"># simulate blocking until we have enough data</span>
+<div class="viewcode-block" id="RandomAmp.sample_len"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.sample_len">[docs]</a>    <span class="k">def</span> <span class="nf">sample_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="RandomAmp.elapsed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span>
+</div>
+<div class="viewcode-block" id="RandomAmp.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># simulate blocking until we have enough data</span>
         <span class="n">elapsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span>
         <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_len</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_len</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
@@ -84,27 +103,27 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="p">[]</span>
-
-    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="RandomAmp.configure_with_gui"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.configure_with_gui">[docs]</a>        <span class="n">dialog</span> <span class="o">=</span> <span class="n">ConfigDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span></div>
-<div class="viewcode-block" id="RandomAmp.configure"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.configure">[docs]</a>        <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RandomAmp.configure_with_gui"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.configure_with_gui">[docs]</a>    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">ConfigDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RandomAmp.configure"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s">&#39;fs&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s">&#39;channels&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="RandomAmp.get_channels"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s">&#39;Ch_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="RandomAmp.get_sampling_frequency"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_sampling_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="RandomAmp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div></div>
+<div class="viewcode-block" id="ConfigDialog"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog">[docs]</a><span class="k">class</span> <span class="nc">ConfigDialog</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="RandomAmp.get_channels"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_channels">[docs]</a>        <span class="k">return</span> <span class="p">[</span><span class="s">&#39;Ch_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="RandomAmp.get_sampling_frequency"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_sampling_frequency">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
-
-    <span class="nd">@staticmethod</span></div>
-    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
-<div class="viewcode-block" id="RandomAmp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.is_available">[docs]</a>        <span class="k">return</span> <span class="bp">True</span>
-
-<span class="k">class</span> <span class="nc">ConfigDialog</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">):</span></div></div>
-<div class="viewcode-block" id="ConfigDialog"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog">[docs]</a>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">):</span>
         <span class="n">tk</span><span class="o">.</span><span class="n">Toplevel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amp</span> <span class="o">=</span> <span class="n">amp</span>
@@ -139,26 +158,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">grab_set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">wait_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">ok_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="ConfigDialog.ok_pressed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog.ok_pressed">[docs]</a>        <span class="n">fs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sbox_fs</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="viewcode-block" id="ConfigDialog.ok_pressed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog.ok_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">ok_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sbox_fs</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sbox_chan</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fs&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">fs</span><span class="p">),</span>
                <span class="s">&#39;channels&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
                <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ConfigDialog.cancel_pressed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog.cancel_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">cancel_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="ConfigDialog.cancel_pressed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.ConfigDialog.cancel_pressed">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">test_configgui</span><span class="p">():</span></div></div>
-<div class="viewcode-block" id="test_configgui"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.test_configgui">[docs]</a>    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+</div></div>
+<div class="viewcode-block" id="test_configgui"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.test_configgui">[docs]</a><span class="k">def</span> <span class="nf">test_configgui</span><span class="p">():</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
     <span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
     <span class="n">amp</span><span class="o">.</span><span class="n">configure_with_gui</span><span class="p">()</span>
     <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span></div>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">test_configgui</span><span class="p">()</span>
 
 <span class="c">#    amp = RandomAmp()</span>
