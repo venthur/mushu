@@ -82,6 +82,34 @@ class AmpDecorator(Amplifier):
 
         http://en.wikipedia.org/wiki/Network_Time_Protocol
 
+    Alternatively one could use `timeGetTime` from Windows' Multi Media
+    library, which is tunable via `timeBeginPeriod` and provides a
+    precision of 1-2ms. Apparently this is the way Chrome and many
+    others do it.::
+
+        from __future__ import division
+
+        from ctypes import windll
+        import time
+
+        timeBeginPeriod = windll.winmm.timeBeginPeriod
+        timeEndPeriod = windll.winmm.timeEndPeriod
+        timeGetTime = windll.winmm.timeGetTime
+
+        if __name__ == '__main__':
+            # wrap the code that needs high precision in timeBegin- and
+            # timeEndPeriod with the same parameter. The parameter is
+            # the interval in ms you want as precision. Usually the
+            # minimum value allowed is 1 (best).
+            timeBeginPeriod(1)
+            times = []
+            t_start = time.time()
+            while time.time() < (time.time() + 1):
+                times.append(timeGetTime())
+            times = sorted(list(set(times)))
+            print(1000 / len(times))
+            timeEndPeriod(1)
+
     """
 
     def __init__(self, ampcls):
