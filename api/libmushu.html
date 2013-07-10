@@ -153,6 +153,34 @@ third process which provides times or regularly synchronize both processes
 with the clock synchronization algorithm as described here:</p>
 <blockquote>
 <div><a class="reference external" href="http://en.wikipedia.org/wiki/Network_Time_Protocol">http://en.wikipedia.org/wiki/Network_Time_Protocol</a></div></blockquote>
+<p>Alternatively one could use <cite>timeGetTime</cite> from Windows&#8217; Multi Media
+library, which is tunable via <cite>timeBeginPeriod</cite> and provides a
+precision of 1-2ms. Apparently this is the way Chrome and many
+others do it.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">windll</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">timeBeginPeriod</span> <span class="o">=</span> <span class="n">windll</span><span class="o">.</span><span class="n">winmm</span><span class="o">.</span><span class="n">timeBeginPeriod</span>
+<span class="n">timeEndPeriod</span> <span class="o">=</span> <span class="n">windll</span><span class="o">.</span><span class="n">winmm</span><span class="o">.</span><span class="n">timeEndPeriod</span>
+<span class="n">timeGetTime</span> <span class="o">=</span> <span class="n">windll</span><span class="o">.</span><span class="n">winmm</span><span class="o">.</span><span class="n">timeGetTime</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c"># wrap the code that needs high precision in timeBegin- and</span>
+    <span class="c"># timeEndPeriod with the same parameter. The parameter is</span>
+    <span class="c"># the interval in ms you want as precision. Usually the</span>
+    <span class="c"># minimum value allowed is 1 (best).</span>
+    <span class="n">timeBeginPeriod</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">t_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timeGetTime</span><span class="p">())</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">times</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="mi">1000</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span>
+    <span class="n">timeEndPeriod</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="libmushu.ampdecorator.AmpDecorator.configure">
 <tt class="descname">configure</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.configure" title="Permalink to this definition">¶</a></dt>
