@@ -20,6 +20,10 @@ pip install -r requirements.txt
 or simply install all packages line by line using the package manager of your
 operating system.
 
+Next, install mushu
+```sh
+sudo python ./setup.py install
+```
 Supported Amplifiers
 --------------------
 
