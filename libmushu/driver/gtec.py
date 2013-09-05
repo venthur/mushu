@@ -111,7 +111,10 @@ class GUSBamp(Amplifier):
         elif self.mode == 'data':
             # get data in mV
             data /= 8.15
-        return data
+        return data, []
+
+    def get_channels(self):
+        return [str(i) for i in range(17)]
 
     @staticmethod
     def is_available():
@@ -266,7 +269,7 @@ class AmpError(Exception):
 
 
 def main():
-    amp = GTecAmp()
+    amp = GUSBamp()
     amp.start()
     try:
         while True:
