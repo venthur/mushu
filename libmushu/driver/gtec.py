@@ -36,6 +36,8 @@ logger = logging.getLogger(__name__)
 logger.info('Logger started')
 
 ID_VENDOR_GTEC = 0x153c
+# I saw an am with this vendorid too
+ID_VENDOR_GTEC2 = 0x15c3
 ID_PRODUCT_GUSB_AMP = 0x0001
 
 CX_OUT = usb.TYPE_VENDOR | usb.ENDPOINT_OUT
@@ -49,7 +51,7 @@ class GUSBamp(Amplifier):
         self.amps = []
         for bus in usb.busses():
             for device in bus.devices:
-                if (device.idVendor == ID_VENDOR_GTEC and
+                if (device.idVendor in [ID_VENDOR_GTEC, ID_VENDOR_GTEC2] and
                     device.idProduct == ID_PRODUCT_GUSB_AMP):
                     self.amps.append(device)
         self.devh = None
@@ -61,7 +63,10 @@ class GUSBamp(Amplifier):
         config = device.configurations[0]
         self.devh.setConfiguration(config)
         assert(len(config.interfaces) > 0)
+        # sometimes it is the other one
         first_interface = config.interfaces[0][1]
+        if first_interface is None:
+            first_interface = config.interfaces[0][0]
         first_setting = first_interface.alternateSetting
         self.devh.claimInterface(first_interface)
         self.devh.setAltInterface(first_interface)
@@ -120,7 +125,7 @@ class GUSBamp(Amplifier):
     def is_available():
         for bus in usb.busses():
             for device in bus.devices:
-                if (device.idVendor == ID_VENDOR_GTEC and
+                if (device.idVendor in [ID_VENDOR_GTEC, ID_VENDOR_GTEC2] and
                     device.idProduct == ID_PRODUCT_GUSB_AMP):
                     return True
         return False
