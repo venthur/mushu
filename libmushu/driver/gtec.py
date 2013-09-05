@@ -64,9 +64,9 @@ class GUSBamp(Amplifier):
         self.devh.setConfiguration(config)
         assert(len(config.interfaces) > 0)
         # sometimes it is the other one
-        first_interface = config.interfaces[0][1]
+        first_interface = config.interfaces[0][0]
         if first_interface is None:
-            first_interface = config.interfaces[0][0]
+            first_interface = config.interfaces[0][1]
         first_setting = first_interface.alternateSetting
         self.devh.claimInterface(first_interface)
         self.devh.setAltInterface(first_interface)
