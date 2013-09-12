@@ -20,8 +20,6 @@
 
 * add get_channels to GTecAmp
 * add get_channels to Epoc
-* add configure_with_gui to GTecAmp
-* add configure_with_gui to Epoc
 * maybe add a classmethod to the amp base class .from_config(cls, configstr)
   which returns an amplifier which is already configured
 

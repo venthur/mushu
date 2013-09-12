@@ -124,6 +124,10 @@ class AmpDecorator(Amplifier):
         self._debug_tcp_marker_timestamps = False
         self.write_to_file = False
 
+    @property
+    def presets(self):
+        return self.amp.presets
+
     def start(self, filename=None):
         # prepare files for writing
         self.write_to_file = False
@@ -180,11 +184,8 @@ class AmpDecorator(Amplifier):
             for fh in self.fh_eeg, self.fh_marker, self.fh_meta:
                 fh.close()
 
-    def configure(self, config):
-        self.amp.configure(config)
-
-    def configure_with_gui(self):
-        self.amp.configure_with_gui()
+    def configure(self, **kwargs):
+        self.amp.configure(**kwargs)
 
     def get_data(self):
         # get data and marker from underlying amp

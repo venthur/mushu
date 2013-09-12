@@ -49,7 +49,7 @@ class Amplifier(object):
         amp = Amp()
 
         # measure impedance
-        amp.configure(config)
+        amp.configure(**config)
         amp.start()
         while 1:
             data = amp.get_data()
@@ -58,7 +58,7 @@ class Amplifier(object):
         amp.stop()
 
         # measure data
-        amp.configure(config)
+        amp.configure(**config)
         channels = amp.get_channels()
         amp.start()
         while 1:
@@ -69,7 +69,10 @@ class Amplifier(object):
 
     """
 
-    def configure(self, config):
+    presets = []
+
+
+    def configure(self, **kwargs):
         """Configure the amplifier.
 
         Use this method to set the mode (i.e. impedance, data, ...),
@@ -79,18 +82,8 @@ class Amplifier(object):
 
         Parameters
         ----------
-        config : str
+        kwargs : dict
             the configuration of the amplifier
-
-        """
-        pass
-
-    def configure_with_gui(self):
-        """Configure the amplifier interactively.
-
-        Use this method to spawn a GUI which allows for configuring the
-        amplifier. After the configuring is done it should call
-        :meth:`configure` to configure the amplifier.
 
         """
         pass

@@ -63,7 +63,8 @@ __all__ = ['supported_amps', 'get_available_amps', 'get_amp']
 supported_amps = {
     'epoc': ['emotiv', 'Epoc'],
     'gusbamp': ['gtec', 'GUSBamp'],
-    'randomamp': ['randomamp', 'RandomAmp']
+    'randomamp': ['randomamp', 'RandomAmp'],
+    'sinusamp' : ['sinusamp', 'SinusAmp']
 }
 
 

@@ -27,8 +27,8 @@ import time
 import math
 
 import libmushu
-from libmushu.amps.randomamp import RandomAmp
-from libmushu.amps.amplifier import Amplifier
+from libmushu.driver.randomamp import RandomAmp
+from libmushu.amplifier import Amplifier
 import logging
 
 import numpy as np
@@ -81,9 +81,8 @@ class TriggerTestAmp(Amplifier):
         self.last_sample = time.time()
         return data, [[samples-1, self._marker_count]]
 
-    def configure(self, cfg):
-        cfg = json.loads(cfg)
-        self.fs = cfg['fs']
+    def configure(self, fs):
+        self.fs = fs
 
 
 class TestTriggerDelay(unittest.TestCase):
@@ -95,8 +94,7 @@ class TestTriggerDelay(unittest.TestCase):
             logger.debug('Setting FS to {fs}kHz'.format(fs=(i / 1000)))
             amp = libmushu.AmpDecorator(TriggerTestAmp)
             amp._debug_tcp_marker_timestamps = True
-            config = {"fs" : i}
-            amp.configure(json.dumps(config))
+            amp.configure(fs=i)
             amp.start()
             delays = []
             t_start = time.time()

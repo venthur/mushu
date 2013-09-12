@@ -18,11 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-from multiprocessing import Process, Pipe, Event
-from threading import Thread
 import logging
 import time
-import pkgutil
 import ttk
 import Tkinter as tk
 
@@ -50,18 +47,23 @@ class Gui(ttk.Frame):
         self.master.title('Mushu')
         self.pack()
 
-        available_amps = libmushu.get_available_amps()
+        self.available_amps = libmushu.get_available_amps()
 
         frame = tk.Frame(self)
         frame.pack(fill=tk.BOTH, expand=1)
+
         self.label1 = ttk.Label(frame, text='Select Amplifier')
         self.label1.grid(column=0, row=0, sticky='we')
-        self.amp_combobox = ttk.Combobox(frame, values=[str(i) for i in available_amps])
+        self.amp_combobox = ttk.Combobox(frame, values=[str(i) for i in self.available_amps])
         self.amp_combobox.grid(column=0, row=1, sticky='we')
-        self.label2 = ttk.Label(frame, text='Configure Amplifier')
+        self.amp_combobox.bind("<<ComboboxSelected>>", self.on_amplifier_selected)
+
+        self.label2 = ttk.Label(frame, text='Select Configuration Preset')
         self.label2.grid(column=1, row=0, sticky='we')
-        self.configure_button = ttk.Button(frame, text='Configure', command=self.onConfigureButtonClicked)
-        self.configure_button.grid(column=1, row=1, sticky='we')
+        self.config_combobox = ttk.Combobox(frame)
+        self.config_combobox.grid(column=1, row=1, sticky='we')
+        self.config_combobox.bind("<<ComboboxSelected>>", self.onComboboxSelected)
+
         self.label3 = ttk.Label(frame, text='Start/Stop Amplifier')
         self.label3.grid(column=2, row=0, sticky='we')
         self.start_stop_button = ttk.Button(frame, text='Start', command=self.onStartStopButtonClicked)
@@ -74,23 +76,14 @@ class Gui(ttk.Frame):
         self.canvas.show()
         self.axis = fig.add_subplot(111)
 
-        ampname = available_amps[0]
-        self.amp = libmushu.get_amp(ampname)
-        self.amp.start()
-
-        self.channels = self.amp.get_channels()
-        self.n_channels = len(self.channels)
         self.PAST_POINTS = 256
         self.SCALE = 30000
 
+        self.channels = []
+        self.n_channels = 0
+
         self.init_plot()
         self.master.after_idle(self.visualizer)
-
-    def onConnectButtonClicked(self):
-        logger.debug('Connect.')
-
-    def onDisconnectButtonClicked(self):
-        logger.debug('Disconnect.')
 
     def onStartStopButtonClicked(self):
         logger.debug('Start.')
@@ -105,63 +98,79 @@ class Gui(ttk.Frame):
             self.start_stop_button.config(text='Stop')
             self.amp_started = True
 
-    def onConfigureButtonClicked(self):
-        self.amp.configure_with_gui()
-        self.channels = self.amp.get_channels()
-        self.n_channels = len(self.channels)
+    def onComboboxSelected(self, event):
+        idx = event.widget.current()
+        cfg = self.amp.presets[idx][1]
+        self.amp.configure(**cfg)
 
     def init_plot(self):
         self.axis.lines = []
         for i in range(self.n_channels):
             self.axis.plot(0)
         self.canvas.draw()
-        self.data = np.array([]).reshape(-1, self.n_channels)
+        if self.n_channels == 0:
+            self.data = np.array([]).reshape(-1, 1)
+        else:
+            self.data = np.array([]).reshape(-1, self.n_channels)
         self.data_buffer = []
         self.t2 = time.time()
         self.k = 0
         self.nsamples = 0
 
+    def on_amplifier_selected(self, event):
+        idx = event.widget.current()
+        ampstr = self.available_amps[idx]
+        amp = libmushu.get_amp(ampstr)
+        self.set_amplifier(amp)
+
+    def set_amplifier(self, amp):
+        self.config_combobox.configure(values = [txt for txt, _ in amp.presets])
+        self.amp = amp
+        self.channels = amp.get_channels()
+        self.n_channels = len(self.channels)
+
     def visualizer(self):
-        tmp, marker = self.amp.get_data()
-        # display #samples / second
-        if tmp is not None:
-            self.nsamples += tmp.shape[0]
-            self.k += 1
-            if self.k == 100:
-                sps = self.nsamples / (time.time() - self.t2)
-                logger.debug('%.2f samples / second\r' % sps)
-                self.t2 = time.time()
-                self.nsamples = 0
-                self.k = 0
-        # check if nr of channels has changed since the last probe
-        if tmp.shape[1] != self.data.shape[1]:
-            logger.debug('Number of channels has changed, re-initializing the plot.')
-            self.channels = self.amp.get_channels()
-            self.n_channels = len(self.channels)
-            self.init_plot()
-        # append the new data
-        new_data = tmp
-        self.data = np.concatenate([self.data, new_data])
-        self.data = self.data[-self.PAST_POINTS:]
-        # plot the data
-        data_clean = self.normalize(self.data)
-        dmin = data_clean.min()
-        dmax = data_clean.max()
-        dr = (dmax - dmin) * 0.7
-        SCALE = dr
-        ticklocs = []
-        x = [i for i in range(len(self.data))]
-        for j, line in enumerate(self.axis.lines):
-            line.set_xdata(x)
-            #line.set_ydata(self.data[:, j] + j * SCALE)
-            line.set_ydata(data_clean[:, j] + j * SCALE)
-            ticklocs.append(j * SCALE)
-        self.axis.set_ylim(-SCALE, self.n_channels * SCALE)
-        self.axis.set_xlim(i - self.PAST_POINTS, i)
-        self.axis.set_yticks(ticklocs)
-        self.axis.set_yticklabels(self.channels)
-        self.canvas.draw()
-        #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
+        if self.amp_started:
+            tmp, marker = self.amp.get_data()
+            # display #samples / second
+            if tmp is not None:
+                self.nsamples += tmp.shape[0]
+                self.k += 1
+                if self.k == 100:
+                    sps = self.nsamples / (time.time() - self.t2)
+                    logger.debug('%.2f samples / second\r' % sps)
+                    self.t2 = time.time()
+                    self.nsamples = 0
+                    self.k = 0
+            # check if nr of channels has changed since the last probe
+            if tmp.shape[1] != self.data.shape[1]:
+                logger.debug('Number of channels has changed, re-initializing the plot.')
+                self.channels = self.amp.get_channels()
+                self.n_channels = len(self.channels)
+                self.init_plot()
+            # append the new data
+            new_data = tmp
+            self.data = np.concatenate([self.data, new_data])
+            self.data = self.data[-self.PAST_POINTS:]
+            # plot the data
+            data_clean = self.normalize(self.data)
+            dmin = data_clean.min()
+            dmax = data_clean.max()
+            dr = (dmax - dmin) * 0.7
+            SCALE = dr
+            ticklocs = []
+            x = [i for i in range(len(self.data))]
+            for j, line in enumerate(self.axis.lines):
+                line.set_xdata(x)
+                #line.set_ydata(self.data[:, j] + j * SCALE)
+                line.set_ydata(data_clean[:, j] + j * SCALE)
+                ticklocs.append(j * SCALE)
+            self.axis.set_ylim(-SCALE, self.n_channels * SCALE)
+            self.axis.set_xlim(i - self.PAST_POINTS, i)
+            self.axis.set_yticks(ticklocs)
+            self.axis.set_yticklabels(self.channels)
+            self.canvas.draw()
+            #logger.debug('%.2f FPS' % (1 / (time.time() - t)))
         self.master.after(10, self.visualizer)
 
     def normalize(self, data):
