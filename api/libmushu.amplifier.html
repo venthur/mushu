@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Overview: module code &mdash; Mushu alpha documentation</title>
+    <title>libmushu.amplifier &mdash; Mushu alpha documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="next" title="driver Package" href="libmushu.driver.html" />
+    <link rel="prev" title="libmushu.ampdecorator" href="libmushu.ampdecorator.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,6 +37,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.driver.html" title="driver Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libmushu.ampdecorator.html" title="libmushu.ampdecorator"
+             accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -44,21 +52,46 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="libmushu.html">libmushu</a></li>
-<ul><li><a href="libmushu/__init__.html">libmushu.__init__</a></li>
-<li><a href="libmushu/ampdecorator.html">libmushu.ampdecorator</a></li>
-<li><a href="libmushu/amplifier.html">libmushu.amplifier</a></li>
-<li><a href="libmushu/driver/emotiv.html">libmushu.driver.emotiv</a></li>
-<li><a href="libmushu/driver/gtec.html">libmushu.driver.gtec</a></li>
-<li><a href="libmushu/driver/randomamp.html">libmushu.driver.randomamp</a></li>
-</ul></ul>
+  <div class="section" id="module-libmushu.amplifier">
+<span id="libmushu-amplifier"></span><h1>libmushu.amplifier<a class="headerlink" href="#module-libmushu.amplifier" title="Permalink to this headline">¶</a></h1>
+<p>This module provides the <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">Amplifier</span></tt></a> class, which is the base class of
+all low level amplifier drivers. If you want to write a driver for a specific
+amplifier your driver must derive from the <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">Amplifier</span></tt></a> class and
+implement its methods.</p>
+<p>Users will not use your driver directly but a decorated version of it which
+provides additional features like writing data to a file and receiving marker
+via TCP.</p>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-obj docutils literal"><span class="pre">Amplifier</span></tt></a></td>
+<td>Amplifier base class.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libmushu.ampdecorator.html"
+                        title="previous chapter">libmushu.ampdecorator</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libmushu.driver.html"
+                        title="next chapter">driver Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/libmushu.amplifier.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -85,6 +118,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.driver.html" title="driver Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libmushu.ampdecorator.html" title="libmushu.ampdecorator"
+             >previous</a> |</li>
         <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
       </ul>
     </div>

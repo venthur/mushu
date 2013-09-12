@@ -31,6 +31,18 @@ Quickstart
     amp.stop()
 
 
+API Documentation
+=================
+
+.. autosummary::
+   :toctree: api
+
+   libmushu
+   libmushu.ampdecorator
+   libmushu.amplifier
+   libmushu.driver
+
+
 Welcome to Mushu's documentation!
 =================================
 

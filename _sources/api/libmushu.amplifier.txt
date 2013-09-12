@@ -1,0 +1,22 @@
+libmushu.amplifier
+==================
+
+.. automodule:: libmushu.amplifier
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Amplifier
+   
+   
+
+   
+   
+   

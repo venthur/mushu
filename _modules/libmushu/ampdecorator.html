@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="up" title="libmushu" href="../libmushu.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,8 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -130,6 +131,34 @@
 <span class="sd">    with the clock synchronization algorithm as described here:</span>
 
 <span class="sd">        http://en.wikipedia.org/wiki/Network_Time_Protocol</span>
+
+<span class="sd">    Alternatively one could use `timeGetTime` from Windows&#39; Multi Media</span>
+<span class="sd">    library, which is tunable via `timeBeginPeriod` and provides a</span>
+<span class="sd">    precision of 1-2ms. Apparently this is the way Chrome and many</span>
+<span class="sd">    others do it.::</span>
+
+<span class="sd">        from __future__ import division</span>
+
+<span class="sd">        from ctypes import windll</span>
+<span class="sd">        import time</span>
+
+<span class="sd">        timeBeginPeriod = windll.winmm.timeBeginPeriod</span>
+<span class="sd">        timeEndPeriod = windll.winmm.timeEndPeriod</span>
+<span class="sd">        timeGetTime = windll.winmm.timeGetTime</span>
+
+<span class="sd">        if __name__ == &#39;__main__&#39;:</span>
+<span class="sd">            # wrap the code that needs high precision in timeBegin- and</span>
+<span class="sd">            # timeEndPeriod with the same parameter. The parameter is</span>
+<span class="sd">            # the interval in ms you want as precision. Usually the</span>
+<span class="sd">            # minimum value allowed is 1 (best).</span>
+<span class="sd">            timeBeginPeriod(1)</span>
+<span class="sd">            times = []</span>
+<span class="sd">            t_start = time.time()</span>
+<span class="sd">            while time.time() &lt; (time.time() + 1):</span>
+<span class="sd">                times.append(timeGetTime())</span>
+<span class="sd">            times = sorted(list(set(times)))</span>
+<span class="sd">            print(1000 / len(times))</span>
+<span class="sd">            timeEndPeriod(1)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -351,7 +380,8 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../libmushu.html" >libmushu</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

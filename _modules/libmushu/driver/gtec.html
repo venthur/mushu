@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="up" title="libmushu" href="../../libmushu.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -85,6 +86,8 @@
 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Logger started&#39;</span><span class="p">)</span>
 
 <span class="n">ID_VENDOR_GTEC</span> <span class="o">=</span> <span class="mh">0x153c</span>
+<span class="c"># I saw an am with this vendorid too</span>
+<span class="n">ID_VENDOR_GTEC2</span> <span class="o">=</span> <span class="mh">0x15c3</span>
 <span class="n">ID_PRODUCT_GUSB_AMP</span> <span class="o">=</span> <span class="mh">0x0001</span>
 
 <span class="n">CX_OUT</span> <span class="o">=</span> <span class="n">usb</span><span class="o">.</span><span class="n">TYPE_VENDOR</span> <span class="o">|</span> <span class="n">usb</span><span class="o">.</span><span class="n">ENDPOINT_OUT</span>
@@ -98,7 +101,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">amps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bus</span> <span class="ow">in</span> <span class="n">usb</span><span class="o">.</span><span class="n">busses</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">bus</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="o">==</span> <span class="n">ID_VENDOR_GTEC</span> <span class="ow">and</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ID_VENDOR_GTEC</span><span class="p">,</span> <span class="n">ID_VENDOR_GTEC2</span><span class="p">]</span> <span class="ow">and</span>
                     <span class="n">device</span><span class="o">.</span><span class="n">idProduct</span> <span class="o">==</span> <span class="n">ID_PRODUCT_GUSB_AMP</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">amps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">None</span>
@@ -110,7 +113,10 @@
         <span class="n">config</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">configurations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setConfiguration</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">interfaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">first_interface</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># sometimes it is the other one</span>
+        <span class="n">first_interface</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">first_interface</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">first_interface</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">interfaces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">first_setting</span> <span class="o">=</span> <span class="n">first_interface</span><span class="o">.</span><span class="n">alternateSetting</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="n">first_interface</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setAltInterface</span><span class="p">(</span><span class="n">first_interface</span><span class="p">)</span>
@@ -160,13 +166,16 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;data&#39;</span><span class="p">:</span>
             <span class="c"># get data in mV</span>
             <span class="n">data</span> <span class="o">/=</span> <span class="mf">8.15</span>
-        <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="p">[]</span>
+</div>
+<div class="viewcode-block" id="GUSBamp.get_channels"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">17</span><span class="p">)]</span>
 </div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="GUSBamp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.GUSBamp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">bus</span> <span class="ow">in</span> <span class="n">usb</span><span class="o">.</span><span class="n">busses</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">bus</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="o">==</span> <span class="n">ID_VENDOR_GTEC</span> <span class="ow">and</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ID_VENDOR_GTEC</span><span class="p">,</span> <span class="n">ID_VENDOR_GTEC2</span><span class="p">]</span> <span class="ow">and</span>
                     <span class="n">device</span><span class="o">.</span><span class="n">idProduct</span> <span class="o">==</span> <span class="n">ID_PRODUCT_GUSB_AMP</span><span class="p">):</span>
                     <span class="k">return</span> <span class="bp">True</span>
         <span class="k">return</span> <span class="bp">False</span>
@@ -315,7 +324,7 @@
 
 </div>
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.gtec.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">amp</span> <span class="o">=</span> <span class="n">GTecAmp</span><span class="p">()</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">GUSBamp</span><span class="p">()</span>
     <span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
@@ -368,7 +377,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../libmushu.html" >libmushu</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

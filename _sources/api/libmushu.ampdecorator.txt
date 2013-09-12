@@ -1,0 +1,32 @@
+libmushu.ampdecorator
+=====================
+
+.. automodule:: libmushu.ampdecorator
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      Event
+      Queue
+      tcp_reader
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AmpDecorator
+      Amplifier
+      Process
+   
+   
+
+   
+   
+   

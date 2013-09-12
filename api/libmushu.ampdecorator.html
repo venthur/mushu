@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>libmushu.ampdecorator &mdash; Mushu alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="next" title="libmushu.amplifier" href="libmushu.amplifier.html" />
+    <link rel="prev" title="driver Package" href="libmushu.driver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.amplifier.html" title="libmushu.amplifier"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libmushu.driver.html" title="driver Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-libmushu.ampdecorator">
+<span id="libmushu-ampdecorator"></span><h1>libmushu.ampdecorator<a class="headerlink" href="#module-libmushu.ampdecorator" title="Permalink to this headline">¶</a></h1>
+<p>This module provides the <a class="reference internal" href="libmushu.html#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">AmpDecorator</span></tt></a> class.</p>
+<p>As a user, it is very unlikely that you&#8217;ll have to deal with it directly. Its
+main purpose is to add additional functionality to the low level amplifier
+drivers. This functionality includes features like: saving data to a file. or
+being able to receive marker via TCP/IP.</p>
+<p>By using the <a class="reference internal" href="libmushu.html#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt></a> method, you&#8217;ll automatically
+receive decorated amplifiers.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">Event</span></tt>()</td>
+<td>Returns an event object</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">Queue</span></tt>([maxsize])</td>
+<td>Returns a queue object</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="libmushu.html#libmushu.ampdecorator.tcp_reader" title="libmushu.ampdecorator.tcp_reader"><tt class="xref py py-obj docutils literal"><span class="pre">tcp_reader</span></tt></a>(queue,&nbsp;running,&nbsp;ready)</td>
+<td>Marker-reading process.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="libmushu.html#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-obj docutils literal"><span class="pre">AmpDecorator</span></tt></a>(ampcls)</td>
+<td>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with Marker and</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">Amplifier</span></tt></td>
+<td>Amplifier base class.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">Process</span></tt>([group,&nbsp;target,&nbsp;name,&nbsp;args,&nbsp;kwargs])</td>
+<td>Process objects represent activity that is run in a separate process</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libmushu.driver.html"
+                        title="previous chapter">driver Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libmushu.amplifier.html"
+                        title="next chapter">libmushu.amplifier</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/libmushu.ampdecorator.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libmushu.amplifier.html" title="libmushu.amplifier"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libmushu.driver.html" title="driver Package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Bastian Venthur.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

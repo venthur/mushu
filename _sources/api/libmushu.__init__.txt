@@ -1,0 +1,6 @@
+libmushu.__init__
+=================
+
+.. currentmodule:: libmushu
+
+.. autodata:: __init__
