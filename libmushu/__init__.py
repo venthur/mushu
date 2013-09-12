@@ -17,9 +17,10 @@
 
 
 """
-This module provides two functions: :func:`get_available_amps` which will tell
-you which amplifiers are currently available on your computer, and
-:func:`get_amp` which you can use to get an amplifier instance to work with.
+This module provides two functions: :func:`get_available_amps` which
+will tell you which amplifiers are currently available on your computer,
+and :func:`get_amp` which you can use to get an amplifier instance to
+work with.
 
 How to use libmushu with the decorated drivers (recommended)::
 
@@ -39,10 +40,10 @@ How to use the libmushu's low level driver drivers::
     from libmushu.driver.randomamp import RandomAmp
     amp = RandomAmp()
 
-You'll will most likely want to use the decorated drivers and only deal with
-the low level drivers if you're a developer or find that the
-:class:`libmushu.ampdecorator.AmpDecorator` does not provide the features you
-need.
+You'll will most likely want to use the decorated drivers and only deal
+with the low level drivers if you're a developer or find that the
+:class:`libmushu.ampdecorator.AmpDecorator` does not provide the
+features you need.
 
 """
 
@@ -73,12 +74,21 @@ logger.info('Logger started')
 def get_available_amps():
     """Retrieves all available (e.g. connected) amplifiers.
 
-    This method tests all supported amplifiers if they are connected to the
-    system. More precisely: if the amplifiers `is_available` method returns
-    True.
+    This method tests all supported amplifiers if they are connected to
+    the system. More precisely: if the amplifiers `is_available` method
+    returns True.
 
-    Returns:
-        A list of the names of the amplifiers which are available.
+    Returns
+    -------
+    available_amps : list of strings
+        a list of the names of the amplifiers which are available
+
+    Examples
+    --------
+
+    >>> import libmushu as lm
+    >>> lm.get_available_amps()
+    ['gusbamp', 'randomamp']
 
     """
     available_amps = []
@@ -101,15 +111,26 @@ def get_amp(ampname):
     """Get an amplifier instance.
 
 
-    This factory method takes a low level amplifier driver, wraps it in an
-    AmpDecorator and returns an instance.
+    This factory method takes a low level amplifier driver, wraps it in
+    an AmpDecorator and returns an instance.
 
-    Args:
-        ampname: A string representing the desired amplifier. The string must
-            be a key in the :data:`supported_amps` dictionary.
+    Parameters
+    ----------
+    ampname : str
+        the desired amplifier. The string must be a key in the
+        :data:`supported_amps` dictionary.
 
-    Returns:
-        An amplifier instance.
+    Returns
+    -------
+    amp : Amplifier
+        an amplifier instance
+
+    Examples
+    --------
+
+    >>> import libmushu as lm
+    >>> amps = lm.get_available_amps()
+    >>> amp = lm.get_amp(amps[0])
 
     """
     mod, cls = supported_amps.get(ampname)

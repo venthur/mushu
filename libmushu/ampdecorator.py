@@ -19,13 +19,13 @@
 """
 This module provides the :class:`AmpDecorator` class.
 
-As a user, it is very unlikely that you'll have to deal with it directly. Its
-main purpose is to add additional functionality to the low level amplifier
-drivers. This functionality includes features like: saving data to a file. or
-being able to receive marker via TCP/IP.
+As a user, it is very unlikely that you'll have to deal with it
+directly. Its main purpose is to add additional functionality to the low
+level amplifier drivers. This functionality includes features like:
+saving data to a file. or being able to receive marker via TCP/IP.
 
-By using the :func:`libmushu.__init__.get_amp` method, you'll automatically
-receive decorated amplifiers.
+By using the :func:`libmushu.__init__.get_amp` method, you'll
+automatically receive decorated amplifiers.
 
 """
 
@@ -53,11 +53,11 @@ PORT = 12345
 
 
 class AmpDecorator(Amplifier):
-    """This class 'decorates' the Low-Level Amplifier classes with Marker and
-    Save-To-File functionality.
+    """This class 'decorates' the Low-Level Amplifier classes with
+    Marker and Save-To-File functionality.
 
-    You use it by decorating (not as in Python-Decorator, but in the GoF sense)
-    the low level amplifier class you want to use::
+    You use it by decorating (not as in Python-Decorator, but in the GoF
+    sense) the low level amplifier class you want to use::
 
         import libmushu
         from libmushu.ampdecorator import AmpDecorator
@@ -65,20 +65,22 @@ class AmpDecorator(Amplifier):
 
         amp = Ampdecorator(RandomAmp)
 
-    Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.
-    On Linux the resolution is 1us. This is due to limitations of Python's
-    time.time method, or rather a Windows specific issue.
+    Waring: The TCP marker timings on Windows have a resolution of
+    10ms-15ms.  On Linux the resolution is 1us. This is due to
+    limitations of Python's time.time method, or rather a Windows
+    specific issue.
 
     There exists currently no precise timer, providing times which are
     comparable between two running processes on Windows. The performance
-    counter provided on Windows, has a much better resolution but is relative
-    to the processes start time and it drifts (1s per 100s), so it is only
-    precise for a relatively short amount of time.
+    counter provided on Windows, has a much better resolution but is
+    relative to the processes start time and it drifts (1s per 100s), so
+    it is only precise for a relatively short amount of time.
 
-    If a higher precision is needed one has to replace the time.time calls with
-    something which provides a better precision. For example one could create a
-    third process which provides times or regularly synchronize both processes
-    with the clock synchronization algorithm as described here:
+    If a higher precision is needed one has to replace the time.time
+    calls with something which provides a better precision. For example
+    one could create a third process which provides times or regularly
+    synchronize both processes with the clock synchronization algorithm
+    as described here:
 
         http://en.wikipedia.org/wiki/Network_Time_Protocol
 
@@ -114,10 +116,11 @@ class AmpDecorator(Amplifier):
 
     def __init__(self, ampcls):
         self.amp = ampcls()
-        # Setting this option, will make the Amp to discard all markers from
-        # the underlying amp driver and return only TCP markers. It will also
-        # return the timestamp instead of sample number within block. This is
-        # only useful for debugging and gathering latency information.
+        # Setting this option, will make the Amp to discard all markers
+        # from the underlying amp driver and return only TCP markers. It
+        # will also return the timestamp instead of sample number within
+        # block. This is only useful for debugging and gathering latency
+        # information.
         self._debug_tcp_marker_timestamps = False
         self.write_to_file = False
 
@@ -238,18 +241,20 @@ class AmpDecorator(Amplifier):
 def tcp_reader(queue, running, ready):
     """Marker-reading process.
 
-    This method runs in a seperate process and receives TCP markers. Whenever a
-    marker is received, it is put together with a timestamp into a queue.
+    This method runs in a seperate process and receives TCP markers.
+    Whenever a marker is received, it is put together with a timestamp
+    into a queue.
 
-    Args:
-
-        queue: This queue is used to send markers to a different process.
-
-        running: This event is used to signal this process to terminate its
-            main loop.
-
-        ready: This signal is used to signal the "parent"-process that this
-            process is ready to receive marker.
+    Parameters
+    ----------
+    queue : Queue
+        this queue is used to send markers to a different process
+    running : Event
+        this event is used to signal this process to terminate its main
+        loop
+    ready : Event
+        this signal is used to signal the "parent"-process that this
+        process is ready to receive marker
 
     """
     # setup the server socket
