@@ -33,3 +33,11 @@ driver Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`sinusamp` Module
+----------------------
+
+.. automodule:: libmushu.driver.sinusamp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

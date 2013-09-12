@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu.driver.randomamp &mdash; Mushu alpha documentation</title>
+    <title>libmushu.driver.sinusamp &mdash; Mushu alpha documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -49,7 +49,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for libmushu.driver.randomamp</h1><div class="highlight"><pre>
+  <h1>Source code for libmushu.driver.sinusamp</h1><div class="highlight"><pre>
 <span class="c"># randomamp.py</span>
 <span class="c"># Copyright (C) 2013  Bastian Venthur</span>
 <span class="c">#</span>
@@ -78,68 +78,65 @@
 <span class="kn">from</span> <span class="nn">libmushu.amplifier</span> <span class="kn">import</span> <span class="n">Amplifier</span>
 
 
-<span class="n">PRESETS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">[</span><span class="s">&#39;Random noise at 50Hz, 16Channels&#39;</span><span class="p">,</span>
-            <span class="p">{</span><span class="s">&#39;fs&#39;</span> <span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s">&#39;channels&#39;</span> <span class="p">:</span> <span class="mi">16</span><span class="p">}],</span>
-        <span class="p">[</span><span class="s">&#39;Random noise at 1kHz, 128Channels&#39;</span><span class="p">,</span>
-            <span class="p">{</span><span class="s">&#39;fs&#39;</span> <span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s">&#39;channels&#39;</span> <span class="p">:</span> <span class="mi">128</span><span class="p">}]</span>
-        <span class="p">]</span>
+<span class="n">PRESETS</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&#39;Sine wave at 50Hz, 16Channels&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;f&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;fs&#39;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s">&#39;channels&#39;</span> <span class="p">:</span> <span class="mi">16</span><span class="p">}],</span>
+           <span class="p">[</span><span class="s">&#39;Sine wave at 1kHz, 128Channels&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;f&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;fs&#39;</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s">&#39;channels&#39;</span> <span class="p">:</span> <span class="mi">128</span><span class="p">}]</span>
+          <span class="p">]</span>
 
 
-<div class="viewcode-block" id="RandomAmp"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp">[docs]</a><span class="k">class</span> <span class="nc">RandomAmp</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An amplifier that produces random data.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SinusAmp"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp">[docs]</a><span class="k">class</span> <span class="nc">SinusAmp</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An amplifier that produces sinus data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="n">PRESETS</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="mi">17</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">presets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="RandomAmp.sample_len"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.sample_len">[docs]</a>    <span class="k">def</span> <span class="nf">sample_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.sample_len"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.sample_len">[docs]</a>    <span class="k">def</span> <span class="nf">sample_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="RandomAmp.elapsed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.elapsed"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.elapsed">[docs]</a>    <span class="k">def</span> <span class="nf">elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span>
 </div>
-<div class="viewcode-block" id="RandomAmp.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.get_data"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># simulate blocking until we have enough data</span>
         <span class="n">elapsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span>
         <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_len</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_len</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span> <span class="o">+</span> <span class="n">dt</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_sample</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="p">[]</span>
 </div>
-<div class="viewcode-block" id="RandomAmp.configure"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.configure"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
 </div>
-<div class="viewcode-block" id="RandomAmp.get_channels"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.get_channels"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s">&#39;Ch_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)]</span>
 </div>
-<div class="viewcode-block" id="RandomAmp.get_sampling_frequency"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.get_sampling_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SinusAmp.get_sampling_frequency"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.get_sampling_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span>
 </div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="RandomAmp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.randomamp.RandomAmp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
+<div class="viewcode-block" id="SinusAmp.is_available"><a class="viewcode-back" href="../../../api/libmushu.driver.html#libmushu.driver.sinusamp.SinusAmp.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
         <span class="k">return</span> <span class="bp">True</span>
 
 </div></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
-<span class="c">#    amp = RandomAmp()</span>
-<span class="c">#    amp.start()</span>
-<span class="c">#    for i in range(10):</span>
-<span class="c">#        t = time.time()</span>
-<span class="c">#        print amp.get_data()</span>
-<span class="c">#        print</span>
-<span class="c">#        print &quot;FS:&quot;, 1 / (time.time() - t)</span>
-<span class="c">#        print</span>
-<span class="c">#    amp.stop()</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">SinusAmp</span><span class="p">()</span>
+    <span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">amp</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 <span class="c">#</span>
 <span class="c">#    # the same using a context manager, start and stop are called by the</span>
 <span class="c">#    # context manager</span>

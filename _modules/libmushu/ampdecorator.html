@@ -176,6 +176,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_debug_tcp_marker_timestamps</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">False</span>
 
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="AmpDecorator.presets"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.presets">[docs]</a>    <span class="k">def</span> <span class="nf">presets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">presets</span>
+</div>
 <div class="viewcode-block" id="AmpDecorator.start"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="c"># prepare files for writing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">False</span>
@@ -232,11 +236,8 @@
             <span class="k">for</span> <span class="n">fh</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_eeg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_marker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh_meta</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AmpDecorator.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="AmpDecorator.configure_with_gui"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.configure_with_gui">[docs]</a>    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure_with_gui</span><span class="p">()</span>
+<div class="viewcode-block" id="AmpDecorator.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="AmpDecorator.get_data"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># get data and marker from underlying amp</span>

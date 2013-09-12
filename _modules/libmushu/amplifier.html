@@ -121,7 +121,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Amplifier.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">presets</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<div class="viewcode-block" id="Amplifier.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Configure the amplifier.</span>
 
 <span class="sd">        Use this method to set the mode (i.e. impedance, data, ...),</span>
@@ -133,16 +136,6 @@
 <span class="sd">        ----------</span>
 <span class="sd">        config : str</span>
 <span class="sd">            the configuration of the amplifier</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="Amplifier.configure_with_gui"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure_with_gui">[docs]</a>    <span class="k">def</span> <span class="nf">configure_with_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Configure the amplifier interactively.</span>
-
-<span class="sd">        Use this method to spawn a GUI which allows for configuring the</span>
-<span class="sd">        amplifier. After the configuring is done it should call</span>
-<span class="sd">        :meth:`configure` to configure the amplifier.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
