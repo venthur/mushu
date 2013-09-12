@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
-    <link rel="up" title="libmushu" href="../libmushu.html" /> 
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,9 +69,10 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides two functions: :func:`get_available_amps` which will tell</span>
-<span class="sd">you which amplifiers are currently available on your computer, and</span>
-<span class="sd">:func:`get_amp` which you can use to get an amplifier instance to work with.</span>
+<span class="sd">This module provides two functions: :func:`get_available_amps` which</span>
+<span class="sd">will tell you which amplifiers are currently available on your computer,</span>
+<span class="sd">and :func:`get_amp` which you can use to get an amplifier instance to</span>
+<span class="sd">work with.</span>
 
 <span class="sd">How to use libmushu with the decorated drivers (recommended)::</span>
 
@@ -89,10 +92,10 @@
 <span class="sd">    from libmushu.driver.randomamp import RandomAmp</span>
 <span class="sd">    amp = RandomAmp()</span>
 
-<span class="sd">You&#39;ll will most likely want to use the decorated drivers and only deal with</span>
-<span class="sd">the low level drivers if you&#39;re a developer or find that the</span>
-<span class="sd">:class:`libmushu.ampdecorator.AmpDecorator` does not provide the features you</span>
-<span class="sd">need.</span>
+<span class="sd">You&#39;ll will most likely want to use the decorated drivers and only deal</span>
+<span class="sd">with the low level drivers if you&#39;re a developer or find that the</span>
+<span class="sd">:class:`libmushu.ampdecorator.AmpDecorator` does not provide the</span>
+<span class="sd">features you need.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -123,12 +126,21 @@
 <div class="viewcode-block" id="get_available_amps"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.__init__.get_available_amps">[docs]</a><span class="k">def</span> <span class="nf">get_available_amps</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Retrieves all available (e.g. connected) amplifiers.</span>
 
-<span class="sd">    This method tests all supported amplifiers if they are connected to the</span>
-<span class="sd">    system. More precisely: if the amplifiers `is_available` method returns</span>
-<span class="sd">    True.</span>
+<span class="sd">    This method tests all supported amplifiers if they are connected to</span>
+<span class="sd">    the system. More precisely: if the amplifiers `is_available` method</span>
+<span class="sd">    returns True.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        A list of the names of the amplifiers which are available.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    available_amps : list of strings</span>
+<span class="sd">        a list of the names of the amplifiers which are available</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import libmushu as lm</span>
+<span class="sd">    &gt;&gt;&gt; lm.get_available_amps()</span>
+<span class="sd">    [&#39;gusbamp&#39;, &#39;randomamp&#39;]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">available_amps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -151,15 +163,26 @@
     <span class="sd">&quot;&quot;&quot;Get an amplifier instance.</span>
 
 
-<span class="sd">    This factory method takes a low level amplifier driver, wraps it in an</span>
-<span class="sd">    AmpDecorator and returns an instance.</span>
+<span class="sd">    This factory method takes a low level amplifier driver, wraps it in</span>
+<span class="sd">    an AmpDecorator and returns an instance.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        ampname: A string representing the desired amplifier. The string must</span>
-<span class="sd">            be a key in the :data:`supported_amps` dictionary.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ampname : str</span>
+<span class="sd">        the desired amplifier. The string must be a key in the</span>
+<span class="sd">        :data:`supported_amps` dictionary.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        An amplifier instance.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    amp : Amplifier</span>
+<span class="sd">        an amplifier instance</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import libmushu as lm</span>
+<span class="sd">    &gt;&gt;&gt; amps = lm.get_available_amps()</span>
+<span class="sd">    &gt;&gt;&gt; amp = lm.get_amp(amps[0])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mod</span><span class="p">,</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">supported_amps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ampname</span><span class="p">)</span>
@@ -199,9 +222,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" >libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

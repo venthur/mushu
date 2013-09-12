@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
-    <link rel="up" title="libmushu" href="../libmushu.html" /> 
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,14 +69,14 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides the :class:`Amplifier` class, which is the base class of</span>
-<span class="sd">all low level amplifier drivers. If you want to write a driver for a specific</span>
-<span class="sd">amplifier your driver must derive from the :class:`Amplifier` class and</span>
-<span class="sd">implement its methods.</span>
+<span class="sd">This module provides the :class:`Amplifier` class, which is the base</span>
+<span class="sd">class of all low level amplifier drivers. If you want to write a driver</span>
+<span class="sd">for a specific amplifier your driver must derive from the</span>
+<span class="sd">:class:`Amplifier` class and implement its methods.</span>
 
-<span class="sd">Users will not use your driver directly but a decorated version of it which</span>
-<span class="sd">provides additional features like writing data to a file and receiving marker</span>
-<span class="sd">via TCP.</span>
+<span class="sd">Users will not use your driver directly but a decorated version of it</span>
+<span class="sd">which provides additional features like writing data to a file and</span>
+<span class="sd">receiving marker via TCP.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -82,16 +84,17 @@
     <span class="sd">&quot;&quot;&quot;Amplifier base class.</span>
 
 <span class="sd">    The base class is very generic on purpose. Amplifiers from different</span>
-<span class="sd">    vendors vary in so many ways that it is difficult to find a common set of</span>
-<span class="sd">    methods that all support.</span>
+<span class="sd">    vendors vary in so many ways that it is difficult to find a common</span>
+<span class="sd">    set of methods that all support.</span>
 
-<span class="sd">    In the spirit of &quot;encapsulating what varies&quot;, I decided to encapsulate the</span>
-<span class="sd">    configuration. So the main configuration of the amplifier, like setting the</span>
-<span class="sd">    mode (e.g. data, impedance, etc.), sampling frequency, etc. happens in</span>
-<span class="sd">    :meth:`configure` and is very specific for the amplifier at hand.</span>
+<span class="sd">    In the spirit of &quot;encapsulating what varies&quot;, I decided to</span>
+<span class="sd">    encapsulate the configuration. So the main configuration of the</span>
+<span class="sd">    amplifier, like setting the mode (e.g. data, impedance, etc.),</span>
+<span class="sd">    sampling frequency, etc. happens in :meth:`configure` and is very</span>
+<span class="sd">    specific for the amplifier at hand.</span>
 
-<span class="sd">    :meth:`start`, :meth:`stop`, and :meth:`get_data` is very generic and must</span>
-<span class="sd">    be supported by all derived amplifier classes.</span>
+<span class="sd">    :meth:`start`, :meth:`stop`, and :meth:`get_data` is very generic</span>
+<span class="sd">    and must be supported by all derived amplifier classes.</span>
 
 <span class="sd">    How an amplifier should be used::</span>
 
@@ -121,13 +124,15 @@
 <div class="viewcode-block" id="Amplifier.configure"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Configure the amplifier.</span>
 
-<span class="sd">        Use this method to set the mode (i.e. impedance, data, ...), sampling</span>
-<span class="sd">        frequency, filter, etc.</span>
+<span class="sd">        Use this method to set the mode (i.e. impedance, data, ...),</span>
+<span class="sd">        sampling frequency, filter, etc.</span>
 
 <span class="sd">        This depends strongly on the amplifier.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            config: The configuration of the amplifier.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        config : str</span>
+<span class="sd">            the configuration of the amplifier</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
@@ -153,11 +158,17 @@
 <div class="viewcode-block" id="Amplifier.get_data"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get data from the amplifier.</span>
 
-<span class="sd">        This method is called as fast as possible (e.g. hundreds of times per</span>
-<span class="sd">        second) and returns the data and the marker (if supported).</span>
+<span class="sd">        This method is called as fast as possible (e.g. hundreds of</span>
+<span class="sd">        times per second) and returns the data and the marker (if</span>
+<span class="sd">        supported).</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A numpy array (time, channels) and a list of markers.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        data : ndarray</span>
+<span class="sd">            a numpy array (time, channels) of the EEG data</span>
+<span class="sd">        markers : list</span>
+<span class="sd">            a list of markers. Each element is a tuple of timestamp and</span>
+<span class="sd">            string</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
@@ -165,12 +176,14 @@
 <div class="viewcode-block" id="Amplifier.get_channels"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the list of channel names.</span>
 
-<span class="sd">        The list has the same order as the data, i.e. the second name in the</span>
-<span class="sd">        list represents the second colum of the data returned by</span>
+<span class="sd">        The list has the same order as the data, i.e. the second name in</span>
+<span class="sd">        the list represents the second colum of the data returned by</span>
 <span class="sd">        :meth:`get_data`.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A list of channel names.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        channels : list of strings</span>
+<span class="sd">            the channel names</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -178,11 +191,13 @@
 <div class="viewcode-block" id="Amplifier.get_sampling_frequency"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.get_sampling_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_sampling_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the sampling frequency.</span>
 
-<span class="sd">        This method returns the sampling frequency which is currently enabled</span>
-<span class="sd">        in the amplifier.</span>
+<span class="sd">        This method returns the sampling frequency which is currently</span>
+<span class="sd">        enabled in the amplifier.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A float.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fs : float</span>
+<span class="sd">            the sampling frequency</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -191,11 +206,13 @@
 <div class="viewcode-block" id="Amplifier.is_available"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.amplifier.Amplifier.is_available">[docs]</a>    <span class="k">def</span> <span class="nf">is_available</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Is the amplifier connected to the computer?</span>
 
-<span class="sd">        This method should be overwritten by derived classes and return True if</span>
-<span class="sd">        the amplifier is connected to the computer or False if not.</span>
+<span class="sd">        This method should be overwritten by derived classes and return</span>
+<span class="sd">        True if the amplifier is connected to the computer or False if</span>
+<span class="sd">        not.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            A boolean</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        available : boolean</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -232,9 +249,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" >libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

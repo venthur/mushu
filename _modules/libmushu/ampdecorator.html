@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
-    <link rel="up" title="libmushu" href="../libmushu.html" /> 
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -69,13 +71,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module provides the :class:`AmpDecorator` class.</span>
 
-<span class="sd">As a user, it is very unlikely that you&#39;ll have to deal with it directly. Its</span>
-<span class="sd">main purpose is to add additional functionality to the low level amplifier</span>
-<span class="sd">drivers. This functionality includes features like: saving data to a file. or</span>
-<span class="sd">being able to receive marker via TCP/IP.</span>
+<span class="sd">As a user, it is very unlikely that you&#39;ll have to deal with it</span>
+<span class="sd">directly. Its main purpose is to add additional functionality to the low</span>
+<span class="sd">level amplifier drivers. This functionality includes features like:</span>
+<span class="sd">saving data to a file. or being able to receive marker via TCP/IP.</span>
 
-<span class="sd">By using the :func:`libmushu.__init__.get_amp` method, you&#39;ll automatically</span>
-<span class="sd">receive decorated amplifiers.</span>
+<span class="sd">By using the :func:`libmushu.__init__.get_amp` method, you&#39;ll</span>
+<span class="sd">automatically receive decorated amplifiers.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -103,11 +105,11 @@
 
 
 <div class="viewcode-block" id="AmpDecorator"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.AmpDecorator">[docs]</a><span class="k">class</span> <span class="nc">AmpDecorator</span><span class="p">(</span><span class="n">Amplifier</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This class &#39;decorates&#39; the Low-Level Amplifier classes with Marker and</span>
-<span class="sd">    Save-To-File functionality.</span>
+    <span class="sd">&quot;&quot;&quot;This class &#39;decorates&#39; the Low-Level Amplifier classes with</span>
+<span class="sd">    Marker and Save-To-File functionality.</span>
 
-<span class="sd">    You use it by decorating (not as in Python-Decorator, but in the GoF sense)</span>
-<span class="sd">    the low level amplifier class you want to use::</span>
+<span class="sd">    You use it by decorating (not as in Python-Decorator, but in the GoF</span>
+<span class="sd">    sense) the low level amplifier class you want to use::</span>
 
 <span class="sd">        import libmushu</span>
 <span class="sd">        from libmushu.ampdecorator import AmpDecorator</span>
@@ -115,20 +117,22 @@
 
 <span class="sd">        amp = Ampdecorator(RandomAmp)</span>
 
-<span class="sd">    Waring: The TCP marker timings on Windows have a resolution of 10ms-15ms.</span>
-<span class="sd">    On Linux the resolution is 1us. This is due to limitations of Python&#39;s</span>
-<span class="sd">    time.time method, or rather a Windows specific issue.</span>
+<span class="sd">    Waring: The TCP marker timings on Windows have a resolution of</span>
+<span class="sd">    10ms-15ms.  On Linux the resolution is 1us. This is due to</span>
+<span class="sd">    limitations of Python&#39;s time.time method, or rather a Windows</span>
+<span class="sd">    specific issue.</span>
 
 <span class="sd">    There exists currently no precise timer, providing times which are</span>
 <span class="sd">    comparable between two running processes on Windows. The performance</span>
-<span class="sd">    counter provided on Windows, has a much better resolution but is relative</span>
-<span class="sd">    to the processes start time and it drifts (1s per 100s), so it is only</span>
-<span class="sd">    precise for a relatively short amount of time.</span>
+<span class="sd">    counter provided on Windows, has a much better resolution but is</span>
+<span class="sd">    relative to the processes start time and it drifts (1s per 100s), so</span>
+<span class="sd">    it is only precise for a relatively short amount of time.</span>
 
-<span class="sd">    If a higher precision is needed one has to replace the time.time calls with</span>
-<span class="sd">    something which provides a better precision. For example one could create a</span>
-<span class="sd">    third process which provides times or regularly synchronize both processes</span>
-<span class="sd">    with the clock synchronization algorithm as described here:</span>
+<span class="sd">    If a higher precision is needed one has to replace the time.time</span>
+<span class="sd">    calls with something which provides a better precision. For example</span>
+<span class="sd">    one could create a third process which provides times or regularly</span>
+<span class="sd">    synchronize both processes with the clock synchronization algorithm</span>
+<span class="sd">    as described here:</span>
 
 <span class="sd">        http://en.wikipedia.org/wiki/Network_Time_Protocol</span>
 
@@ -164,10 +168,11 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ampcls</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amp</span> <span class="o">=</span> <span class="n">ampcls</span><span class="p">()</span>
-        <span class="c"># Setting this option, will make the Amp to discard all markers from</span>
-        <span class="c"># the underlying amp driver and return only TCP markers. It will also</span>
-        <span class="c"># return the timestamp instead of sample number within block. This is</span>
-        <span class="c"># only useful for debugging and gathering latency information.</span>
+        <span class="c"># Setting this option, will make the Amp to discard all markers</span>
+        <span class="c"># from the underlying amp driver and return only TCP markers. It</span>
+        <span class="c"># will also return the timestamp instead of sample number within</span>
+        <span class="c"># block. This is only useful for debugging and gathering latency</span>
+        <span class="c"># information.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_debug_tcp_marker_timestamps</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_to_file</span> <span class="o">=</span> <span class="bp">False</span>
 
@@ -288,18 +293,20 @@
 <div class="viewcode-block" id="tcp_reader"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.ampdecorator.tcp_reader">[docs]</a><span class="k">def</span> <span class="nf">tcp_reader</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">running</span><span class="p">,</span> <span class="n">ready</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Marker-reading process.</span>
 
-<span class="sd">    This method runs in a seperate process and receives TCP markers. Whenever a</span>
-<span class="sd">    marker is received, it is put together with a timestamp into a queue.</span>
+<span class="sd">    This method runs in a seperate process and receives TCP markers.</span>
+<span class="sd">    Whenever a marker is received, it is put together with a timestamp</span>
+<span class="sd">    into a queue.</span>
 
-<span class="sd">    Args:</span>
-
-<span class="sd">        queue: This queue is used to send markers to a different process.</span>
-
-<span class="sd">        running: This event is used to signal this process to terminate its</span>
-<span class="sd">            main loop.</span>
-
-<span class="sd">        ready: This signal is used to signal the &quot;parent&quot;-process that this</span>
-<span class="sd">            process is ready to receive marker.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    queue : Queue</span>
+<span class="sd">        this queue is used to send markers to a different process</span>
+<span class="sd">    running : Event</span>
+<span class="sd">        this event is used to signal this process to terminate its main</span>
+<span class="sd">        loop</span>
+<span class="sd">    ready : Event</span>
+<span class="sd">        this signal is used to signal the &quot;parent&quot;-process that this</span>
+<span class="sd">        process is ready to receive marker</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># setup the server socket</span>
@@ -379,9 +386,11 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../libmushu.html" >libmushu</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
