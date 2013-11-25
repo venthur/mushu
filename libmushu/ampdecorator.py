@@ -238,6 +238,9 @@ class AmpDecorator(Amplifier):
     def get_channels(self):
         return self.amp.get_channels()
 
+    def get_sampling_frequency(self):
+        return self.amp.get_sampling_frequency()
+
 
 def tcp_reader(queue, running, ready):
     """Marker-reading process.
