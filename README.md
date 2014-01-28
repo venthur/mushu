@@ -60,6 +60,18 @@ Output Format
   * Numpy arrays
   * TOBI Interface A
 
+Related Software
+----------------
+
+For a complete BCI system written in Python use Mushu together with
+[Wyrm][wyrm] and [Pyff][pyff]. Wyrm is a Brain Computer Interface (BCI) toolbox
+written in Python and is suitable for running on-line BCI experiments as well as
+off-line analysis of EEG data. Pyff a BCI feedback and -stimulus framework.
+
+  [pyff]: http://github.com/venthur/pyff
+  [wyrm]: http://github.com/venthur/wyrm
+
+
 
 Author
 ------
