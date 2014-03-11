@@ -51,5 +51,5 @@ class ReplayAmp(Amplifier):
         return self.fs
 
     @staticmethod
-    def is_available(self):
+    def is_available():
         return True
