@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu Package &mdash; Mushu alpha documentation</title>
+    <title>libmushu package &mdash; Mushu 0.1.beta documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     'alpha',
+        VERSION:     '0.1.beta',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../index.html" /> 
+    <link rel="top" title="Mushu 0.1.beta documentation" href="../index.html" />
+    <link rel="next" title="libmushu.driver package" href="libmushu.driver.html" />
+    <link rel="prev" title="User Stories" href="../user_stories.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,7 +40,13 @@
         <li class="right" >
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.driver.html" title="libmushu.driver package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../user_stories.html" title="User Stories"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,104 +56,43 @@
           <div class="body">
             
   <div class="section" id="libmushu-package">
-<h1>libmushu Package<a class="headerlink" href="#libmushu-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id1">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">libmushu</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-libmushu.__init__"></span><p>This module provides two functions: <a class="reference internal" href="#libmushu.__init__.get_available_amps" title="libmushu.__init__.get_available_amps"><tt class="xref py py-func docutils literal"><span class="pre">get_available_amps()</span></tt></a> which
-will tell you which amplifiers are currently available on your computer,
-and <a class="reference internal" href="#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">get_amp()</span></tt></a> which you can use to get an amplifier instance to
-work with.</p>
-<p>How to use libmushu with the decorated drivers (recommended):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
-
-<span class="c"># you know what amp you want to use:</span>
-<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="s">&#39;epoc&#39;</span><span class="p">)</span>
-<span class="o">...</span>
-
-<span class="c"># Or: you select one of the available amps:</span>
-<span class="n">amps</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
-<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">amps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="o">...</span>
-</pre></div>
+<h1>libmushu package<a class="headerlink" href="#libmushu-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libmushu.driver.html">libmushu.driver package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#libmushu-driver-emotiv-module">libmushu.driver.emotiv module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.gtec">libmushu.driver.gtec module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.randomamp">libmushu.driver.randomamp module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.replayamp">libmushu.driver.replayamp module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.sinusamp">libmushu.driver.sinusamp module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver">Module contents</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<p>How to use the libmushu&#8217;s low level driver drivers:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
-<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
-</pre></div>
 </div>
-<p>You&#8217;ll will most likely want to use the decorated drivers and only deal
-with the low level drivers if you&#8217;re a developer or find that the
-<a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.ampdecorator.AmpDecorator</span></tt></a> does not provide the
-features you need.</p>
-<dl class="function">
-<dt id="libmushu.__init__.get_available_amps">
-<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_available_amps</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_available_amps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_available_amps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves all available (e.g. connected) amplifiers.</p>
-<p>This method tests all supported amplifiers if they are connected to
-the system. More precisely: if the amplifiers <cite>is_available</cite> method
-returns True.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>available_amps</strong> : list of strings</p>
-<blockquote class="last">
-<div><p>a list of the names of the amplifiers which are available</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libmushu</span> <span class="kn">as</span> <span class="nn">lm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lm</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
-<span class="go">[&#39;gusbamp&#39;, &#39;randomamp&#39;]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="libmushu.__init__.get_amp">
-<tt class="descclassname">libmushu.__init__.</tt><tt class="descname">get_amp</tt><big>(</big><em>ampname</em><big>)</big><a class="reference internal" href="../_modules/libmushu/__init__.html#get_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.__init__.get_amp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an amplifier instance.</p>
-<p>This factory method takes a low level amplifier driver, wraps it in
-an AmpDecorator and returns an instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>ampname</strong> : str</p>
-<blockquote>
-<div><p>the desired amplifier. The string must be a key in the
-<tt class="xref py py-data docutils literal"><span class="pre">supported_amps</span></tt> dictionary.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>amp</strong> : Amplifier</p>
-<blockquote class="last">
-<div><p>an amplifier instance</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libmushu</span> <span class="kn">as</span> <span class="nn">lm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">amps</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">amps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</dd></dl>
-
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-libmushu.ampdecorator">
-<span id="ampdecorator-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">ampdecorator</span></tt> Module<a class="headerlink" href="#module-libmushu.ampdecorator" title="Permalink to this headline">¶</a></h2>
+<span id="libmushu-ampdecorator-module"></span><h2>libmushu.ampdecorator module<a class="headerlink" href="#module-libmushu.ampdecorator" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the <a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">AmpDecorator</span></tt></a> class.</p>
 <p>As a user, it is very unlikely that you&#8217;ll have to deal with it
 directly. Its main purpose is to add additional functionality to the low
 level amplifier drivers. This functionality includes features like:
 saving data to a file. or being able to receive marker via TCP/IP.</p>
-<p>By using the <a class="reference internal" href="#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt></a> method, you&#8217;ll
+<p>By using the <tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt> method, you&#8217;ll
 automatically receive decorated amplifiers.</p>
 <dl class="class">
 <dt id="libmushu.ampdecorator.AmpDecorator">
@@ -222,8 +169,8 @@ others do it.:</p>
 <tr class="row-odd"><td><a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator.get_data" title="libmushu.ampdecorator.AmpDecorator.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">get_sampling_frequency</span></tt>()</td>
-<td>Return the sampling frequency.</td>
+<tr class="row-even"><td><a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator.get_sampling_frequency" title="libmushu.ampdecorator.AmpDecorator.get_sampling_frequency"><tt class="xref py py-obj docutils literal"><span class="pre">get_sampling_frequency</span></tt></a>()</td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">is_available</span></tt>()</td>
 <td>Is the amplifier connected to the computer?</td>
@@ -249,6 +196,11 @@ others do it.:</p>
 <dl class="method">
 <dt id="libmushu.ampdecorator.AmpDecorator.get_data">
 <tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.ampdecorator.AmpDecorator.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -279,7 +231,7 @@ into a queue.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>queue</strong> : Queue</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>queue</strong> : Queue</p>
 <blockquote>
 <div><p>this queue is used to send markers to a different process</p>
 </div></blockquote>
@@ -301,7 +253,7 @@ process is ready to receive marker</p>
 
 </div>
 <div class="section" id="module-libmushu.amplifier">
-<span id="amplifier-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">amplifier</span></tt> Module<a class="headerlink" href="#module-libmushu.amplifier" title="Permalink to this headline">¶</a></h2>
+<span id="libmushu-amplifier-module"></span><h2>libmushu.amplifier module<a class="headerlink" href="#module-libmushu.amplifier" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the <a class="reference internal" href="#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">Amplifier</span></tt></a> class, which is the base
 class of all low level amplifier drivers. If you want to write a driver
 for a specific amplifier your driver must derive from the
@@ -388,7 +340,7 @@ sampling frequency, filter, etc.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>kwargs</strong> : dict</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kwargs</strong> : dict</p>
 <blockquote class="last">
 <div><p>the configuration of the amplifier</p>
 </div></blockquote>
@@ -409,7 +361,7 @@ the list represents the second colum of the data returned by
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>channels</strong> : list of strings</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>channels</strong> : list of strings</p>
 <blockquote class="last">
 <div><p>the channel names</p>
 </div></blockquote>
@@ -430,7 +382,7 @@ supported).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>data</strong> : ndarray</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : ndarray</p>
 <blockquote>
 <div><p>a numpy array (time, channels) of the EEG data</p>
 </div></blockquote>
@@ -455,7 +407,7 @@ enabled in the amplifier.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>fs</strong> : float</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>fs</strong> : float</p>
 <blockquote class="last">
 <div><p>the sampling frequency</p>
 </div></blockquote>
@@ -476,7 +428,7 @@ not.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><strong>available</strong> : boolean</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>available</strong> : boolean</td>
 </tr>
 </tbody>
 </table>
@@ -502,28 +454,94 @@ not.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="libmushu.driver.html">driver Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#id1"><tt class="docutils literal"><span class="pre">driver</span></tt> Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.sinusamp"><tt class="docutils literal"><span class="pre">sinusamp</span></tt> Module</a><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<div class="section" id="module-libmushu">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-libmushu" title="Permalink to this headline">¶</a></h2>
+<p>This module provides two functions: <a class="reference internal" href="#libmushu.get_available_amps" title="libmushu.get_available_amps"><tt class="xref py py-func docutils literal"><span class="pre">get_available_amps()</span></tt></a> which
+will tell you which amplifiers are currently available on your computer,
+and <a class="reference internal" href="#libmushu.get_amp" title="libmushu.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">get_amp()</span></tt></a> which you can use to get an amplifier instance to
+work with.</p>
+<p>How to use libmushu with the decorated drivers (recommended):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
+
+<span class="c"># you know what amp you want to use:</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="s">&#39;epoc&#39;</span><span class="p">)</span>
+<span class="o">...</span>
+
+<span class="c"># Or: you select one of the available amps:</span>
+<span class="n">amps</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">amps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="o">...</span>
+</pre></div>
 </div>
+<p>How to use the libmushu&#8217;s low level driver drivers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You&#8217;ll will most likely want to use the decorated drivers and only deal
+with the low level drivers if you&#8217;re a developer or find that the
+<a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator" title="libmushu.ampdecorator.AmpDecorator"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.ampdecorator.AmpDecorator</span></tt></a> does not provide the
+features you need.</p>
+<dl class="function">
+<dt id="libmushu.get_available_amps">
+<tt class="descclassname">libmushu.</tt><tt class="descname">get_available_amps</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu.html#get_available_amps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.get_available_amps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all available (e.g. connected) amplifiers.</p>
+<p>This method tests all supported amplifiers if they are connected to
+the system. More precisely: if the amplifiers <cite>is_available</cite> method
+returns True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>available_amps</strong> : list of strings</p>
+<blockquote class="last">
+<div><p>a list of the names of the amplifiers which are available</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libmushu</span> <span class="kn">as</span> <span class="nn">lm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lm</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
+<span class="go">[&#39;gusbamp&#39;, &#39;randomamp&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="libmushu.get_amp">
+<tt class="descclassname">libmushu.</tt><tt class="descname">get_amp</tt><big>(</big><em>ampname</em><big>)</big><a class="reference internal" href="../_modules/libmushu.html#get_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.get_amp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an amplifier instance.</p>
+<p>This factory method takes a low level amplifier driver, wraps it in
+an AmpDecorator and returns an instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ampname</strong> : str</p>
+<blockquote>
+<div><p>the desired amplifier. The string must be a key in the
+<tt class="xref py py-data docutils literal"><span class="pre">supported_amps</span></tt> dictionary.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>amp</strong> : Amplifier</p>
+<blockquote class="last">
+<div><p>an amplifier instance</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libmushu</span> <span class="kn">as</span> <span class="nn">lm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">amps</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_available_amps</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="n">amps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -535,21 +553,22 @@ not.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">libmushu Package</a><ul>
-<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">libmushu</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-libmushu.ampdecorator"><tt class="docutils literal"><span class="pre">ampdecorator</span></tt> Module</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-libmushu.amplifier"><tt class="docutils literal"><span class="pre">amplifier</span></tt> Module</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#">libmushu package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-libmushu.ampdecorator">libmushu.ampdecorator module</a></li>
+<li><a class="reference internal" href="#module-libmushu.amplifier">libmushu.amplifier module</a></li>
+<li><a class="reference internal" href="#module-libmushu">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../user_stories.html"
+                        title="previous chapter">User Stories</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libmushu.driver.html"
+                        title="next chapter">libmushu.driver package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/api/libmushu.txt"
@@ -584,12 +603,18 @@ not.</p>
         <li class="right" >
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="libmushu.driver.html" title="libmushu.driver package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../user_stories.html" title="User Stories"
+             >previous</a> |</li>
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Bastian Venthur.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

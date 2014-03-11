@@ -6,41 +6,41 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu.__init__ &mdash; Mushu alpha documentation</title>
+    <title>libmushu &mdash; Mushu 0.1.beta documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     'alpha',
+        URL_ROOT:    '../',
+        VERSION:     '0.1.beta',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Mushu 0.1.beta documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
   </head>
   <body>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
+          <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,7 +49,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for libmushu.__init__</h1><div class="highlight"><pre>
+  <h1>Source code for libmushu</h1><div class="highlight"><pre>
 <span class="c"># __init__.py</span>
 <span class="c"># Copyright (C) 2013  Bastian Venthur</span>
 <span class="c">#</span>
@@ -107,6 +107,7 @@
 
 <span class="kn">from</span> <span class="nn">libmushu.ampdecorator</span> <span class="kn">import</span> <span class="n">AmpDecorator</span>
 
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;supported_amps&#39;</span><span class="p">,</span> <span class="s">&#39;get_available_amps&#39;</span><span class="p">,</span> <span class="s">&#39;get_amp&#39;</span><span class="p">]</span>
 
@@ -115,7 +116,9 @@
 <span class="n">supported_amps</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s">&#39;epoc&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;emotiv&#39;</span><span class="p">,</span> <span class="s">&#39;Epoc&#39;</span><span class="p">],</span>
     <span class="s">&#39;gusbamp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;gtec&#39;</span><span class="p">,</span> <span class="s">&#39;GUSBamp&#39;</span><span class="p">],</span>
-    <span class="s">&#39;randomamp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;randomamp&#39;</span><span class="p">,</span> <span class="s">&#39;RandomAmp&#39;</span><span class="p">]</span>
+    <span class="s">&#39;randomamp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;randomamp&#39;</span><span class="p">,</span> <span class="s">&#39;RandomAmp&#39;</span><span class="p">],</span>
+    <span class="s">&#39;sinusamp&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s">&#39;sinusamp&#39;</span><span class="p">,</span> <span class="s">&#39;SinusAmp&#39;</span><span class="p">],</span>
+    <span class="s">&#39;replayamp&#39;</span> <span class="p">:</span> <span class="p">[</span><span class="s">&#39;replayamp&#39;</span><span class="p">,</span> <span class="s">&#39;ReplayAmp&#39;</span><span class="p">]</span>
 <span class="p">}</span>
 
 
@@ -123,7 +126,7 @@
 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Logger started&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_available_amps"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.__init__.get_available_amps">[docs]</a><span class="k">def</span> <span class="nf">get_available_amps</span><span class="p">():</span>
+<div class="viewcode-block" id="get_available_amps"><a class="viewcode-back" href="../api/libmushu.html#libmushu.get_available_amps">[docs]</a><span class="k">def</span> <span class="nf">get_available_amps</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Retrieves all available (e.g. connected) amplifiers.</span>
 
 <span class="sd">    This method tests all supported amplifiers if they are connected to</span>
@@ -159,7 +162,7 @@
     <span class="k">return</span> <span class="n">available_amps</span>
 
 </div>
-<div class="viewcode-block" id="get_amp"><a class="viewcode-back" href="../../api/libmushu.html#libmushu.__init__.get_amp">[docs]</a><span class="k">def</span> <span class="nf">get_amp</span><span class="p">(</span><span class="n">ampname</span><span class="p">):</span>
+<div class="viewcode-block" id="get_amp"><a class="viewcode-back" href="../api/libmushu.html#libmushu.get_amp">[docs]</a><span class="k">def</span> <span class="nf">get_amp</span><span class="p">(</span><span class="n">ampname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get an amplifier instance.</span>
 
 
@@ -198,7 +201,7 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
+    <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
@@ -217,21 +220,21 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
+          <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../../np-modindex.html" title="Python Module Index"
+          <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Mushu alpha documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Bastian Venthur.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

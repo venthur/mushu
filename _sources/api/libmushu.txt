@@ -1,29 +1,5 @@
-libmushu Package
+libmushu package
 ================
-
-:mod:`libmushu` Package
------------------------
-
-.. automodule:: libmushu.__init__
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`ampdecorator` Module
---------------------------
-
-.. automodule:: libmushu.ampdecorator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`amplifier` Module
------------------------
-
-.. automodule:: libmushu.amplifier
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 Subpackages
 -----------
@@ -32,3 +8,30 @@ Subpackages
 
     libmushu.driver
 
+Submodules
+----------
+
+libmushu.ampdecorator module
+----------------------------
+
+.. automodule:: libmushu.ampdecorator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+libmushu.amplifier module
+-------------------------
+
+.. automodule:: libmushu.amplifier
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: libmushu
+    :members:
+    :undoc-members:
+    :show-inheritance:

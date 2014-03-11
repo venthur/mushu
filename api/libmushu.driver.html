@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>driver Package &mdash; Mushu alpha documentation</title>
+    <title>libmushu.driver package &mdash; Mushu 0.1.beta documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     'alpha',
+        VERSION:     '0.1.beta',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu alpha documentation" href="../index.html" />
+    <link rel="top" title="Mushu 0.1.beta documentation" href="../index.html" />
     <link rel="prev" title="libmushu.amplifier" href="libmushu.amplifier.html" /> 
   </head>
   <body>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="libmushu.amplifier.html" title="libmushu.amplifier"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,104 +51,20 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="driver-package">
-<h1>driver Package<a class="headerlink" href="#driver-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id1">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">driver</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-libmushu.driver"></span><p>This package contains the low-level drivers for various amplifiers.</p>
-<p>As a user, you&#8217;ll probably not deal with them directly but with their decorated
-counterparts via <a class="reference internal" href="libmushu.html#libmushu.__init__.get_amp" title="libmushu.__init__.get_amp"><tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt></a>.</p>
-<p>If you want to use the low level drivers directly you can use it like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
-<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
-</pre></div>
+  <div class="section" id="libmushu-driver-package">
+<h1>libmushu.driver package<a class="headerlink" href="#libmushu-driver-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<p>TODO: Add a &#8216;writing your own drivers&#8217; section or tutorial.</p>
-</div>
-<div class="section" id="module-libmushu.driver.emotiv">
-<span id="emotiv-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">emotiv</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.emotiv" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="libmushu.driver.emotiv.Epoc">
-<em class="property">class </em><tt class="descclassname">libmushu.driver.emotiv.</tt><tt class="descname">Epoc</tt><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">configure</span></tt>(**kwargs)</td>
-<td>Configure the amplifier.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#libmushu.driver.emotiv.Epoc.decrypt" title="libmushu.driver.emotiv.Epoc.decrypt"><tt class="xref py py-obj docutils literal"><span class="pre">decrypt</span></tt></a>(raw)</td>
-<td>Decrypt a raw package.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.emotiv.Epoc.generate_key" title="libmushu.driver.emotiv.Epoc.generate_key"><tt class="xref py py-obj docutils literal"><span class="pre">generate_key</span></tt></a>(sn[,&nbsp;research])</td>
-<td>Generate the encryption key.</td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">get_channels</span></tt>()</td>
-<td>Return the list of channel names.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.emotiv.Epoc.get_data" title="libmushu.driver.emotiv.Epoc.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">get_sampling_frequency</span></tt>()</td>
-<td>Return the sampling frequency.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.emotiv.Epoc.is_available" title="libmushu.driver.emotiv.Epoc.is_available"><tt class="xref py py-obj docutils literal"><span class="pre">is_available</span></tt></a>()</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#libmushu.driver.emotiv.Epoc.parse_raw" title="libmushu.driver.emotiv.Epoc.parse_raw"><tt class="xref py py-obj docutils literal"><span class="pre">parse_raw</span></tt></a>(raw)</td>
-<td>Parse raw data.</td>
-</tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">start</span></tt>()</td>
-<td>Make the amplifier ready for delivering data.</td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">stop</span></tt>()</td>
-<td>Stop the amplifier.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="libmushu.driver.emotiv.Epoc.decrypt">
-<tt class="descname">decrypt</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.decrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.decrypt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decrypt a raw package.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="libmushu.driver.emotiv.Epoc.generate_key">
-<tt class="descname">generate_key</tt><big>(</big><em>sn</em>, <em>research=True</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.generate_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.generate_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the encryption key.</p>
-<p>The key is based on the serial number of the device and the information
-weather it is a research- or consumer device.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="libmushu.driver.emotiv.Epoc.get_data">
-<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.get_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="libmushu.driver.emotiv.Epoc.is_available">
-<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.is_available" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="libmushu.driver.emotiv.Epoc.parse_raw">
-<tt class="descname">parse_raw</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/emotiv.html#Epoc.parse_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.emotiv.Epoc.parse_raw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse raw data.</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="libmushu-driver-emotiv-module">
+<h2>libmushu.driver.emotiv module<a class="headerlink" href="#libmushu-driver-emotiv-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-libmushu.driver.gtec">
-<span id="gtec-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">gtec</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.gtec" title="Permalink to this headline">¶</a></h2>
+<span id="libmushu-driver-gtec-module"></span><h2>libmushu.driver.gtec module<a class="headerlink" href="#module-libmushu.driver.gtec" title="Permalink to this headline">¶</a></h2>
 <dl class="exception">
 <dt id="libmushu.driver.gtec.AmpError">
 <em class="property">exception </em><tt class="descclassname">libmushu.driver.gtec.</tt><tt class="descname">AmpError</tt><a class="reference internal" href="../_modules/libmushu/driver/gtec.html#AmpError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.gtec.AmpError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></a></p>
 </dd></dl>
 
 <dl class="class">
@@ -306,7 +222,7 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
 
 </div>
 <div class="section" id="module-libmushu.driver.randomamp">
-<span id="randomamp-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">randomamp</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.randomamp" title="Permalink to this headline">¶</a></h2>
+<span id="libmushu-driver-randomamp-module"></span><h2>libmushu.driver.randomamp module<a class="headerlink" href="#module-libmushu.driver.randomamp" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="libmushu.driver.randomamp.RandomAmp">
 <em class="property">class </em><tt class="descclassname">libmushu.driver.randomamp.</tt><tt class="descname">RandomAmp</tt><a class="reference internal" href="../_modules/libmushu/driver/randomamp.html#RandomAmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.randomamp.RandomAmp" title="Permalink to this definition">¶</a></dt>
@@ -380,8 +296,102 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
 </dd></dl>
 
 </div>
+<div class="section" id="module-libmushu.driver.replayamp">
+<span id="libmushu-driver-replayamp-module"></span><h2>libmushu.driver.replayamp module<a class="headerlink" href="#module-libmushu.driver.replayamp" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="libmushu.driver.replayamp.ReplayAmp">
+<em class="property">class </em><tt class="descclassname">libmushu.driver.replayamp.</tt><tt class="descname">ReplayAmp</tt><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="libmushu.html#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
+<p>Replay Amplifier.</p>
+<p>This amplifier replays the data provided.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.configure" title="libmushu.driver.replayamp.ReplayAmp.configure"><tt class="xref py py-obj docutils literal"><span class="pre">configure</span></tt></a>(data,&nbsp;marker,&nbsp;channels,&nbsp;fs)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.get_channels" title="libmushu.driver.replayamp.ReplayAmp.get_channels"><tt class="xref py py-obj docutils literal"><span class="pre">get_channels</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.get_data" title="libmushu.driver.replayamp.ReplayAmp.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a>()</td>
+<td>Get Data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.get_sampling_frequency" title="libmushu.driver.replayamp.ReplayAmp.get_sampling_frequency"><tt class="xref py py-obj docutils literal"><span class="pre">get_sampling_frequency</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.is_available" title="libmushu.driver.replayamp.ReplayAmp.is_available"><tt class="xref py py-obj docutils literal"><span class="pre">is_available</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.start" title="libmushu.driver.replayamp.ReplayAmp.start"><tt class="xref py py-obj docutils literal"><span class="pre">start</span></tt></a>()</td>
+<td>Start the amplifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#libmushu.driver.replayamp.ReplayAmp.stop" title="libmushu.driver.replayamp.ReplayAmp.stop"><tt class="xref py py-obj docutils literal"><span class="pre">stop</span></tt></a>()</td>
+<td>Stop the amplifier.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.configure">
+<tt class="descname">configure</tt><big>(</big><em>data</em>, <em>marker</em>, <em>channels</em>, <em>fs</em><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.configure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.get_channels">
+<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.get_data">
+<tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Data.</p>
+<p>Return the current data from the ampl</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>chunk</strong> : 2d arary</p>
+<p><strong>markers</strong> : list</p>
+<blockquote class="last">
+<div><p>Markers is time in ms since relative to the first sample of
+that block.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.get_sampling_frequency">
+<tt class="descname">get_sampling_frequency</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.get_sampling_frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.get_sampling_frequency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="libmushu.driver.replayamp.ReplayAmp.is_available">
+<em class="property">static </em><tt class="descname">is_available</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.is_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the amplifier.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libmushu.driver.replayamp.ReplayAmp.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/driver/replayamp.html#ReplayAmp.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.replayamp.ReplayAmp.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the amplifier.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-libmushu.driver.sinusamp">
-<span id="sinusamp-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">sinusamp</span></tt> Module<a class="headerlink" href="#module-libmushu.driver.sinusamp" title="Permalink to this headline">¶</a></h2>
+<span id="libmushu-driver-sinusamp-module"></span><h2>libmushu.driver.sinusamp module<a class="headerlink" href="#module-libmushu.driver.sinusamp" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="libmushu.driver.sinusamp.SinusAmp">
 <em class="property">class </em><tt class="descclassname">libmushu.driver.sinusamp.</tt><tt class="descname">SinusAmp</tt><a class="reference internal" href="../_modules/libmushu/driver/sinusamp.html#SinusAmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.driver.sinusamp.SinusAmp" title="Permalink to this definition">¶</a></dt>
@@ -455,6 +465,18 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
 </dd></dl>
 
 </div>
+<div class="section" id="module-libmushu.driver">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-libmushu.driver" title="Permalink to this headline">¶</a></h2>
+<p>This package contains the low-level drivers for various amplifiers.</p>
+<p>As a user, you&#8217;ll probably not deal with them directly but with their decorated
+counterparts via <tt class="xref py py-func docutils literal"><span class="pre">libmushu.__init__.get_amp()</span></tt>.</p>
+<p>If you want to use the low level drivers directly you can use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">libmushu.driver.randomamp</span> <span class="kn">import</span> <span class="n">RandomAmp</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">RandomAmp</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>TODO: Add a &#8216;writing your own drivers&#8217; section or tutorial.</p>
+</div>
 </div>
 
 
@@ -465,20 +487,14 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">driver Package</a><ul>
-<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">driver</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-libmushu.driver.emotiv"><tt class="docutils literal"><span class="pre">emotiv</span></tt> Module</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-libmushu.driver.gtec"><tt class="docutils literal"><span class="pre">gtec</span></tt> Module</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-libmushu.driver.randomamp"><tt class="docutils literal"><span class="pre">randomamp</span></tt> Module</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-libmushu.driver.sinusamp"><tt class="docutils literal"><span class="pre">sinusamp</span></tt> Module</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#">libmushu.driver package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#libmushu-driver-emotiv-module">libmushu.driver.emotiv module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.gtec">libmushu.driver.gtec module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.randomamp">libmushu.driver.randomamp module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.replayamp">libmushu.driver.replayamp module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver.sinusamp">libmushu.driver.sinusamp module</a></li>
+<li><a class="reference internal" href="#module-libmushu.driver">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -523,12 +539,12 @@ notchfilter &#8211; tuple: parameters for the band stop filter (hp, lp, fs, orde
         <li class="right" >
           <a href="libmushu.amplifier.html" title="libmushu.amplifier"
              >previous</a> |</li>
-        <li><a href="../index.html">Mushu alpha documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Bastian Venthur.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
