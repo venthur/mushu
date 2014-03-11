@@ -53,7 +53,6 @@ Contents:
    :maxdepth: 2
 
    user_stories
-   api/modules
 
 Indices and tables
 ==================
