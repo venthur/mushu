@@ -55,6 +55,7 @@ import logging
 
 from libmushu.ampdecorator import AmpDecorator
 
+__version__ = '0.1'
 
 __all__ = ['supported_amps', 'get_available_amps', 'get_amp']
 
