@@ -64,7 +64,8 @@ supported_amps = {
     'epoc': ['emotiv', 'Epoc'],
     'gusbamp': ['gtec', 'GUSBamp'],
     'randomamp': ['randomamp', 'RandomAmp'],
-    'sinusamp' : ['sinusamp', 'SinusAmp']
+    'sinusamp' : ['sinusamp', 'SinusAmp'],
+    'replayamp' : ['replayamp', 'ReplayAmp']
 }
 
 
