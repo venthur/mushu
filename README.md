@@ -9,21 +9,42 @@ acquisition software written in Python.
 Installation
 ------------
 
+
+### Using PyPI
+
+Mushu is available on the [Python Package Index (PyPI)][pypi] and can be easily
+installed via:
+
+```bash
+$ pip install mushu
+```
+
+  [pypi]: https://pypi.python.org/pypi/Mushu
+
+
+### Requirements
+
 The required packages to run Mushu can be found in the file
 [requirements.txt](requirements.txt). To install all required packages at once
 one can use `pip`:
 
 ```sh
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 or simply install all packages line by line using the package manager of your
 operating system.
 
-Next, install mushu
+
+### Manually Installing Mushu
+
+To install Mushu manually on your system, download the latest version of Mushu
+and run:
+
 ```sh
-sudo python ./setup.py install
+$ python ./setup.py install --user
 ```
+
 Supported Amplifiers
 --------------------
 
