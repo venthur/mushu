@@ -78,7 +78,7 @@ class Epoc(Amplifier):
         except Exception as e:
             print e
             data = np.array()
-        return data.reshape(1, -1)
+        return data.reshape(1, -1), []
 
     @staticmethod
     def is_available():
