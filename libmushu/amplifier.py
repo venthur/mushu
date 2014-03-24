@@ -107,9 +107,40 @@ class Amplifier(object):
         -------
         data : ndarray
             a numpy array (time, channels) of the EEG data
-        markers : list
+        markers : list of (float, str)
             a list of markers. Each element is a tuple of timestamp and
-            string
+            string. The timestamp is the time in ms relative to the
+            onset of the block of data. Note that negative values are
+            *allowed* as well as values bigger than the length of the
+            block of data returned. That is to be interpreted as a
+            marker from the last block and a marker for a future block
+            respectively.
+
+        Examples
+        --------
+
+        Create a very slow amplifier with 1Hz and 3 channels and send
+        some markers:
+
+        >>> amp = libmushu.get_amp('randomamp')
+        >>> amp.configure(fs=1, channels=3)
+        >>> amp.start()
+        >>> while True:
+        ...     time.sleep(.5)
+        ...     data, marker = amp.get_data()
+        ...     print '---'
+        ...     print data
+        ...     print marker
+        ...
+        ---
+        [[590 938  72]]
+        [[98.75297546386719, 'foo'], [553.4558296203613, 'bar']]
+        ---
+        [[167 168  40]]
+        []
+        ---
+        [[727 705 934]]
+        [[16.066789627075195, 'baz']]
 
         """
         pass

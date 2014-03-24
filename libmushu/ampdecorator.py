@@ -54,7 +54,7 @@ PORT = 12345
 
 class AmpDecorator(Amplifier):
     """This class 'decorates' the Low-Level Amplifier classes with
-    Marker and Save-To-File functionality.
+    TCP-Marker and Save-To-File functionality.
 
     You use it by decorating (not as in Python-Decorator, but in the GoF
     sense) the low level amplifier class you want to use::
@@ -116,12 +116,6 @@ class AmpDecorator(Amplifier):
 
     def __init__(self, ampcls):
         self.amp = ampcls()
-        # Setting this option, will make the Amp to discard all markers
-        # from the underlying amp driver and return only TCP markers. It
-        # will also return the timestamp instead of sample number within
-        # block. This is only useful for debugging and gathering latency
-        # information.
-        self._debug_tcp_marker_timestamps = False
         self.write_to_file = False
 
     @property
@@ -167,7 +161,6 @@ class AmpDecorator(Amplifier):
         # zero the sample counter
         self.received_samples = 0
         # start the amp
-        self.time = time.time()
         self.amp.start()
 
     def stop(self):
@@ -188,47 +181,48 @@ class AmpDecorator(Amplifier):
         self.amp.configure(**kwargs)
 
     def get_data(self):
+        """Get data from the amplifier.
+
+        This method is supposed to get called as fast as possible (i.e
+        hundreds of times per seconds) and returns the data and the
+        markers.
+
+        Returns
+        -------
+        data : 2darray
+            a numpy array (time, channels) of the EEG data
+        markers : list of (float, str)
+            a list of markers. Each element is a tuple of timestamp and
+            string. The timestamp is the time in ms relative to the
+            onset of the block of data. Note that negative values are
+            *allowed* as well as values bigger than the length of the
+            block of data returned. That is to be interpreted as a
+            marker from the last block and a marker for a future block
+            respectively.
+
+        """
         # get data and marker from underlying amp
         data, marker = self.amp.get_data()
-        # get tcp marker and merge them with markers from the amp
-        self.time_old = self.time
-        self.time = time.time()
+
+        t = time.time()
+        # length in sec of the new block according to #samples and fs
+        block_duration = len(data) / self.amp.get_sampling_frequency()
+        # abs time of start of the block
+        t0 = t - block_duration
+        # duration of all blocks except the current one
+        duration = self.received_samples / self.amp.get_sampling_frequency()
+
         # merge markers
         tcp_marker = []
-        # wait 0.2ms to let late markers arrive in time for this block
-        time.sleep(0.2 / 1000)
-        future_markers = []
         while not self.marker_queue.empty():
             m = self.marker_queue.get()
-            if not self._debug_tcp_marker_timestamps:
-                if m[0] > self.time:
-                    #logger.debug('Marker is newer than the last sample of the current block, queueing it for the next block.')
-                    future_markers.append(m)
-                    continue
-                dt = m[0] - self.time_old
-                if dt < 0:
-                    logger.warning('Marker is %.2fms older than current block, setting it to first sample of current block.' % abs(dt * 1000))
-                    m[0] = 0
-                else:
-                    # int(x) truncates towards zero, that's what we want
-                    m[0] = int(dt * self.amp.get_sampling_frequency())
+            m[0] = (m[0] - t0) * 1000
             tcp_marker.append(m)
-        # put markers which belong to the next block back into the queue
-        for m in future_markers:
-            self.marker_queue.put(m)
-        if not self._debug_tcp_marker_timestamps:
-            marker = sorted(marker + tcp_marker)
-        else:
-            marker = sorted(tcp_marker)
+        marker = sorted(marker + tcp_marker)
         # save data to files
         if self.write_to_file:
             for m in marker:
-                # If we received 17 samples so far, the index of the last
-                # sample from the last block is 16. Since m[0] is the sample
-                # index of the current block starting with 0,
-                # received_samples + m[0] gives the correct index for the
-                # global marker list.
-                self.fh_marker.write("%i %s\n" % (self.received_samples + m[0], m[1]))
+                self.fh_marker.write("%f %s\n" % (1000 * duration + m[0], m[1]))
             for t in data:
                 for c in t:
                     self.fh_eeg.write(struct.pack("f", c))
