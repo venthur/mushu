@@ -66,7 +66,8 @@ supported_amps = {
     'gusbamp': ['gtec', 'GUSBamp'],
     'randomamp': ['randomamp', 'RandomAmp'],
     'sinusamp' : ['sinusamp', 'SinusAmp'],
-    'replayamp' : ['replayamp', 'ReplayAmp']
+    'replayamp' : ['replayamp', 'ReplayAmp'],
+    'lslamp' : ['labstreaminglayer', 'LSLAmp']
 }
 
 
