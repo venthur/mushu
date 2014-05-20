@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu package &mdash; Mushu 0.1.beta documentation</title>
+    <title>libmushu package &mdash; Mushu 0.2.beta documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.beta',
+        VERSION:     '0.2.beta',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Mushu 0.1.beta documentation" href="../index.html" />
+    <link rel="top" title="Mushu 0.2.beta documentation" href="../index.html" />
     <link rel="next" title="libmushu.driver package" href="libmushu.driver.html" />
     <link rel="prev" title="User Stories" href="../user_stories.html" /> 
   </head>
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../user_stories.html" title="User Stories"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.2.beta documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -63,10 +63,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="libmushu.driver.html">libmushu.driver package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#libmushu-driver-emotiv-module">libmushu.driver.emotiv module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.emotiv">libmushu.driver.emotiv module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.fsm">libmushu.driver.fsm module</a><ul class="simple">
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.gtec">libmushu.driver.gtec module</a><ul class="simple">
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#libmushu-driver-labstreaminglayer-module">libmushu.driver.labstreaminglayer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="libmushu.driver.html#module-libmushu.driver.randomamp">libmushu.driver.randomamp module</a><ul class="simple">
 </ul>
 </li>
@@ -99,7 +105,7 @@ automatically receive decorated amplifiers.</p>
 <em class="property">class </em><tt class="descclassname">libmushu.ampdecorator.</tt><tt class="descname">AmpDecorator</tt><big>(</big><em>ampcls</em><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#libmushu.amplifier.Amplifier" title="libmushu.amplifier.Amplifier"><tt class="xref py py-class docutils literal"><span class="pre">libmushu.amplifier.Amplifier</span></tt></a></p>
 <p>This class &#8216;decorates&#8217; the Low-Level Amplifier classes with
-Marker and Save-To-File functionality.</p>
+TCP-Marker and Save-To-File functionality.</p>
 <p>You use it by decorating (not as in Python-Decorator, but in the GoF
 sense) the low level amplifier class you want to use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">libmushu</span>
@@ -167,7 +173,7 @@ others do it.:</p>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator.get_data" title="libmushu.ampdecorator.AmpDecorator.get_data"><tt class="xref py py-obj docutils literal"><span class="pre">get_data</span></tt></a>()</td>
-<td></td>
+<td>Get data from the amplifier.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#libmushu.ampdecorator.AmpDecorator.get_sampling_frequency" title="libmushu.ampdecorator.AmpDecorator.get_sampling_frequency"><tt class="xref py py-obj docutils literal"><span class="pre">get_sampling_frequency</span></tt></a>()</td>
 <td></td>
@@ -196,7 +202,33 @@ others do it.:</p>
 <dl class="method">
 <dt id="libmushu.ampdecorator.AmpDecorator.get_data">
 <tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/libmushu/ampdecorator.html#AmpDecorator.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libmushu.ampdecorator.AmpDecorator.get_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get data from the amplifier.</p>
+<p>This method is supposed to get called as fast as possible (i.e
+hundreds of times per seconds) and returns the data and the
+markers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : 2darray</p>
+<blockquote>
+<div><p>a numpy array (time, channels) of the EEG data</p>
+</div></blockquote>
+<p><strong>markers</strong> : list of (float, str)</p>
+<blockquote class="last">
+<div><p>a list of markers. Each element is a tuple of timestamp and
+string. The timestamp is the time in ms relative to the
+onset of the block of data. Note that negative values are
+<em>allowed</em> as well as values bigger than the length of the
+block of data returned. That is to be interpreted as a
+marker from the last block and a marker for a future block
+respectively.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="libmushu.ampdecorator.AmpDecorator.get_sampling_frequency">
@@ -386,15 +418,44 @@ supported).</p>
 <blockquote>
 <div><p>a numpy array (time, channels) of the EEG data</p>
 </div></blockquote>
-<p><strong>markers</strong> : list</p>
+<p><strong>markers</strong> : list of (float, str)</p>
 <blockquote class="last">
 <div><p>a list of markers. Each element is a tuple of timestamp and
-string</p>
+string. The timestamp is the time in ms relative to the
+onset of the block of data. Note that negative values are
+<em>allowed</em> as well as values bigger than the length of the
+block of data returned. That is to be interpreted as a
+marker from the last block and a marker for a future block
+respectively.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>Create a very slow amplifier with 1Hz and 3 channels and send
+some markers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span> <span class="o">=</span> <span class="n">libmushu</span><span class="o">.</span><span class="n">get_amp</span><span class="p">(</span><span class="s">&#39;randomamp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="n">amp</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="s">&#39;---&#39;</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">data</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">marker</span>
+<span class="gp">...</span>
+<span class="go">---</span>
+<span class="go">[[590 938  72]]</span>
+<span class="go">[[98.75297546386719, &#39;foo&#39;], [553.4558296203613, &#39;bar&#39;]]</span>
+<span class="go">---</span>
+<span class="go">[[167 168  40]]</span>
+<span class="go">[]</span>
+<span class="go">---</span>
+<span class="go">[[727 705 934]]</span>
+<span class="go">[[16.066789627075195, &#39;baz&#39;]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -609,7 +670,7 @@ an AmpDecorator and returns an instance.</p>
         <li class="right" >
           <a href="../user_stories.html" title="User Stories"
              >previous</a> |</li>
-        <li><a href="../index.html">Mushu 0.1.beta documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Mushu 0.2.beta documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

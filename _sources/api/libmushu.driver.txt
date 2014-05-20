@@ -12,10 +12,26 @@ libmushu.driver.emotiv module
     :undoc-members:
     :show-inheritance:
 
+libmushu.driver.fsm module
+--------------------------
+
+.. automodule:: libmushu.driver.fsm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 libmushu.driver.gtec module
 ---------------------------
 
 .. automodule:: libmushu.driver.gtec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+libmushu.driver.labstreaminglayer module
+----------------------------------------
+
+.. automodule:: libmushu.driver.labstreaminglayer
     :members:
     :undoc-members:
     :show-inheritance:

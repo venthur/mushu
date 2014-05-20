@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libmushu.amplifier &mdash; Mushu 0.1.beta documentation</title>
+    <title>libmushu.amplifier &mdash; Mushu 0.2.beta documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.beta',
+        VERSION:     '0.2.beta',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Mushu 0.1.beta documentation" href="../../index.html" />
+    <link rel="top" title="Mushu 0.2.beta documentation" href="../../index.html" />
     <link rel="up" title="libmushu" href="../libmushu.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Mushu 0.1.beta documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Mushu 0.2.beta documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../libmushu.html" accesskey="U">libmushu</a> &raquo;</li> 
       </ul>
@@ -160,9 +160,40 @@
 <span class="sd">        -------</span>
 <span class="sd">        data : ndarray</span>
 <span class="sd">            a numpy array (time, channels) of the EEG data</span>
-<span class="sd">        markers : list</span>
+<span class="sd">        markers : list of (float, str)</span>
 <span class="sd">            a list of markers. Each element is a tuple of timestamp and</span>
-<span class="sd">            string</span>
+<span class="sd">            string. The timestamp is the time in ms relative to the</span>
+<span class="sd">            onset of the block of data. Note that negative values are</span>
+<span class="sd">            *allowed* as well as values bigger than the length of the</span>
+<span class="sd">            block of data returned. That is to be interpreted as a</span>
+<span class="sd">            marker from the last block and a marker for a future block</span>
+<span class="sd">            respectively.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Create a very slow amplifier with 1Hz and 3 channels and send</span>
+<span class="sd">        some markers:</span>
+
+<span class="sd">        &gt;&gt;&gt; amp = libmushu.get_amp(&#39;randomamp&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; amp.configure(fs=1, channels=3)</span>
+<span class="sd">        &gt;&gt;&gt; amp.start()</span>
+<span class="sd">        &gt;&gt;&gt; while True:</span>
+<span class="sd">        ...     time.sleep(.5)</span>
+<span class="sd">        ...     data, marker = amp.get_data()</span>
+<span class="sd">        ...     print &#39;---&#39;</span>
+<span class="sd">        ...     print data</span>
+<span class="sd">        ...     print marker</span>
+<span class="sd">        ...</span>
+<span class="sd">        ---</span>
+<span class="sd">        [[590 938  72]]</span>
+<span class="sd">        [[98.75297546386719, &#39;foo&#39;], [553.4558296203613, &#39;bar&#39;]]</span>
+<span class="sd">        ---</span>
+<span class="sd">        [[167 168  40]]</span>
+<span class="sd">        []</span>
+<span class="sd">        ---</span>
+<span class="sd">        [[727 705 934]]</span>
+<span class="sd">        [[16.066789627075195, &#39;baz&#39;]]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
@@ -246,7 +277,7 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Mushu 0.1.beta documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Mushu 0.2.beta documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../libmushu.html" >libmushu</a> &raquo;</li> 
       </ul>
