@@ -48,8 +48,11 @@ $ python ./setup.py install --user
 Supported Amplifiers
 --------------------
 
-  * g.USBamp by g.tec
-  * EPOC by emotiv
+  * g.USBamp by g.tec (native)
+  * EPOC by emotiv (native)
+  * any [lab streaming layer][lsl] device publishing EEG data
+
+  [lsl]: https://code.google.com/p/labstreaminglayer/
 
 Online Documentation
 --------------------
