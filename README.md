@@ -84,6 +84,29 @@ Output Format
   * Numpy arrays
   * TOBI Interface A
 
+
+Citing Us
+---------
+
+If you use Mushu for anything that results in a publication, We humbly ask you
+to cite us:
+
+```bibtex
+
+@INPROCEEDINGS{venthur2012,
+    author={Venthur, Bastian and Blankertz, Benjamin},
+    booktitle={Engineering in Medicine and Biology Society (EMBC), 2012 Annual International Conference of the IEEE},
+    title={Mushu, a free- and open source BCI signal acquisition, written in Python},
+    year={2012},
+    month={Aug},
+    pages={1786-1788},
+    organization={IEEE},
+    doi={10.1109/EMBC.2012.6346296},
+    ISSN={1557-170X},
+}
+
+```
+
 Related Software
 ----------------
 
