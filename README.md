@@ -92,7 +92,6 @@ If you use Mushu for anything that results in a publication, We humbly ask you
 to cite us:
 
 ```bibtex
-
 @INPROCEEDINGS{venthur2012,
     author={Venthur, Bastian and Blankertz, Benjamin},
     booktitle={Engineering in Medicine and Biology Society (EMBC), 2012 Annual International Conference of the IEEE},
@@ -104,7 +103,6 @@ to cite us:
     doi={10.1109/EMBC.2012.6346296},
     ISSN={1557-170X},
 }
-
 ```
 
 Related Software
