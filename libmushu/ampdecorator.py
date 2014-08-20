@@ -223,9 +223,7 @@ class AmpDecorator(Amplifier):
         if self.write_to_file:
             for m in marker:
                 self.fh_marker.write("%f %s\n" % (1000 * duration + m[0], m[1]))
-            for t in data:
-                for c in t:
-                    self.fh_eeg.write(struct.pack("f", c))
+            self.fh_eeg.write(struct.pack("f"*data.size, *data.flatten()))
         self.received_samples += len(data)
         return data, marker
 
