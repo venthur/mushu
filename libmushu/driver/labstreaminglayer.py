@@ -61,6 +61,7 @@ class LSLAmp(Amplifier):
         self.lsl_marker_inlet = pylsl.StreamInlet(streams[0])
         info = self.lsl_inlet.info()
         self.n_channels = info.channel_count()
+        self.channels = ['Ch %i' % i for i in range(self.n_channels)]
         self.fs = info.nominal_srate()
         # storage for markers that arrived w/o samples
         self._markers = []
@@ -126,7 +127,6 @@ class LSLAmp(Amplifier):
         """Get channel names.
 
         """
-        ['Ch %i' % i for i in range(self.n_channels)]
         return self.channels
 
     def get_sampling_frequency(self):
