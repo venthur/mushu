@@ -9,14 +9,17 @@ from libmushu.amplifier import Amplifier
 
 class ReplayAmp(Amplifier):
 
-    def configure(self, data, marker, channels, fs):
+    def configure(self, data, marker, channels, fs, realtime=True, samples=1):
         self.data = data
         self.marker = marker
         self.channels = channels
         self.fs = fs
+        self.realtime = realtime
+        self.samples = samples
 
     def start(self):
         self.last_sample_time = time.time()
+        self.pos = 0
 
     def stop(self):
         pass
@@ -30,18 +33,23 @@ class ReplayAmp(Amplifier):
         first sample of that block.
 
         """
-        elapsed = time.time() - self.last_sample_time
-        #self.last_sample_time = time.time()
-        samples = int(self.fs * elapsed)
+        if self.realtime:
+            elapsed = time.time() - self.last_sample_time
+            #self.last_sample_time = time.time()
+            samples = int(self.fs * elapsed)
+        else:
+            samples = self.samples
         elapsed = samples / self.fs
         self.last_sample_time += elapsed
         # data
-        chunk = self.data[:samples]
-        self.data = self.data[samples:]
+        chunk = self.data[self.pos:self.pos+samples]
+        #self.data = self.data[samples:]
         # markers
-        markers = filter(lambda x: x[0] < elapsed * 1000, self.marker)
-        self.marker = filter(lambda x: x[0] >= elapsed * 1000, self.marker)
-        self.marker = map(lambda x: [x[0] - elapsed * 1000, x[1]], self.marker)
+        markers = [x for x in self.marker if x[0] < elapsed * 1000]
+        self.marker = [x for x in self.marker if x[0] >= elapsed * 1000]
+        self.marker = [[x[0] - elapsed * 1000, x[1]] for x in self.marker]
+
+        self.pos += samples
         return chunk, markers
 
     def get_channels(self):
