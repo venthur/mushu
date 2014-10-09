@@ -4,18 +4,54 @@ from __future__ import division
 
 import time
 
+import numpy as np
+
 from libmushu.amplifier import Amplifier
 
 
 class ReplayAmp(Amplifier):
 
-    def configure(self, data, marker, channels, fs, realtime=True, samples=1):
+    def configure(self, data, marker, channels, fs, realtime=True, blocksize_ms=None, blocksize_samples=None):
+        """
+
+        Parameters
+        ----------
+        data
+        marker
+        channels
+        fs
+        realtime
+        blocksize_ms : float
+            blocksize in milliseconds
+        blocksize_samples : int
+            blocksize in samples
+
+        Raises
+        ------
+        TypeError :
+            if ``blocksize_ms`` and ``blocksize_s`` are given.
+
+        """
+        if [blocksize_ms, blocksize_samples].count(None) != 1:
+            raise TypeError("blocksize_ms and blocksize_samples are mutually exclusive.")
+
         self.data = data
+        # slow python
         self.marker = marker
+        # fast numpy
+        self.marker_ts = np.array([ts for ts, s in marker])
+        self.marker_s = np.array([s for ts, s in marker])
         self.channels = channels
         self.fs = fs
         self.realtime = realtime
-        self.samples = samples
+
+        if blocksize_ms:
+            samples = fs * (blocksize_ms / 1000)
+            if not samples.is_integer():
+                raise ValueError("Resulting blocksize is not integer, please fix the blocksize_ms.")
+            self.samples = int(samples)
+        if blocksize_samples:
+            self.samples = blocksize_samples
 
     def start(self):
         self.last_sample_time = time.time()
@@ -35,8 +71,8 @@ class ReplayAmp(Amplifier):
         """
         if self.realtime:
             elapsed = time.time() - self.last_sample_time
-            #self.last_sample_time = time.time()
-            samples = int(self.fs * elapsed)
+            blocks = (self.fs * elapsed) // self.samples
+            samples = blocks * self.samples
         else:
             samples = self.samples
         elapsed = samples / self.fs
@@ -45,9 +81,18 @@ class ReplayAmp(Amplifier):
         chunk = self.data[self.pos:self.pos+samples]
         #self.data = self.data[samples:]
         # markers
-        markers = [x for x in self.marker if x[0] < elapsed * 1000]
-        self.marker = [x for x in self.marker if x[0] >= elapsed * 1000]
-        self.marker = [[x[0] - elapsed * 1000, x[1]] for x in self.marker]
+
+        # slow python version
+        #markers = [x for x in self.marker if x[0] < elapsed * 1000]
+        #self.marker = [x for x in self.marker if x[0] >= elapsed * 1000]
+        #self.marker = [[x[0] - elapsed * 1000, x[1]] for x in self.marker]
+
+        # fast numpy version
+        mask = self.marker_ts < (elapsed * 1000)
+        markers = zip(self.marker_ts[mask], self.marker_s[mask])
+        self.marker_ts = self.marker_ts[~mask]
+        self.marker_s = self.marker_s[~mask]
+        self.marker_ts -= elapsed * 1000
 
         self.pos += samples
         return chunk, markers
