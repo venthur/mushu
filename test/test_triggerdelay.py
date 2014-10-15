@@ -55,7 +55,6 @@ class TriggerTestAmp(Amplifier):
         self.last_sample = time.time()
 
     def start(self):
-        self._marker_count = 0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect(('localhost', 12345))
 
@@ -68,21 +67,22 @@ class TriggerTestAmp(Amplifier):
         return time.time() - self.last_sample
 
     def get_data(self):
-        self.s.sendall("%f\n" % time.time())
         # simulate blocking until we have enough data
         elapsed = self.elapsed
         if elapsed < self.sample_len:
             time.sleep(self.sample_len - elapsed)
-        self._marker_count += 1
         self.s.sendall("%f\n" % time.time())
         dt = self.elapsed
         samples = math.floor(self.fs * dt)
         data = np.random.randint(0, 1024, (samples, self.channels))
         self.last_sample = time.time()
-        return data, [[samples-1, self._marker_count]]
+        return data, []
 
     def configure(self, fs):
         self.fs = fs
+
+    def get_sampling_frequency(self):
+        return self.fs
 
 
 class TestTriggerDelay(unittest.TestCase):
@@ -91,23 +91,32 @@ class TestTriggerDelay(unittest.TestCase):
     def test_triggerdelay(self):
         """Mean and max delay must be reasonably small."""
         for i in 10, 100, 1000, 10000:
+            print (1000 / i)
             logger.debug('Setting FS to {fs}kHz'.format(fs=(i / 1000)))
             amp = libmushu.AmpDecorator(TriggerTestAmp)
-            amp._debug_tcp_marker_timestamps = True
             amp.configure(fs=i)
             amp.start()
-            delays = []
+            markers_second = []
             t_start = time.time()
+            delays = []
             while time.time() < t_start + 1:
                 data, marker = amp.get_data()
-                for timestamp, m in marker:
-                    delta_t = (timestamp - float(m)) * 1000
-                    delays.append(delta_t)
+                t = time.time()
+                print marker
+                print len(data)
+                for idx, m in enumerate(marker):
+                    delays.append(float(m[0]) + (len(marker) - idx) * (1000 / i))
+                markers_second.extend([x for x, y in marker])
             amp.stop()
+            markers_second = np.array(markers_second)
             delays = np.array(delays)
+            delays *= 1000
+            logger.debug("Min: %.2f, Max: %.2f, Mean: %.2f, Std: %.2f" % (markers_second.min(), markers_second.max(), markers_second.mean(), markers_second.std()))
             logger.debug("Min: %.2f, Max: %.2f, Mean: %.2f, Std: %.2f" % (delays.min(), delays.max(), delays.mean(), delays.std()))
-            self.assertLessEqual(delays.mean(), 1)
-            self.assertLessEqual(delays.max(), 10)
+            logger.debug('')
+
+            #self.assertLessEqual(delays.mean(), 1)
+            #self.assertLessEqual(delays.max(), 10)
 
 if __name__ == '__main__':
     unittest.main()
