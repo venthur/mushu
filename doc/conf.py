@@ -31,9 +31,6 @@ extensions = ['sphinx.ext.autosummary', 'sphinx.ext.autodoc', 'sphinx.ext.inters
 
 autosummary_generate = True
 
-# should work beginning with sphinx 1.3
-autodoc_mock_imports = ['pylsl', 'usb']
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
