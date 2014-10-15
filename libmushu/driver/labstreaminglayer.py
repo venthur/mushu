@@ -110,7 +110,7 @@ class LSLAmp(Amplifier):
         if len(m_timestamps) > 0:
             if len(timestamps) > 0:
                 t0 = timestamps[0]
-                m_timestamps = [i - t0 for i in m_timestamps]
+                m_timestamps = [(i - t0) * 1000 for i in m_timestamps]
             else:
                 # we received markers, but no data, so we cannot
                 # calculate the relative time to the first sample, we
