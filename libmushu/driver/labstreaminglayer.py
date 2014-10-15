@@ -35,7 +35,7 @@ class LSLAmp(Amplifier):
 
     """
 
-    def configure(self):
+    def configure(self, **kwargs):
         """Configure the lsl device.
 
         This method looks for open lsl streams and picks the first `EEG`
