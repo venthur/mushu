@@ -119,8 +119,7 @@ class LSLAmp(Amplifier):
 
         # convert timestamps to ms
         m_timestamps *= 1000
-
-        return samples, zip(markers, m_timestamps)
+        return samples, zip(m_timestamps, markers)
 
     def get_channels(self):
         """Get channel names.
