@@ -257,7 +257,7 @@ def tcp_reader(queue, running, ready):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.setblocking(0)
-    server_socket.bind(('localhost', PORT))
+    server_socket.bind(('', PORT))
     server_socket.listen(5)
     ready.set()
     # read the socket until 'running' is set to false
