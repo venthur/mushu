@@ -41,25 +41,26 @@ class RandomAmp(Amplifier):
         self.presets = PRESETS
         self.channels = 17
         self.fs = 100
+
+    def start(self):
         self.last_sample = time.time()
 
     @property
     def sample_len(self):
         return 1 / self.fs
 
-    @property
-    def elapsed(self):
-        return time.time() - self.last_sample
-
     def get_data(self):
         # simulate blocking until we have enough data
-        elapsed = self.elapsed
+        elapsed = time.time() - self.last_sample
         if elapsed < self.sample_len:
             time.sleep(self.sample_len - elapsed)
-        dt = self.elapsed
+        # ready
+        dt = time.time() - self.last_sample
         samples = math.floor(self.fs * dt)
+        # actual time according to number of samples we're sending out
+        dt = samples / self.fs
         data = np.random.randint(0, 1024, (samples, self.channels))
-        self.last_sample = time.time()
+        self.last_sample += dt
         return data, []
 
     def configure(self, fs, channels):
