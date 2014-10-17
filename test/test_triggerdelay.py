@@ -57,7 +57,7 @@ class TriggerTestAmp(Amplifier):
     def start(self):
         self._marker_count = 0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect(('localhost', 12345))
+        self.s.connect(('localhost', 12344))
 
     @property
     def sample_len(self):

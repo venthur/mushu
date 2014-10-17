@@ -49,7 +49,7 @@ logger.info('Logger started')
 
 END_MARKER = '\n'
 BUFSIZE = 2**16
-PORT = 12345
+PORT = 12344
 
 
 class AmpDecorator(Amplifier):
