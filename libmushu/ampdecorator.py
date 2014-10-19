@@ -412,6 +412,10 @@ class MarkerHandler(asynchat.async_chat):
         self.timestamp = None
         self.queue = queue
 
+    def handle_close(self):
+        logger.debug('Connection closed by peer, closing connection.')
+        self.close()
+
     def writable(self):
         """Signal weather the socket is ready to send data.
 
