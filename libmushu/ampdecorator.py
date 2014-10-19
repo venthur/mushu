@@ -462,3 +462,13 @@ class MarkerHandler(asynchat.async_chat):
         self.data = ''
         self.timestamp = None
 
+    def handle_error(self):
+        """An error occurred.
+
+        """
+        logger.error('An error occurred.')
+        self.close()
+        # the default implementation prints a condensed tracebackk which
+        # is not useful at all, so we re-raise the exception
+        raise
+
