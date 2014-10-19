@@ -39,6 +39,8 @@ import os
 import struct
 import json
 import logging
+import asyncore
+import asynchat
 
 from libmushu.amplifier import Amplifier
 
@@ -280,20 +282,179 @@ def tcp_reader(queue, running, ready):
                     sock.close()
                     rlist.remove(sock)
                 else:
-                    # received maybe incomplete data from a
-                    # connection
-                    # TODO: are we? I thought we're using TCP?
-                    data_buffer = ''.join([data_buffer, data])
-                    split = data_buffer.rsplit(END_MARKER, 1)
-                    messages = []
-                    if len(split) > 1:
-                        # data_buffer contains at least one complete
-                        # message
-                        data_buffer = split[1]
-                        messages = split[0].split(END_MARKER)
-                        for m in messages:
-                            queue.put([t, m])
+                    # received maybe incomplete data from a connection
+                    if data_buffer:
+                        logger.warning('data_buffer is not empty, markers in here will have a wrong timestamp.')
+                        data = ''.join([data_buffer, data])
+                        data_buffer = ''
+                    # separate new incomplete data at the end from good
+                    # data at the beginning
+                    split = data.rsplit(END_MARKER, 1)
+                    data_buffer = split[-1]
+                    if len(split) == 1:
+                        # we received incomplete data
+                        continue
+                    # split[0] contains at least one complete message
+                    messages = split[0].split(END_MARKER)
+                    if len(messages) > 1:
+                        logger.warning('Received more than one marker within one recv. They will have the same timestamps.')
+                        logger.warning(messages)
+                    for m in messages:
+                        queue.put([t, m])
     logger.debug('Terminated select-loop')
     # close all connections and the socket
     for s in rlist:
         s.close()
+
+
+def marker_reader(queue, running, ready, proto='tcp'):
+    """Initialize the MarkerServer and start the receiving loop.
+
+    After the server is set up the ``ready`` event is set and the method
+    enters the loop that runs forever until the ``running`` Event is
+    cleared. Received markers are put in the ``queue``.
+
+    Parameters
+    ----------
+    queue : multiprocessing.Queue instance
+    runing : multiprocessing.Event
+    ready : multiprocessing.Event
+    proto : str, optional
+
+    """
+    MarkerServer(queue, proto)
+    ready.set()
+    while running.is_set():
+        asyncore.loop(timeout=5, count=1)
+
+
+class MarkerServer(asyncore.dispatcher):
+    """The marker server.
+
+    It opens a TCP or UDP socket and assigns a :class:`MarkerHandler` to
+    the opened socket.
+
+    """
+
+    def __init__(self, queue, proto='tcp'):
+        """Initialize the Server.
+
+        Parameters
+        ----------
+        queue : multiprocessing.Queue instance
+        proto : string, optional
+            The protocol to use. Can be either 'tcp' or 'udp'.
+
+        Raises
+        ------
+        ValueError : if the protocol is unsupported
+
+        """
+        asyncore.dispatcher.__init__(self)
+        self.queue = queue
+        if proto.lower() == 'tcp':
+            logger.debug('Opening TCP socket.')
+            self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            self.setblocking(0)
+            self.bind(('', PORT))
+            self.listen(5)
+        elif proto.lower() == 'udp':
+            logger.debug('Opening UDP socket.')
+            self.create_socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.setblocking(0)
+            self.bind(('', PORT))
+            # in contrast to a TCP socket, an UDP socket has no
+            # connection, so the socket is immediately ready to receive
+            # data
+            handler = MarkerHandler(self, self.queue)
+        else:
+            raise ValueError('Unsupported protocol: {proto}'.format(proto=proto))
+
+    def handle_accept(self):
+        """Accept an incomming TCP connection.
+
+        """
+        pair = self.accept()
+        if pair is not None:
+            sock, addr = pair
+            logger.debug('Incoming connection from {addr}'.format(addr=addr))
+            handler = MarkerHandler(sock, self.queue)
+
+
+class MarkerHandler(asynchat.async_chat):
+    """Handler for incoming data streams.
+
+    This handler processes incoming data from a TCP or UDP sockets. Each
+    packet ends with a terminator character sequence. The handler takes
+    care of incomplete packets and puts complete packets in the queue.
+
+    """
+
+    def __init__(self, socket, queue):
+        """Initialize the Handler.
+
+        Parameters
+        ----------
+        socket : socket.socket
+            the socket can be TCP or UDP. In case of UDP the socket must
+            be binded already, the TCP socket must be an opened
+            connection (i.e. after accept)
+        queue : multiprocessing.Queue instance
+            The queue to send the received markers to.
+
+        """
+        asynchat.async_chat.__init__(self, socket)
+        self.set_terminator(END_MARKER)
+        self.data = ''
+        self.timestamp = None
+        self.queue = queue
+
+    def writable(self):
+        """Signal weather the socket is ready to send data.
+
+        Returns
+        -------
+        writable : bool
+            ready to send or not
+
+        """
+        # if we don't set the writable flag to false, the UDP socket
+        # will signal that it is ready to send data on every iteration
+        # of the asycore loop, which will cause massive CPU strain. this
+        # is not the case for TCP sockets, but doesn't hurt either.
+        return False
+
+    def collect_incoming_data(self, data):
+        """Got potentially partial data packet.
+
+        This method collects potentially incomplete data packets and
+        records the timestamp when the first part of the incomplete data
+        packet arrived.
+
+        Parameters
+        ----------
+        data : str
+            the data packet
+
+        """
+        if self.timestamp is None:
+            self.timestamp = time.time()
+        #logger.debug('Received maybe incomlete data: {data}'.format(data=data))
+        self.data = self.data + data
+
+    def found_terminator(self):
+        """Found a complete packet.
+
+        A complete data packet has arrived. Put the data packet with its
+        timestamp in the queue. And reset the timestamp.
+
+        """
+        # to something with data
+        #logger.debug('Received {data}'.format(data=self.data))
+        self.queue.put([self.timestamp, self.data])
+        self.data = ''
+        self.timestamp = None
+
