@@ -22,7 +22,8 @@ This module provides the :class:`AmpDecorator` class.
 As a user, it is very unlikely that you'll have to deal with it
 directly. Its main purpose is to add additional functionality to the low
 level amplifier drivers. This functionality includes features like:
-saving data to a file. or being able to receive marker via TCP/IP.
+saving data to a file. or being able to receive marker via network
+(TCP/IP and UDP).
 
 By using the :func:`libmushu.__init__.get_amp` method, you'll
 automatically receive decorated amplifiers.
@@ -56,7 +57,7 @@ PORT = 12344
 
 class AmpDecorator(Amplifier):
     """This class 'decorates' the Low-Level Amplifier classes with
-    TCP-Marker and Save-To-File functionality.
+    Network-Marker and Save-To-File functionality.
 
     You use it by decorating (not as in Python-Decorator, but in the GoF
     sense) the low level amplifier class you want to use::
@@ -67,8 +68,8 @@ class AmpDecorator(Amplifier):
 
         amp = Ampdecorator(RandomAmp)
 
-    Waring: The TCP marker timings on Windows have a resolution of
-    10ms-15ms.  On Linux the resolution is 1us. This is due to
+    Waring: The network marker timings on Windows have a resolution of
+    10ms-15ms. On Linux the resolution is 1us. This is due to
     limitations of Python's time.time method, or rather a Windows
     specific issue.
 
@@ -151,15 +152,16 @@ class AmpDecorator(Amplifier):
         self.tcp_reader_running = Event()
         self.tcp_reader_running.set()
         tcp_reader_ready = Event()
-        self.tcp_reader = Process(target=tcp_reader,
+        self.tcp_reader = Process(target=marker_reader,
                                   args=(self.marker_queue,
                                         self.tcp_reader_running,
-                                        tcp_reader_ready)
+                                        tcp_reader_ready
+                                        )
                                   )
         self.tcp_reader.start()
-        logger.debug('Waiting for TCP reader to become ready...')
+        logger.debug('Waiting for marker server to become ready...')
         tcp_reader_ready.wait()
-        logger.debug('TCP reader is ready...')
+        logger.debug('Marker server is ready.')
         # zero the sample counter
         self.received_samples = 0
         # start the amp
@@ -170,9 +172,9 @@ class AmpDecorator(Amplifier):
         self.amp.stop()
         # stop the marker server
         self.tcp_reader_running.clear()
-        logger.debug('Waiting for TCP reader process to stop...')
+        logger.debug('Waiting for marker server process to stop...')
         self.tcp_reader.join()
-        logger.debug('TCP reader process stopped.')
+        logger.debug('Marker server process stopped.')
         # close the files
         if self.write_to_file:
             logger.debug('Closing files.')
@@ -236,12 +238,17 @@ class AmpDecorator(Amplifier):
         return self.amp.get_sampling_frequency()
 
 
-def tcp_reader(queue, running, ready):
-    """Marker-reading process.
+def marker_reader(queue, running, ready):
+    """Start the TCP and UDP MarkerServers and start the receiving loop.
 
-    This method runs in a seperate process and receives TCP markers.
-    Whenever a marker is received, it is put together with a timestamp
-    into a queue.
+    This method runs in a separate process and receives UDP and TCP
+    markers. Whenever a marker is received, it is put together with a
+    timestamp into a queue.
+
+    After the TCP and UDP servers are set up the ``ready`` event is set
+    and the method enters the loop that runs forever until the
+    ``running`` Event is cleared. Received markers are put in the
+    ``queue``.
 
     Parameters
     ----------
@@ -255,75 +262,8 @@ def tcp_reader(queue, running, ready):
         process is ready to receive marker
 
     """
-    # setup the server socket
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    server_socket.setblocking(0)
-    server_socket.bind(('', PORT))
-    server_socket.listen(5)
-    ready.set()
-    # read the socket until 'running' is set to false
-    rlist, wlist, elist = [server_socket], [], []
-    while running.is_set():
-        readables, _, _ = select.select(rlist, wlist, elist, 1)
-        t = time.time()
-        for sock in readables:
-            if sock == server_socket:
-                # a new connection is opened
-                connection, address = sock.accept()
-                logger.debug('Incoming connection from %s', address)
-                rlist.append(connection)
-                data_buffer = ''
-            else:
-                data = sock.recv(BUFSIZE)
-                if not data:
-                    # an open connection was closed
-                    logger.debug('Connection closed')
-                    sock.close()
-                    rlist.remove(sock)
-                else:
-                    # received maybe incomplete data from a connection
-                    if data_buffer:
-                        logger.warning('data_buffer is not empty, markers in here will have a wrong timestamp.')
-                        data = ''.join([data_buffer, data])
-                        data_buffer = ''
-                    # separate new incomplete data at the end from good
-                    # data at the beginning
-                    split = data.rsplit(END_MARKER, 1)
-                    data_buffer = split[-1]
-                    if len(split) == 1:
-                        # we received incomplete data
-                        continue
-                    # split[0] contains at least one complete message
-                    messages = split[0].split(END_MARKER)
-                    if len(messages) > 1:
-                        logger.warning('Received more than one marker within one recv. They will have the same timestamps.')
-                        logger.warning(messages)
-                    for m in messages:
-                        queue.put([t, m])
-    logger.debug('Terminated select-loop')
-    # close all connections and the socket
-    for s in rlist:
-        s.close()
-
-
-def marker_reader(queue, running, ready, proto='tcp'):
-    """Initialize the MarkerServer and start the receiving loop.
-
-    After the server is set up the ``ready`` event is set and the method
-    enters the loop that runs forever until the ``running`` Event is
-    cleared. Received markers are put in the ``queue``.
-
-    Parameters
-    ----------
-    queue : multiprocessing.Queue instance
-    runing : multiprocessing.Event
-    ready : multiprocessing.Event
-    proto : str, optional
-
-    """
-    MarkerServer(queue, proto)
+    MarkerServer(queue, 'udp')
+    MarkerServer(queue, 'tcp')
     ready.set()
     while running.is_set():
         asyncore.loop(timeout=5, count=1)
@@ -337,13 +277,13 @@ class MarkerServer(asyncore.dispatcher):
 
     """
 
-    def __init__(self, queue, proto='tcp'):
+    def __init__(self, queue, proto):
         """Initialize the Server.
 
         Parameters
         ----------
         queue : multiprocessing.Queue instance
-        proto : string, optional
+        proto : string
             The protocol to use. Can be either 'tcp' or 'udp'.
 
         Raises
