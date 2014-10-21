@@ -63,9 +63,6 @@ class LSLAmp(Amplifier):
         self.n_channels = info.channel_count()
         self.channels = ['Ch %i' % i for i in range(self.n_channels)]
         self.fs = info.nominal_srate()
-        # storage for markers that arrived w/o samples
-        self._markers = []
-        self._m_timestamps = []
         self.lsl_marker_inlet.time_correction()
         self.lsl_inlet.time_correction()
 
@@ -98,32 +95,13 @@ class LSLAmp(Amplifier):
         tc_s = self.lsl_inlet.time_correction()
 
         markers, m_timestamps = self.lsl_marker_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
-        samples, timestamps = self.lsl_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
         # flatten the output of the lsl markers, which has the form
         # [[m1], [m2]]
         markers = [i for sublist in markers for i in sublist]
 
-        # put any leftover markers back into the loop
-        if self._markers:
-            markers = self._markers + markers
-            m_timestamps = self._m_timestamps + m_timestamps
-            self._markers = []
-            self._m_timestamps = []
-
+        # block until we actually have data
+        samples, timestamps = self.lsl_inlet.pull_chunk(timeout=pylsl.FOREVER, max_samples=self.max_samples)
         samples = np.array(samples).reshape(-1, self.n_channels)
-
-        if len(m_timestamps) > 0:
-            if len(timestamps) > 0:
-                t0 = timestamps[0]
-                m_timestamps = [(i - t0) * 1000 for i in m_timestamps]
-            else:
-                # we received markers, but no data, so we cannot
-                # calculate the relative time to the first sample, we
-                # store the markers until the next sample arrived
-                self._markers.extend(markers)
-                self._m_timestamps.extend(m_timestamps)
-                markers = []
-                m_timestamps = []
 
         # convert timestamps to ms
         m_timestamps *= 1000
