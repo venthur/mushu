@@ -103,8 +103,6 @@ class LSLAmp(Amplifier):
         samples, timestamps = self.lsl_inlet.pull_chunk(timeout=pylsl.FOREVER, max_samples=self.max_samples)
         samples = np.array(samples).reshape(-1, self.n_channels)
 
-        # convert timestamps to ms
-        m_timestamps *= 1000
         t0 = timestamps[0] + tc_s
         m_timestamps = [(i + tc_m - t0) * 1000 for i in m_timestamps]
 
