@@ -66,6 +66,8 @@ class LSLAmp(Amplifier):
         # storage for markers that arrived w/o samples
         self._markers = []
         self._m_timestamps = []
+        self.lsl_marker_inlet.time_correction()
+        self.lsl_inlet.time_correction()
 
     def start(self):
         """Open the lsl inlets.
@@ -92,6 +94,9 @@ class LSLAmp(Amplifier):
         first sample of that block.
 
         """
+        tc_m = self.lsl_marker_inlet.time_correction()
+        tc_s = self.lsl_inlet.time_correction()
+
         markers, m_timestamps = self.lsl_marker_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
         samples, timestamps = self.lsl_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
         # flatten the output of the lsl markers, which has the form
@@ -122,6 +127,9 @@ class LSLAmp(Amplifier):
 
         # convert timestamps to ms
         m_timestamps *= 1000
+        t0 = timestamps[0] + tc_s
+        m_timestamps = [(i + tc_m - t0) * 1000 for i in m_timestamps]
+
         return samples, zip(m_timestamps, markers)
 
     def get_channels(self):
