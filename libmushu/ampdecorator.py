@@ -213,8 +213,8 @@ class AmpDecorator(Amplifier):
         block_duration = len(data) / self.amp.get_sampling_frequency()
         # abs time of start of the block
         t0 = t - block_duration
-        # duration of all blocks except the current one
-        duration = self.received_samples / self.amp.get_sampling_frequency()
+        # duration of all blocks in ms except the current one
+        duration = 1000 * self.received_samples / self.amp.get_sampling_frequency()
 
         # merge markers
         tcp_marker = []
@@ -226,7 +226,7 @@ class AmpDecorator(Amplifier):
         # save data to files
         if self.write_to_file:
             for m in marker:
-                self.fh_marker.write("%f %s\n" % (1000 * duration + m[0], m[1]))
+                self.fh_marker.write("%f %s\n" % (duration + m[0], m[1]))
             self.fh_eeg.write(struct.pack("f"*data.size, *data.flatten()))
         self.received_samples += len(data)
         return data, marker
