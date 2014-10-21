@@ -229,6 +229,8 @@ class AmpDecorator(Amplifier):
                 self.fh_marker.write("%f %s\n" % (duration + m[0], m[1]))
             self.fh_eeg.write(struct.pack("f"*data.size, *data.flatten()))
         self.received_samples += len(data)
+        if len(data) == 0 and len(marker) > 0:
+            logger.error('Received marker but no data. This is an error, the amp should block on get_data until data is available. Marker timestamps will be unreliable.')
         return data, marker
 
     def get_channels(self):
