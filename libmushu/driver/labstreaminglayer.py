@@ -92,8 +92,8 @@ class LSLAmp(Amplifier):
         first sample of that block.
 
         """
-        samples, timestamps = self.lsl_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
         markers, m_timestamps = self.lsl_marker_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
+        samples, timestamps = self.lsl_inlet.pull_chunk(timeout=0.0, max_samples=self.max_samples)
         # flatten the output of the lsl markers, which has the form
         # [[m1], [m2]]
         markers = [i for sublist in markers for i in sublist]
