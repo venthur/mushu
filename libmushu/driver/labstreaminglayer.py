@@ -50,12 +50,14 @@ class LSLAmp(Amplifier):
         # lsl defined
         self.max_samples = 1024
         # open EEG stream
+        logger.debug('Opening EEG stream...')
         streams = pylsl.resolve_stream('type', 'EEG')
         if len(streams) > 1:
             logger.warning('Number of EEG streams is > 0, picking the first one.')
         self.lsl_inlet = pylsl.StreamInlet(streams[0])
         # open marker stream
         streams = pylsl.resolve_stream('type', 'Markers')
+        logger.debug('Opening Marker stream...')
         if len(streams) > 1:
             logger.warning('Number of Marker streams is > 0, picking the first one.')
         self.lsl_marker_inlet = pylsl.StreamInlet(streams[0])
@@ -63,8 +65,10 @@ class LSLAmp(Amplifier):
         self.n_channels = info.channel_count()
         self.channels = ['Ch %i' % i for i in range(self.n_channels)]
         self.fs = info.nominal_srate()
+        logger.debug('Initializing time correction...')
         self.lsl_marker_inlet.time_correction()
         self.lsl_inlet.time_correction()
+        logger.debug('Configuration done.')
 
     def start(self):
         """Open the lsl inlets.
