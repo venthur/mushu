@@ -56,8 +56,10 @@ class LSLAmp(Amplifier):
             logger.warning('Number of EEG streams is > 0, picking the first one.')
         self.lsl_inlet = pylsl.StreamInlet(streams[0])
         # open marker stream
-        streams = pylsl.resolve_stream('type', 'Markers')
         logger.debug('Opening Marker stream...')
+        # TODO: should add a timeout here in case there is no marker
+        # stream
+        streams = pylsl.resolve_stream('type', 'Markers')
         if len(streams) > 1:
             logger.warning('Number of Marker streams is > 0, picking the first one.')
         self.lsl_marker_inlet = pylsl.StreamInlet(streams[0])
