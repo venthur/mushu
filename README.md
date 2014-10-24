@@ -51,6 +51,8 @@ Supported Amplifiers
   * g.USBamp by g.tec (native)
   * EPOC by emotiv (native)
   * any [lab streaming layer][lsl] device publishing EEG data
+  * Virtual Amplifier: ReplayAmp, an amplifier that replays EEG data in realtime
+    or timelapse
 
   [lsl]: https://code.google.com/p/labstreaminglayer/
 
