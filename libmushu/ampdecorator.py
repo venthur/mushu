@@ -137,7 +137,7 @@ class AmpDecorator(Amplifier):
                 if os.path.exists(filename):
                     logger.error('A file "%s" already exists, aborting.' % filename)
                     raise Exception
-            self.fh_eeg = open(filename_eeg, 'w')
+            self.fh_eeg = open(filename_eeg, 'wb')
             self.fh_marker = open(filename_marker, 'w')
             self.fh_meta = open(filename_meta, 'w')
             # write meta data
