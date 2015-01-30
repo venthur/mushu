@@ -1,3 +1,10 @@
+# The official repository has moved!
+
+The official Mushu repository has a new home at the [BBCI github account][bbci].
+Please use the new one for forks, issues, etc.
+
+  [bbci]: https://github.com/bbci/mushu
+
 Mushu
 =====
 
